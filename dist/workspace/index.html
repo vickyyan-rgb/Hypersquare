@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HyperSquare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: app shell — role-aware sidebar, top bar, routed workspace; overlays for drawer, palette, toasts. */
+:root{
+  --bg:#F4F5F8; --surface:#FFFFFF; --surface2:#F8F9FB; --sidebar:#FAFBFC; --line:#E1E4EA; --line2:#EDEFF3;
+  --ink:#0E1116; --ink2:#3F4652; --ink3:#5A6271;
+  --accent:#3451D1; --accent-hover:#2A43B3; --accent-ink:#2A43B3; --accent-tint:#EEF1FD; --on-accent:#FFFFFF;
+  --ok:#15803D; --ok-tint:#EAF6EE; --warn:#8A5A00; --warn-tint:#FBF3DC; --risk:#B42318; --risk-tint:#FDECEA;
+  --code:#0E1116; --shadow:0 1px 2px rgba(14,17,22,.05),0 8px 24px rgba(14,17,22,.08); --overlay:rgba(14,17,22,.28);
+  --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C0E12; --surface:#14171D; --surface2:#191D24; --sidebar:#101318; --line:#262B35; --line2:#20242C;
+  --ink:#E8EAEF; --ink2:#B8BEC9; --ink3:#959DAA;
+  --accent:#6B8AFD; --accent-hover:#8AA2FF; --accent-ink:#A9B9FF; --accent-tint:#1B2240; --on-accent:#0A0D1A;
+  --ok:#5BD08A; --ok-tint:#12291C; --warn:#E5B94A; --warn-tint:#2E2510; --risk:#F28B82; --risk-tint:#341818;
+  --code:#090B0F; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45); --overlay:rgba(0,0,0,.55); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0C0E12; --surface:#14171D; --surface2:#191D24; --sidebar:#101318; --line:#262B35; --line2:#20242C;
+  --ink:#E8EAEF; --ink2:#B8BEC9; --ink3:#959DAA;
+  --accent:#6B8AFD; --accent-hover:#8AA2FF; --accent-ink:#A9B9FF; --accent-tint:#1B2240; --on-accent:#0A0D1A;
+  --ok:#5BD08A; --ok-tint:#12291C; --warn:#E5B94A; --warn-tint:#2E2510; --risk:#F28B82; --risk-tint:#341818;
+  --code:#090B0F; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45); --overlay:rgba(0,0,0,.55); color-scheme:dark }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.mono{font-family:var(--mono)}
+.label{font:600 11px/16px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.muted{color:var(--ink3)}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:6px;font:500 13px/1 var(--sans);border:1px solid transparent;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,transform .12s,opacity .15s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:var(--on-accent)}.btn-primary:hover:not(:disabled){background:var(--accent-hover)}
+.btn-secondary{background:var(--surface);color:var(--ink);border-color:var(--line)}.btn-secondary:hover:not(:disabled){border-color:var(--ink3)}
+.btn-ghost{background:transparent;color:var(--ink2)}.btn-ghost:hover{background:var(--surface2);color:var(--ink)}
+.btn-lg{height:44px;padding:0 18px;font-size:14px}
+.tag{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:4px;font:500 12px var(--sans);white-space:nowrap}
+.t-ok{background:var(--ok-tint);color:var(--ok)}.t-warn{background:var(--warn-tint);color:var(--warn)}.t-risk{background:var(--risk-tint);color:var(--risk)}
+.t-accent{background:var(--accent-tint);color:var(--accent-ink)}.t-plain{background:var(--surface2);color:var(--ink2);border:1px solid var(--line)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.field{height:38px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 12px;font:400 14px var(--sans);outline:none;min-width:0}
+.field:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+textarea.field{height:auto;min-height:96px;padding:10px 12px;line-height:1.5;resize:vertical;width:100%}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* shell */
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);height:100%}
+.side{background:var(--sidebar);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;padding-left:env(safe-area-inset-left,0px)}
+.brand{display:flex;align-items:center;gap:10px;padding:16px 18px 12px;font-weight:600;font-size:15px}
+.roles{margin:4px 14px 12px;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:6px;padding:3px;position:relative;background:var(--surface)}
+.roles .thumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);background:var(--ink);border-radius:4px;transition:transform .35s cubic-bezier(.3,1.3,.5,1)}
+.roles button{position:relative;z-index:1;background:none;border:0;padding:7px 4px;font:500 12px var(--sans);color:var(--ink2);cursor:pointer;border-radius:4px;transition:color .25s;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.roles button small{font-size:10.5px;opacity:.75;font-weight:400}
+.roles button[aria-pressed="true"]{color:var(--bg)}
+.nav{position:relative;display:flex;flex-direction:column;gap:2px;padding:4px 10px}
+.nav .ind{position:absolute;left:10px;right:10px;border-radius:6px;background:var(--surface);border:1px solid var(--line);box-shadow:0 1px 2px rgba(14,17,22,.05);transition:transform .38s cubic-bezier(.3,1.2,.4,1),height .3s;z-index:0;pointer-events:none}
+.nav .ind::before{content:"";position:absolute;left:-1px;top:8px;bottom:8px;width:3px;border-radius:0 2px 2px 0;background:var(--accent)}
+.navbtn{position:relative;z-index:1;display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border:0;background:none;border-radius:6px;color:var(--ink2);cursor:pointer;font:500 13.5px var(--sans);text-align:left;width:100%}
+.navbtn:hover{color:var(--ink)}
+.navbtn[aria-current="page"]{color:var(--ink)}
+.navbtn .badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:4px;background:var(--accent);color:var(--on-accent);font:600 11px/20px var(--mono);text-align:center}
+.navbtn.pop .badge,.navbtn.pop{animation:navpop .7s cubic-bezier(.3,1.6,.5,1)}
+.sidefoot{margin-top:auto;padding:12px 14px 16px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line)}
+.partner{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px dashed var(--line);border-radius:6px;text-decoration:none;color:var(--ink);transition:border-color .2s,background .2s}
+.partner:hover{border-color:var(--accent);background:var(--surface)}
+.me{display:flex;align-items:center;gap:10px}
+.av{width:30px;height:30px;border-radius:6px;background:var(--accent-tint);color:var(--accent-ink);display:grid;place-items:center;font:600 12px var(--sans);flex-shrink:0}
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.top{height:56px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--surface);flex-shrink:0;padding-right:max(20px,env(safe-area-inset-right,0px))}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink3);min-width:0}
+.crumb strong{color:var(--ink);font-weight:600;font-size:15px;white-space:nowrap}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;height:34px;width:min(320px,34vw);padding:0 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface2);color:var(--ink3);cursor:pointer;font:13px var(--sans)}
+.search kbd{margin-left:auto;font:11px var(--mono);border:1px solid var(--line);border-radius:4px;padding:1px 5px;background:var(--surface)}
+.iconbtn{position:relative;width:34px;height:34px;display:grid;place-items:center;border-radius:6px;border:1px solid transparent;background:none;color:var(--ink2);cursor:pointer}
+.iconbtn:hover{background:var(--surface2);color:var(--ink)}
+.dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:2px;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
+.content{flex:1;overflow:auto;min-height:0;view-transition-name:content}
+.page{padding:24px 28px 48px;max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:20px;padding-right:max(28px,env(safe-area-inset-right,0px))}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.page-head h1{font-size:24px;line-height:32px;font-weight:600;letter-spacing:-.01em}
+.page-head p{color:var(--ink2);margin-top:4px;max-width:70ch}
+.enter>*{animation:up .45s cubic-bezier(.2,.8,.2,1) both}
+.enter>*:nth-child(2){animation-delay:.04s}.enter>*:nth-child(3){animation-delay:.08s}.enter>*:nth-child(4){animation-delay:.12s}.enter>*:nth-child(5){animation-delay:.16s}.enter>*:nth-child(6){animation-delay:.2s}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.sec{display:flex;flex-direction:column}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line2)}
+.sec-h h2{font-size:14px;font-weight:600}
+.row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line2);transition:background .15s}
+.row:last-child{border-bottom:0}
+.row.click{cursor:pointer}
+button.row{width:100%;border:0;border-bottom:1px solid var(--line2);background:none;text-align:left;font:inherit;color:inherit}
+.row.click:hover{background:var(--surface2)}
+.stat{padding:16px 18px;border-right:1px solid var(--line2);display:flex;flex-direction:column;gap:4px}
+.stat:last-child{border-right:0}
+.stat b{font:600 26px/1.1 var(--sans);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 24px;position:relative;overflow:hidden}
+.hero .meta{display:flex;gap:16px;flex-wrap:wrap;color:var(--ink2);font-size:13px}
+.empty{padding:28px 18px;text-align:center;color:var(--ink3);display:flex;flex-direction:column;align-items:center;gap:8px}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface2);white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr{cursor:pointer;transition:background .15s}
+.tbl tbody tr:hover{background:var(--surface2)}
+.tbl tbody tr.fresh{animation:fresh 2.4s ease-out}
+.tblwrap{overflow-x:auto}
+.bar{height:6px;border-radius:1px;background:var(--line2);overflow:hidden;min-width:80px}
+.bar span{display:block;height:100%;background:var(--accent);transform-origin:left;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
+.bar span.low{background:var(--risk)}.bar span.mid{background:var(--warn)}
+
+/* interview */
+.iv{display:grid;grid-template-columns:260px minmax(0,1fr) minmax(0,460px);gap:16px;align-items:stretch}
+.outline li{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:11px 16px;border-top:1px solid var(--line2);position:relative;transition:background .25s}
+.outline li.cur{background:var(--accent-tint)}
+.outline li.cur::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.qst{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ink3)}
+.qst.now{color:var(--accent-ink);font-weight:500}.qst.done{color:var(--ok);font-weight:500}.qst.unsure{color:var(--warn);font-weight:500}
+.segs{display:flex;gap:3px}.segs i{flex:1;height:4px;border-radius:1px;background:var(--line);transition:background .3s}
+.segs i.done{background:var(--ok)}.segs i.cur{background:var(--accent)}.segs i.unsure{background:var(--warn)}.segs i.skip{background:repeating-linear-gradient(90deg,var(--ink3) 0 4px,transparent 4px 7px)}
+.mic{height:52px;min-width:260px;border-radius:6px;background:var(--ink);color:var(--bg);border:0;font:500 15px var(--sans);display:inline-flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;padding:0 24px;position:relative;user-select:none;-webkit-user-select:none;touch-action:none;transition:background .2s}
+.mic.rec{background:var(--accent);color:var(--on-accent)}
+.mic.rec::after{content:"";position:absolute;inset:-5px;border-radius:9px;border:2px solid var(--accent);opacity:.5;animation:ring 1.3s ease-out infinite}
+.bars{display:inline-flex;align-items:center;gap:3px;height:22px}
+.bars i{display:block;width:3px;border-radius:1px;background:currentColor;height:6px;animation:bar .9s ease-in-out infinite}
+.bars i:nth-child(2n){animation-duration:.7s;animation-delay:-.2s}.bars i:nth-child(3n){animation-duration:1.1s;animation-delay:-.5s}.bars i:nth-child(5n){animation-duration:.8s;animation-delay:-.35s}
+.segbar{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.segbar button{background:none;border:0;border-right:1px solid var(--line2);padding:0 14px;min-height:38px;font:500 13px var(--sans);color:var(--ink2);display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.segbar button:last-child{border-right:0}
+.segbar button:hover{background:var(--surface2);color:var(--ink)}
+.caret{display:inline-block;width:2px;height:1em;background:var(--accent);margin-left:3px;vertical-align:-.12em;animation:blink .7s steps(1) infinite}
+.rtable{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.rrow{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line2);animation:up .35s cubic-bezier(.2,.8,.2,1) both}
+.rrow:first-child{border-top:0}
+.rrow:nth-child(2){animation-delay:.07s}.rrow:nth-child(3){animation-delay:.14s}.rrow:nth-child(4){animation-delay:.21s}
+.dots{display:inline-flex;gap:5px}.dots i{display:block;width:6px;height:6px;border-radius:1px;background:var(--accent);animation:dotb 1s ease-in-out infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+
+/* interview stage (layout follows the original prototype; visual is HyperSquare) */
+.iv2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);gap:20px;align-items:stretch}
+.stage{position:relative;border-radius:14px;overflow:hidden;min-height:560px;background:radial-gradient(ellipse at 70% 15%,#2B3870 0%,#171C33 45%,#0A0D18 100%);color:#E8EAEF;isolation:isolate}
+.racks{position:absolute;inset:0;display:flex;gap:16px;padding:34px 110px 0;filter:blur(5px);opacity:.6;z-index:-1}
+.racks i{flex:1;border-radius:3px;background-color:#1E2540;background-image:radial-gradient(circle,#7E98FF 1.3px,transparent 1.8px);background-size:12px 22px;background-position:6px 10px;animation:racks 2.6s steps(2) infinite}
+.racks i:nth-child(3n){background-image:radial-gradient(circle,#5BD08A 1.2px,transparent 1.8px);background-size:14px 30px}
+.vignette{position:absolute;inset:0;box-shadow:inset 0 0 180px rgba(4,6,14,.75);z-index:-1;pointer-events:none}
+.glass{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.stage .chip{position:absolute;left:18px;top:18px;display:inline-flex;align-items:center;gap:6px;border-radius:6px;padding:6px 10px;font-size:12.5px;font-weight:500;color:#fff}
+.selftile{position:absolute;right:18px;top:18px;width:200px;height:124px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff}
+.recdot{position:absolute;left:10px;bottom:8px;display:inline-flex;align-items:center;gap:6px;font:500 11px var(--mono);color:#FFB4AE}
+.recdot i{width:7px;height:7px;border-radius:50%;background:#F05A4F;animation:pulse 1.2s ease-in-out infinite}
+.orbstage{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:90px;pointer-events:none}
+.orbwrap{position:relative;width:200px;height:200px;display:grid;place-items:center}
+.orb{width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center;gap:24px;background:radial-gradient(circle at 34% 28%,#FFFFFF 0%,#E6EBFF 42%,#9DB0FF 100%);box-shadow:0 24px 60px rgba(52,81,209,.5),inset 0 -14px 26px rgba(42,67,179,.35),inset 0 10px 20px rgba(255,255,255,.75);animation:breathe 4s ease-in-out infinite}
+.oeye{width:12px;height:20px;border-radius:6px;background:#0E1116;animation:oblink 5s infinite;transition:height .25s,border-radius .25s}
+.ring{position:absolute;inset:25px;border-radius:50%;border:2px solid #8AA2FF;opacity:0}
+.orbwrap.talk .ring{animation:oring 1.4s ease-out infinite}.orbwrap.talk .r2{animation-delay:.7s}
+.orbwrap.listen .ring{border-color:#A9B9FF;animation:oring 1.1s ease-out infinite}.orbwrap.listen .r2{animation-delay:.55s}
+.orbwrap.listen .oeye{height:24px}
+.orbwrap.listen .orb{animation:breathe 1.6s ease-in-out infinite}
+.orbwrap.think .orb{display:flex}
+.orbwrap.think .oeye{height:8px;animation:oscan 1.4s ease-in-out infinite}
+.orbwrap.happy .oeye{height:10px;width:16px;background:transparent;border:3.5px solid #0E1116;border-bottom:0;border-radius:10px 10px 0 0;animation:none}
+.orbwrap.happy .orb{animation:ohop .9s cubic-bezier(.3,1.6,.5,1) 2,breathe 4s ease-in-out 1.8s infinite}
+.caption{position:absolute;left:18px;right:18px;bottom:18px;background:rgba(9,11,18,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:18px 22px;color:#fff;animation:up .4s cubic-bezier(.2,.8,.2,1) both}
+.reflect{position:absolute;left:26px;right:26px;bottom:26px;background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(4,6,14,.4);animation:rup .45s cubic-bezier(.2,.9,.3,1.1) both}
+.reflect .acc{color:var(--accent)}
+.nodes{display:flex;align-items:center;gap:0}
+.nodes .node{flex:1;min-width:0;display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.35;animation:nodein .35s cubic-bezier(.2,.8,.2,1) both}
+.nodes .node.warn{border-color:color-mix(in srgb,var(--warn) 70%,transparent)}
+.nodes .node.risk{border-color:color-mix(in srgb,var(--risk) 70%,transparent)}
+.nodes .link{width:22px;height:1px;background:var(--ink3);flex-shrink:0;transform-origin:left;animation:grow .3s ease-out both}
+.ivctl{display:flex;flex-direction:column;align-items:center;gap:10px}
+.btn.talk{min-width:170px;position:relative}
+.btn.talk.rec{background:var(--accent-hover)}
+.btn.talk.rec::after{content:"";position:absolute;inset:-5px;border-radius:9px;border:2px solid var(--accent);opacity:.5;animation:ring 1.3s ease-out infinite}
+.btn.notsure{border-color:color-mix(in srgb,var(--warn) 65%,var(--line));border-width:2px}
+.ivbar{position:sticky;bottom:0;margin:20px -28px 0;padding:14px 28px;background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;align-items:center;gap:14px;z-index:5}
+.ivsegs{flex:1;display:flex;gap:8px;margin:0 12px}
+.iseg{flex:1;height:8px;border-radius:2px;background:var(--line2);overflow:hidden;position:relative}
+.iseg.cur{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent)}
+.iseg i{display:block;height:100%;background:var(--accent);transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.iseg.done i{background:var(--ok)}.iseg.unsure i{background:var(--warn)}.iseg.skip i{background:repeating-linear-gradient(90deg,var(--ink3) 0 4px,transparent 4px 7px)}
+@keyframes racks{50%{background-position:6px 21px}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@keyframes oblink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes oring{from{opacity:.55;transform:scale(1)}to{opacity:0;transform:scale(1.35)}}
+@keyframes oscan{0%,100%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+@keyframes ohop{0%,100%{transform:translateY(0)}40%{transform:translateY(-16px)}}
+@keyframes rup{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes nodein{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+@media (max-width:1100px){.iv2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.racks{padding:34px 20px 0}.selftile{width:120px;height:80px}.selftile span:last-child{display:none}.nodes{flex-direction:column;align-items:stretch}.nodes .link{width:1px;height:10px;align-self:center}.stage{min-height:640px}.reflect{left:12px;right:12px;bottom:12px;padding:16px}.ivbar{margin:16px -16px 0;padding:12px 16px}.ivbar>span:nth-child(2){display:none}}
+
+/* code */
+.code{background:var(--code);color:#D6DAE1;border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.code-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.07);font-size:12px;color:#8B93A1;flex-wrap:wrap}
+.code-b{padding:10px 0;overflow:auto}
+.cl{display:flex;gap:14px;padding:0 16px;font:400 12.5px/21px var(--mono);white-space:pre;position:relative;transition:background .35s}
+.cl .ln{width:28px;text-align:right;color:#858C99;flex-shrink:0}
+.cl.on{background:rgba(91,124,250,.18)}
+.cl.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#6B8AFD}
+.cl.on .ln{color:#B4C3FF}
+.kw{color:#82AAFF}.st{color:#A6E3A1}.cm{color:#8B93A1;font-style:italic}.pa{color:#C3A6FF}
+.gapr{padding:2px 16px 2px 58px;color:#5C6370;font:12px/16px var(--mono);letter-spacing:2px}
+
+/* review */
+.kcard{padding:18px 20px;display:flex;flex-direction:column;gap:12px;transition:border-color .3s,box-shadow .3s,opacity .3s}
+.kcard.ready{border-color:color-mix(in srgb,var(--ok) 55%,var(--line))}
+.kcard.flag{opacity:.6}
+.kcard.just{animation:okflash .8s ease-out}
+.srcbtn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:4px;border:1px solid var(--line);background:var(--surface2);font:500 12px var(--sans);color:var(--ink2);cursor:pointer}
+.srcbtn[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.srcbtn .mono{font-size:11.5px}
+.drawerin{animation:up .3s cubic-bezier(.2,.8,.2,1) both}
+.chg{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:3px;color:var(--accent-ink)}
+.sticky{position:sticky;bottom:0;z-index:5;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 28px;padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
+
+/* tickets */
+.tk{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:16px;align-items:start}
+.tkitem{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-bottom:1px solid var(--line2);cursor:pointer;position:relative;transition:background .15s;text-align:left;border-left:0;border-right:0;border-top:0;background:none;width:100%}
+.tkitem:hover{background:var(--surface2)}
+.tkitem[aria-current="true"]{background:var(--accent-tint)}
+.tkitem[aria-current="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.qa{border-top:1px solid var(--line2);padding:16px 20px;display:flex;flex-direction:column;gap:8px;animation:up .35s cubic-bezier(.2,.8,.2,1) both}
+.skel{height:10px;border-radius:2px;background:linear-gradient(90deg,var(--line2) 0%,var(--surface2) 50%,var(--line2) 100%);background-size:200% 100%;animation:sh 1.1s linear infinite}
+.sug{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:4px;border:1px solid var(--line);background:var(--surface);font:500 12.5px var(--sans);color:var(--ink2);cursor:pointer;transition:border-color .15s,color .15s}
+.sug:hover{border-color:var(--accent);color:var(--accent-ink)}
+.newtag{animation:fadein .4s both}
+
+/* overlays */
+.scrim{position:fixed;inset:0;background:var(--overlay);z-index:40;animation:fadein .2s both}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:var(--surface);border-left:1px solid var(--line);z-index:41;display:flex;flex-direction:column;box-shadow:var(--shadow);animation:slidein .38s cubic-bezier(.2,.9,.2,1) both;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer-h{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.drawer-b{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:18px}
+.dl{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:13px}
+.dl dt{color:var(--ink3)}.dl dd{margin:0}
+.palette{position:fixed;left:50%;top:12vh;transform:translateX(-50%);width:min(620px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);z-index:60;overflow:hidden;animation:popin .22s cubic-bezier(.2,.9,.3,1.2) both}
+.palette input{width:100%;height:52px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);padding:0 18px;font:400 16px var(--sans);outline:none}
+.palette ul{list-style:none;margin:0;padding:6px;max-height:min(420px,60vh);overflow:auto}
+.palette li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;cursor:pointer;color:var(--ink2)}
+.palette li[aria-selected="true"]{background:var(--accent-tint);color:var(--ink)}
+.palette .grp{font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:10px 12px 4px}
+.menu{position:absolute;right:0;top:calc(100% + 6px);width:340px;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);z-index:30;overflow:hidden;animation:popin .18s cubic-bezier(.2,.9,.3,1.2) both;transform-origin:top right}
+.toasts{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:max(20px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:70;width:min(380px,calc(100vw - 32px))}
+.toast{position:relative;overflow:hidden;background:var(--ink);color:var(--bg);border-radius:6px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;box-shadow:var(--shadow);animation:toastin .35s cubic-bezier(.2,.9,.3,1.2) both;font-size:13.5px}
+.toast .tbar{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);animation:shrink 4.2s linear both}
+.fly{position:fixed;z-index:80;pointer-events:none;border-radius:6px;background:var(--surface);border:1px solid var(--accent);box-shadow:var(--shadow);padding:10px 12px;font:500 13px var(--sans);color:var(--ink);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* robot */
+.botbox{position:relative;flex-shrink:0}
+.bot{position:relative;width:96px;height:104px;transform-origin:0 0}
+.bot-body{position:absolute;inset:0;animation:float 3.6s ease-in-out infinite;transform-origin:50% 80%}
+.bot-ant{position:absolute;left:46px;top:4px;width:4px;height:16px;background:#2B3140;border-radius:1px}
+.bot-ant i{position:absolute;left:-3px;top:-8px;width:10px;height:10px;border-radius:2px;background:#6B8AFD;box-shadow:0 0 0 4px rgba(107,138,253,.18)}
+.bot-head{position:absolute;left:6px;top:16px;width:84px;height:70px;border-radius:16px;background:#151922;box-shadow:inset 0 2px 0 rgba(255,255,255,.08),0 10px 22px rgba(14,17,22,.16)}
+.bot-ear{position:absolute;top:38px;width:8px;height:24px;border-radius:3px;background:#2B3140;transition:background .3s,box-shadow .3s}
+.bot-ear.l{left:1px}.bot-ear.r{right:1px}
+.bot-face{position:absolute;left:10px;right:10px;top:10px;bottom:12px;border-radius:10px;background:#0A0C11;border:1px solid rgba(107,138,253,.3);overflow:hidden}
+.bot-eyes{position:absolute;left:0;right:0;top:10px;height:18px;display:flex;justify-content:center;align-items:center;gap:16px}
+.eye{display:block;width:10px;height:14px;border-radius:3px;background:#A9B9FF;box-shadow:0 0 10px rgba(91,124,250,.8);animation:blink2 4.6s infinite;transition:height .25s}
+.bot-mouth{position:absolute;left:0;right:0;bottom:6px;height:12px;display:flex;justify-content:center;align-items:center;gap:3px}
+.bot-mouth i{display:block;width:3px;height:3px;border-radius:1px;background:#6B8AFD}
+.bot-shadow{position:absolute;left:24px;bottom:0;width:48px;height:5px;border-radius:50%;background:rgba(14,17,22,.16);animation:shadowp 3.6s ease-in-out infinite}
+.bot.talk .bot-mouth i{animation:talk .5s ease-in-out infinite}
+.bot.talk .bot-mouth i:nth-child(2){animation-delay:-.15s}.bot.talk .bot-mouth i:nth-child(3){animation-delay:-.3s}.bot.talk .bot-mouth i:nth-child(4){animation-delay:-.1s}.bot.talk .bot-mouth i:nth-child(5){animation-delay:-.22s}
+.bot.talk .bot-ant i{animation:antp 1s ease-in-out infinite}
+.bot.listen .bot-body{animation:tilt 2.4s ease-in-out infinite}
+.bot.listen .bot-ear{background:#5B7CFA;box-shadow:0 0 12px rgba(91,124,250,.65)}
+.bot.listen .eye{height:17px}
+.bot.think .bot-eyes{animation:scan 1.4s ease-in-out infinite}
+.bot.think .eye{height:6px}
+.bot.think .bot-ant i{animation:antblink .8s steps(1) infinite}
+.bot.glance .bot-eyes{animation:glance 7s ease-in-out infinite}
+.bot.shrug .bot-body{animation:shrug 1.2s ease-in-out 1,float 3.6s ease-in-out 1.2s infinite}
+.bot.shrug .eye{height:5px}
+.bot.happy .eye{width:14px;height:8px;background:transparent;border:3px solid #A9B9FF;border-bottom:0;border-radius:8px 8px 0 0;box-shadow:none;animation:none}
+.bot.happy .bot-mouth i{display:none}
+.bot.happy .bot-mouth::after{content:"";width:18px;height:7px;border:2.5px solid #6B8AFD;border-top:0;border-radius:0 0 10px 10px}
+.bot.happy .bot-body{animation:hop .9s cubic-bezier(.3,1.6,.5,1) 2,float 3.6s ease-in-out 1.8s infinite}
+.tip{position:absolute;left:0;top:calc(100% + 8px);z-index:6;width:260px;background:var(--ink);color:var(--bg);font-size:13px;line-height:18px;padding:10px 12px;border-radius:6px;animation:up .25s both}
+
+/* view transitions */
+::view-transition-old(content){animation:vtout .16s ease-in both}
+::view-transition-new(content){animation:vtin .34s cubic-bezier(.2,.8,.2,1) both}
+::view-transition-old(root),::view-transition-new(root){animation:none}
+
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes vtout{to{opacity:0;transform:translateY(-4px)}}
+@keyframes vtin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes slidein{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes popin{from{opacity:0;transform:translateX(var(--tx,0)) scale(.96)}to{opacity:1;transform:translateX(var(--tx,0)) scale(1)}}
+@keyframes toastin{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes shrink{from{width:100%}to{width:0}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fresh{0%,30%{background:var(--accent-tint)}100%{background:transparent}}
+@keyframes okflash{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 0%,transparent)}35%{box-shadow:0 0 0 5px color-mix(in srgb,var(--ok) 30%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes navpop{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes ring{from{opacity:.55;transform:scale(1)}to{opacity:0;transform:scale(1.08)}}
+@keyframes bar{0%,100%{height:5px}50%{height:20px}}
+@keyframes blink{50%{opacity:0}}
+@keyframes dotb{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+@keyframes sh{to{background-position:-200% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes shadowp{0%,100%{transform:scaleX(1);opacity:1}50%{transform:scaleX(.82);opacity:.6}}
+@keyframes blink2{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.1)}}
+@keyframes talk{0%,100%{height:3px}50%{height:10px}}
+@keyframes antp{0%,100%{box-shadow:0 0 0 3px rgba(107,138,253,.3)}50%{box-shadow:0 0 0 9px rgba(107,138,253,0)}}
+@keyframes tilt{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(-2deg) translateY(-3px)}}
+@keyframes scan{0%,100%{transform:translateX(-7px)}50%{transform:translateX(7px)}}
+@keyframes antblink{50%{background:#A9B9FF;box-shadow:none}}
+@keyframes glance{0%,55%,100%{transform:translateX(0)}62%,80%{transform:translateX(8px)}}
+@keyframes hop{0%,100%{transform:translateY(0) rotate(0)}40%{transform:translateY(-12px) rotate(4deg)}}
+@keyframes shrug{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}60%{transform:rotate(6deg)}}
+
+@media (max-width:1100px){.iv{grid-template-columns:minmax(0,1fr)}.iv .outline-panel{order:2}.iv .code{order:3}}
+@media (max-width:980px){.tk{grid-template-columns:minmax(0,1fr)}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.grid4 .stat:nth-child(2){border-right:0}.grid4 .stat:nth-child(-n+2){border-bottom:1px solid var(--line2)}}
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .side{border-right:0;border-bottom:1px solid var(--line);padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+  .brand{padding:12px 4px 6px}
+  .roles{margin:4px 0 8px}
+  .nav{flex-direction:row;overflow-x:auto;padding:0 0 8px;gap:4px}
+  .nav .ind{display:none}
+  .navbtn{width:auto;flex-shrink:0;border:1px solid var(--line);background:var(--surface)}
+  .navbtn[aria-current="page"]{border-color:var(--accent);color:var(--accent-ink)}
+  .sidefoot{display:none}
+  .search{width:auto;flex:1}.search span.hide-sm,.search kbd{display:none}
+  .crumb span.hide-sm{display:none}
+  .page{padding:16px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+  .grid2{grid-template-columns:minmax(0,1fr)}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .top{padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .sticky{padding-left:16px;padding-right:16px}
+}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after,::view-transition-old(content),::view-transition-new(content){animation:none!important;transition:none!important}}
+</style>
+<style>html,body{margin:0}</style>
+</head>
+<body>
+<div id="root" style="height:100%"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+(function(){
+'use strict';
+// The expert community site (leaderboard, quiz, bank offers). It opens in a new tab, outside this app.
+var REWARDS_URL = '../';
+
+var e = React.createElement, html = htm.bind(e);
+var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef, useReducer = React.useReducer, useLayoutEffect = React.useLayoutEffect, useMemo = React.useMemo;
+var REDUCE = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------------- icons ---------------- */
+var ICONS = {
+  home:'<path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  review:'<path d="M9 11l2.5 2.5L16 9"/><rect x="4" y="4" width="16" height="16" rx="2"/>',
+  inbox:'<path d="M4 13l2.5-8h11L20 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h4.5l1.5 2.5h4l1.5-2.5H20"/>',
+  book:'<path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/>',
+  grid:'<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/>',
+  ticket:'<path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 5v12" stroke-dasharray="2 2"/>',
+  chat:'<path d="M5 5h14v10H9l-4 4z"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+  ext:'<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  code:'<path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/>',
+  play:'<path d="M7 5l12 7-12 7z"/>',
+  pause:'<path d="M9 5v14M15 5v14"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+  flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  lock:'<rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/>',
+  send:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',
+  skip:'<path d="M5 6l7 6-7 6M13 6l7 6-7 6"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/>',
+  kbd:'<rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M7 10h.01M11 10h.01M15 10h.01M7.5 14h9"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+  moon:'<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/>',
+  calendar:'<rect x="4" y="5" width="16" height="15" rx="1.5"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+  bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
+  file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
+  swap:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>'
+};
+function Icon(p){ return html`<svg className=${'ic ' + (p.cls || '')} style=${p.size ? {width:p.size, height:p.size} : null} viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML=${{__html: ICONS[p.n]}}></svg>`; }
+function Mark(p){ var s = p.size || 22; return html`<svg width=${s} height=${s} viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="13" height="13" rx="2" fill="none" stroke="currentColor" strokeWidth="2"></rect><rect x="8.5" y="8.5" width="13" height="13" rx="2" fill="var(--accent)"></rect></svg>`; }
+
+/* ---------------- COBOL helpers ---------------- */
+var KW = /^(READ|INTO|INVALID|KEY|DISPLAY|END-READ\.?|IF|ELSE|MOVE|TO|PERFORM|END-IF|COMPUTE|EXIT\.?|ADD|CONTINUE|GO)$/;
+function tok(s){
+  if (s.trim().charAt(0) === '*') return [{t:s, c:'cm'}];
+  var out = [];
+  s.split(/('[^']*')/).forEach(function(p){
+    if (!p) return;
+    if (p.charAt(0) === "'") { out.push({t:p, c:'st'}); return; }
+    p.split(/(\s+)/).forEach(function(w){ if (!w) return; var c = ''; if (KW.test(w)) c = 'kw'; else if (/^[0-9]{4}-[A-Z0-9-]+\.?$/.test(w)) c = 'pa'; out.push({t:w, c:c}); });
+  });
+  return out;
+}
+function inHl(n, hl){ return (hl || []).some(function(r){ return n >= r[0] && n <= r[1]; }); }
+function Code(p){
+  return html`<div className="code" style=${p.style}>
+    <div className="code-h"><${Icon} n="file"/><span className="mono" style=${{color:'#E6E9EE', fontSize:12.5}}>${p.file}</span>
+      ${p.pill ? html`<span style=${{fontSize:12, fontWeight:500, color:'#B4C3FF', background:'rgba(91,124,250,.18)', borderRadius:4, padding:'2px 8px'}}>${p.pill}</span>` : null}
+      <span style=${{marginLeft:'auto'}}>COBOL · read-only</span></div>
+    <div className="code-b" style=${{flex:1}}>
+      ${p.lines.map(function(r, i){
+        if (!r) return html`<div key=${'g' + i} className="gapr" aria-hidden="true">···</div>`;
+        return html`<div key=${r[0]} className=${'cl' + (inHl(r[0], p.hl) ? ' on' : '')}><span className="ln">${r[0]}</span><span>${tok(r[1] || ' ').map(function(g, j){ return html`<span key=${j} className=${g.c}>${g.t}</span>`; })}</span></div>`;
+      })}
+    </div>
+    ${p.foot ? html`<div style=${{padding:'9px 16px', borderTop:'1px solid rgba(255,255,255,.07)', fontSize:11.5, color:'#8B93A1'}}>${p.foot}</div>` : null}
+  </div>`;
+}
+
+/* ---------------- data ---------------- */
+var C04 = {
+  rate:[[415,'1200-GET-INTEREST-RATE.'],[416,'    READ DISCGRP-FILE INTO DIS-GROUP-RECORD'],[417,'         INVALID KEY'],[418,"            DISPLAY 'DISCLOSURE GROUP RECORD MISSING'"],[419,"            DISPLAY 'TRY WITH DEFAULT GROUP CODE'"],[420,'    END-READ.'],null,[436,"    IF  DISCGRP-STATUS  = '23'"],[437,"        MOVE 'DEFAULT' TO FD-DIS-ACCT-GROUP-ID"],[438,'        PERFORM 1200-A-GET-DEFAULT-INT-RATE'],[439,'    END-IF']],
+  abend:[[443,'1200-A-GET-DEFAULT-INT-RATE.'],[444,'    READ DISCGRP-FILE INTO DIS-GROUP-RECORD'],null,[455,"        DISPLAY 'ERROR READING DEFAULT DISCLOSURE GROUP'"],[456,'        MOVE DISCGRP-STATUS  TO IO-STATUS'],[457,'        PERFORM 9910-DISPLAY-IO-STATUS'],[458,'        PERFORM 9999-ABEND-PROGRAM'],[459,'    END-IF']]
+};
+var SESSION_CODE = [[415,'1200-GET-INTEREST-RATE.'],[416,'    READ DISCGRP-FILE INTO DIS-GROUP-RECORD'],[417,'         INVALID KEY'],[418,"            DISPLAY 'DISCLOSURE GROUP RECORD MISSING'"],[419,"            DISPLAY 'TRY WITH DEFAULT GROUP CODE'"],[420,'    END-READ.'],null,[436,"    IF  DISCGRP-STATUS  = '23'"],[437,"        MOVE 'DEFAULT' TO FD-DIS-ACCT-GROUP-ID"],[438,'        PERFORM 1200-A-GET-DEFAULT-INT-RATE'],[439,'    END-IF'],null,[443,'1200-A-GET-DEFAULT-INT-RATE.'],[444,'    READ DISCGRP-FILE INTO DIS-GROUP-RECORD'],null,[455,"        DISPLAY 'ERROR READING DEFAULT DISCLOSURE GROUP'"],[456,'        MOVE DISCGRP-STATUS  TO IO-STATUS'],[457,'        PERFORM 9910-DISPLAY-IO-STATUS'],[458,'        PERFORM 9999-ABEND-PROGRAM'],[459,'    END-IF'],null,[462,'1300-COMPUTE-INTEREST.'],[463,''],[464,'    COMPUTE WS-MONTHLY-INT'],[465,'     = ( TRAN-CAT-BAL * DIS-INT-RATE) / 1200'],null,[518,'1400-COMPUTE-FEES.'],[519,'* To be implemented'],[520,'    EXIT.']];
+
+var PEOPLE = {
+  'Linda C.':{init:'LC', role:'Senior mainframe engineer · batch', retires:'Mar 2027'},
+  'Raj P.':{init:'RP', role:'CICS online systems', retires:'Dec 2026'},
+  'Marcus R.':{init:'MR', role:'Engineer · Card Platform, week 2'},
+  'Priya S.':{init:'PS', role:'Engineer · Payments'},
+  'Dev A.':{init:'DA', role:'On-call engineer'}
+};
+
+var INITIAL_ITEMS = [
+  {id:'KI-081', title:'Rejected transactions go to DALYREJS and the job ends with RC=4', body:'POSTTRAN does not stop on a bad transaction. It writes it to the daily rejects file and ends with return code 4. RC=4 is expected; check DALYREJS before you re-post anything.', program:'CBTRN02C', file:'CBTRN02C.cbl', lines:'L211–231', hl:[[214,215],[229,230]], code:[[211,'      IF WS-VALIDATION-FAIL-REASON = 0'],[212,'        PERFORM 2000-POST-TRANSACTION'],[213,'      ELSE'],[214,'        ADD 1 TO WS-REJECT-COUNT'],[215,'        PERFORM 2500-WRITE-REJECT-REC'],[216,'      END-IF'],null,[229,'    IF WS-REJECT-COUNT > 0'],[230,'       MOVE 4 TO RETURN-CODE'],[231,'    END-IF']], source:'Interview · Oct 12 · 06:40', quote:'“RC=4 scares new people. It just means something went to rejects. Read DALYREJS, fix the source, re-post those only.”', owner:'Linda C.', status:'verified', uses:18, updated:'Oct 12', tags:['CBTRN02C','POSTTRAN','RC4','rejects']},
+  {id:'KI-084', title:'Reject reason codes 100–103', body:'100 means the card number is not in the cross-reference file. 101 means the account was not found. 102 is over the credit limit. 103 means the transaction is dated after the account expired.', program:'CBTRN02C', file:'CBTRN02C.cbl', lines:'L385–418', hl:[[385,385],[397,397],[410,410],[417,417]], code:[[385,'        MOVE 100 TO WS-VALIDATION-FAIL-REASON'],[386,"        MOVE 'INVALID CARD NUMBER FOUND'"],null,[397,'        MOVE 101 TO WS-VALIDATION-FAIL-REASON'],[398,"        MOVE 'ACCOUNT RECORD NOT FOUND'"],null,[410,'          MOVE 102 TO WS-VALIDATION-FAIL-REASON'],[411,"          MOVE 'OVERLIMIT TRANSACTION'"],null,[417,'          MOVE 103 TO WS-VALIDATION-FAIL-REASON'],[418,"          MOVE 'TRANSACTION RECEIVED AFTER ACCT EXPIRATION'"]], source:'Interview · Oct 12 · 11:02', quote:'“Most rejects are 102 or 103. 100 usually means the card file load failed upstream.”', owner:'Linda C.', status:'verified', uses:23, updated:'Oct 12', tags:['CBTRN02C','103','rejects','expiration','POSTTRAN']},
+  {id:'KI-090', title:'Over-limit check uses cycle credit minus debit plus the new amount', body:'The limit check is not against the statement balance. It adds the new transaction to this cycle’s credits minus debits, then compares with the credit limit.', program:'CBTRN02C', file:'CBTRN02C.cbl', lines:'L403–410', hl:[[403,407]], code:[[403,'        COMPUTE WS-TEMP-BAL = ACCT-CURR-CYC-CREDIT'],[404,'                            - ACCT-CURR-CYC-DEBIT'],[405,'                            + DALYTRAN-AMT'],[406,''],[407,'        IF ACCT-CREDIT-LIMIT >= WS-TEMP-BAL'],[408,'          CONTINUE'],[409,'        ELSE'],[410,'          MOVE 102 TO WS-VALIDATION-FAIL-REASON']], source:'Interview · Oct 12 · 14:30', quote:'“People expect the statement balance. It is the cycle numbers, every time.”', owner:'Linda C.', status:'verified', uses:9, updated:'Oct 12', tags:['CBTRN02C','102','limit']},
+  {id:'KI-066', title:'The expiration field is spelled ACCT-EXPIRAION-DATE', body:'The account copybook misspells the field. Search for ACCT-EXPIRAION-DATE, not EXPIRATION, or you will miss every place it is used.', program:'CBTRN02C', file:'CBTRN02C.cbl', lines:'L414–417', hl:[[414,414]], code:[[414,'        IF ACCT-EXPIRAION-DATE >= DALYTRAN-ORIG-TS (1:10)'],[415,'          CONTINUE'],[416,'        ELSE'],[417,'          MOVE 103 TO WS-VALIDATION-FAIL-REASON']], source:'Interview · Oct 5 · 03:15', quote:'“Every new hire greps for EXPIRATION and finds nothing.”', owner:'Raj P.', status:'verified', uses:14, updated:'Oct 5', tags:['CBTRN02C','103','expiration','COACTUPC']},
+  {id:'KI-072', title:'Run INTCALC only after POSTTRAN finishes', body:'Interest is computed on the category balances that posting updates. If INTCALC runs first, customers are billed on yesterday’s balances.', program:'INTCALC', file:null, lines:'JCL', hl:[], code:null, source:'Interview · Oct 12 · 21:10', quote:'“Order is POSTTRAN, then INTCALC, then statements. Never shuffle it.”', owner:'Linda C.', status:'verified', uses:11, updated:'Oct 12', tags:['INTCALC','POSTTRAN','CBACT04C','order']},
+  {id:'KI-061', title:'The Group ID on the account screen decides the interest rate', body:'ACCT-GROUP-ID, edited on the account update screen, is the key INTCALC uses to find a disclosure group rate. A group with no rate row falls back to DEFAULT.', program:'COACTUPC', file:null, lines:'L432', hl:[], code:null, source:'Interview · Oct 5 · 18:44', quote:'“Ops changes a group on screen and nobody tells batch.”', owner:'Raj P.', status:'verified', uses:7, updated:'Oct 5', tags:['COACTUPC','DEFAULT','CBACT04C','group']},
+  {id:'KI-077', title:'CBSTM03A loops with GO TO, not PERFORM', body:'The statement program jumps back to 0000-START and 1000-MAINLINE with GO TO. Keep that structure when you change it, and test against a full statement run.', program:'CBSTM03A', file:null, lines:'L761–815', hl:[], code:null, source:'Interview · Oct 19 · 09:05', quote:'“Somebody always wants to clean it up. Don’t do it the week before month-end.”', owner:'Linda C.', status:'verified', uses:4, updated:'Oct 19', tags:['CBSTM03A','statements']},
+  {id:'KI-093', title:'Run CREASTMT only after posting and interest finish', body:'Statements read the balances that POSTTRAN and INTCALC update. If CREASTMT runs early, customers get statements without last night’s interest.', program:'CBSTM03A', file:null, lines:'JCL', hl:[], code:null, source:'Interview · Oct 24 · 08:12', quote:'“Statements are the last thing. Always.”', owner:'Linda C.', status:'draft', uses:0, updated:'Oct 24', tags:['CBSTM03A','statements','order','INTCALC']}
+];
+var SESSION_DRAFTS = [
+  {id:'KI-101', title:'Add a rate row before launching a new card group', body:'If a new card group goes live without a row in the disclosure group file, INTCALC quietly bills those accounts at the DEFAULT rate. Add the rate row first.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L415–439', hl:[[436,438]], code:C04.rate, source:'Interview · today · 02:14', quote:'“We never wanted billing to stop for one bad record. So if the group is missing, it falls back to DEFAULT, and nobody notices.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','INTCALC','group']},
+  {id:'KI-102', title:'Check the INTCALC output every morning', body:'Search last night’s SYSOUT for ‘DISCLOSURE GROUP RECORD MISSING’. Any hit means an account was billed at the DEFAULT rate.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L418', hl:[[418,419]], code:C04.rate.slice(0, 6), source:'Interview · today · 05:40', quote:'“Nobody gets paged. The only trace is that DISPLAY line in SYSOUT, so I check it with my coffee.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','SYSOUT','INTCALC']},
+  {id:'KI-103', title:'If the DEFAULT row is missing, INTCALC abends', body:'Restore the DEFAULT row in the disclosure group file, then rerun INTCALC. Don’t correct accounts by hand.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L443–458', hl:[[455,458]], code:C04.abend, source:'Interview · today · 11:05', quote:'“Put the DEFAULT row back first. Then rerun. Don’t touch the accounts.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','abend','INTCALC']}
+];
+var QS = [
+  {short:'Why fall back to DEFAULT', hl:[[436,438]], q:'When an account’s disclosure group is missing, this job uses the DEFAULT rate instead of stopping. Why was it built that way?', steps:[['Look up the account group’s interest rate','',''],['Found: use the group’s rate','',''],['Not found: quietly use the DEFAULT rate','warn','Silent fallback'],['DEFAULT row missing too: the job abends','risk','Job stops']], ex:'A new “Travel” card group goes live without a rate row, so its accounts are billed at the DEFAULT rate.'},
+  {short:'How anyone would notice', hl:[[418,419]], q:'How would anyone know an account was charged the DEFAULT rate?', steps:[['The job falls back to DEFAULT','',''],['It writes “DISCLOSURE GROUP RECORD MISSING” to SYSOUT','',''],['Nobody is alerted or paged','warn','No alert'],['It’s only caught if someone reads the job output','risk','Easy to miss']], ex:'Search last night’s SYSOUT for the message. Every hit is an account billed at DEFAULT.'},
+  {short:'The interest formula', hl:[[464,465]], q:'Interest is balance × rate ÷ 1200. Does that hold for every card product?', steps:[['Monthly interest = balance × rate ÷ 1200','',''],['The rate is an annual %, so ÷12 months and ÷100','',''],['Same formula for every card group','',''],['Promo rates are just a different rate row','warn','Assumption']], ex:'A $1,200 balance at 18% gives $18 of interest this month.'},
+  {short:'Fees that aren’t here', hl:[[518,519]], q:'1400-COMPUTE-FEES says “To be implemented.” How are fees charged today?', steps:[['1400-COMPUTE-FEES is empty','',''],['This job charges no fees','warn','Gap'],['Fees come from a separate process','',''],['Get a review before adding fee logic here','risk','Needs review']], ex:'Ticket CHG-118 (“add a monthly fee”) shouldn’t go into CBACT04C without review.'},
+  {short:'When DEFAULT is missing too', hl:[[455,458]], q:'If the DEFAULT row is also missing, the job abends. What should the on-call engineer do?', steps:[['The DEFAULT rate row is also missing','',''],['Job stops: ERROR READING DEFAULT DISCLOSURE GROUP','risk','Abend'],['Restore the DEFAULT row in the disclosure group file','',''],['Rerun INTCALC. Don’t touch the accounts','','']], ex:'Put the DEFAULT row back first, then rerun. Fixing accounts by hand makes it worse.'}
+];
+var TICKETS = [
+  {id:'INC-2041', title:'Customer disputes July interest on new Travel card', prio:'High', age:'2h ago', program:'CBACT04C', desc:'Cardholder on the new Travel card says July interest is higher than the rate in her agreement. Three similar calls this week.', tags:['CBACT04C','DEFAULT','INTCALC'], clip:true,
+   sugs:['Why was the Travel card billed at the DEFAULT rate?','Which accounts were charged DEFAULT last night?','How do I add a rate row?']},
+  {id:'INC-2043', title:'POSTTRAN ended with RC=4. Safe to run INTCALC?', prio:'Urgent', age:'40m ago', program:'CBTRN02C', desc:'Nightly POSTTRAN finished with return code 4 and 37 records in DALYREJS. INTCALC is held waiting for a decision.', tags:['CBTRN02C','POSTTRAN','RC4','rejects'],
+   sugs:['Is RC=4 from POSTTRAN a failure?','Can I run INTCALC now?']},
+  {id:'INC-2050', title:'Transactions rejected with reason 103 after card reissue', prio:'High', age:'5h ago', program:'CBTRN02C', desc:'12 transactions from reissued cards were rejected with reason 103 overnight.', tags:['CBTRN02C','103','expiration'],
+   sugs:['What does reason 103 mean?','Which field holds the expiration date?','Does a reissue update the expiration date?']},
+  {id:'CHG-118', title:'Add a monthly fee for premium cards', prio:'Normal', age:'yesterday', program:'CBACT04C', desc:'Product wants a $9 monthly fee on premium cards starting January.', tags:['fees'],
+   sugs:['Where are fees calculated today?']}
+];
+var ANSWERS = {
+  'Why was the Travel card billed at the DEFAULT rate?':{needs:'KI-101', text:'A new card group with no row in the disclosure group file falls back to the DEFAULT rate. The Travel group most likely went live without its rate row. Check the disclosure group file for the Travel group ID.', sources:['KI-101','KI-061']},
+  'Which accounts were charged DEFAULT last night?':{needs:'KI-102', text:'I can’t see live account data. Linda’s rule: search last night’s INTCALC SYSOUT for ‘DISCLOSURE GROUP RECORD MISSING’. Each hit is an account billed at the DEFAULT rate.', sources:['KI-102']},
+  'Is RC=4 from POSTTRAN a failure?':{needs:'KI-081', text:'No. RC=4 means some transactions were written to DALYREJS. Posting finished for everything else. Review the rejects before re-posting them.', sources:['KI-081','KI-084']},
+  'Can I run INTCALC now?':{needs:'KI-072', text:'Yes. POSTTRAN has finished, and INTCALC only has to run after it. Rejected transactions are not in the balances, so interest on those accounts will be computed without them.', sources:['KI-072','KI-081']},
+  'What does reason 103 mean?':{needs:'KI-084', text:'103 means the transaction is dated after the account’s expiration date. After a reissue, check whether the account’s expiration date was updated.', sources:['KI-084']},
+  'Which field holds the expiration date?':{needs:'KI-066', text:'ACCT-EXPIRAION-DATE, spelled without the second T. Search for that spelling to find every use.', sources:['KI-066']},
+  'How do I add a rate row?':{needs:null},
+  'Does a reissue update the expiration date?':{needs:null},
+  'Where are fees calculated today?':{needs:null},
+  'How do I add a new field to the account screen?':{needs:null}
+};
+var KEYWORDS = [[/default|travel|rate row|group/i,'Why was the Travel card billed at the DEFAULT rate?'],[/sysout|which accounts/i,'Which accounts were charged DEFAULT last night?'],[/rc ?= ?4|return code/i,'Is RC=4 from POSTTRAN a failure?'],[/intcalc|order/i,'Can I run INTCALC now?'],[/103|reason/i,'What does reason 103 mean?'],[/expir/i,'Which field holds the expiration date?']];
+var INITIAL_QUESTIONS = [
+  {id:'Q-27', from:'Dev A.', ticket:'INC-2043', program:'CBTRN02C', text:'Is it safe to re-post DALYREJS records the same night, or should they wait for the next cycle?', status:'open', at:'1h ago'},
+  {id:'Q-24', from:'Priya S.', ticket:'INC-2050', program:'CBTRN02C', text:'Does reissuing a card update ACCT-EXPIRAION-DATE, or only the card file?', status:'open', at:'Yesterday'}
+];
+var PROGRAMS = [
+  {id:'CBACT04C', name:'Interest calculation', owner:'Linda C.', target:8, retireMo:5},
+  {id:'CBTRN02C', name:'Daily transaction posting', owner:'Linda C.', target:8, retireMo:5},
+  {id:'INTCALC', name:'Interest job (JCL)', owner:'Linda C.', target:3, retireMo:5},
+  {id:'CBSTM03A', name:'Statement generation', owner:'Linda C.', target:6, retireMo:5},
+  {id:'COACTUPC', name:'Account update screen (CICS)', owner:'Raj P.', target:10, retireMo:2},
+  {id:'COCRDUPC', name:'Card update screen (CICS)', owner:'Raj P.', target:6, retireMo:2},
+  {id:'CBTRN03C', name:'Transaction report', owner:'Raj P.', target:4, retireMo:2},
+  {id:'POSTTRAN', name:'Posting job (JCL)', owner:'Linda C.', target:3, retireMo:5}
+];
+
+/* ---------------- store ---------------- */
+function itemById(s, id){ return s.items.find(function(i){ return i.id === id; }); }
+function verified(s){ return s.items.filter(function(i){ return i.status === 'verified'; }); }
+function matchesFor(s, t){ return verified(s).filter(function(i){ return i.tags.some(function(g){ return t.tags.indexOf(g) >= 0; }); }); }
+function resolve(s, text, owner){
+  var key = ANSWERS[text] ? text : null;
+  if (!key) for (var k = 0; k < KEYWORDS.length; k++) if (KEYWORDS[k][0].test(text)) { key = KEYWORDS[k][1]; break; }
+  var a = key && ANSWERS[key];
+  var ok = function(x){ return x && x.status === 'verified' && (!owner || x.owner === owner); };
+  if (a && a.needs) { var it = itemById(s, a.needs); if (ok(it)) return {known:true, text:a.text, sources:a.sources.filter(function(id){ return ok(itemById(s, id)); })}; }
+  var who = (owner || 'Linda C.').split(' ')[0];
+  return {known:false, text:who + ' hasn’t verified an answer to this yet, so I won’t guess. You can send the question to ' + who + '.', sources:[]};
+}
+var nid = 100;
+function uid(p){ nid += 1; return p + nid; }
+var initState = {
+  role:'expert', route:'home', items:INITIAL_ITEMS, questions:INITIAL_QUESTIONS,
+  session:{q:0, phase:'idle', st:['todo','todo','todo','todo','todo']},
+  threads:{}, notes:[
+    {id:'n1', role:'expert', text:'Dev A. asked about re-posting DALYREJS records.', route:'inbox', read:false, at:'1h ago'},
+    {id:'n2', role:'expert', text:'1 draft from Oct 24 is waiting for your review.', route:'review', read:false, at:'Oct 24'},
+    {id:'n3', role:'engineer', text:'3 tickets match verified knowledge from Linda C.', route:'tickets', read:false, at:'Today'}
+  ],
+  toasts:[], drawer:null, palette:false, ticket:'INC-2041', fresh:[], libFilter:{q:'', program:'all'}, pop:null, askTwin:'Linda C.'
+};
+function reducer(s, a){
+  switch (a.type) {
+    case 'role': return Object.assign({}, s, {role:a.role, route:a.role === 'expert' ? 'home' : 'tickets', drawer:null});
+    case 'route': return Object.assign({}, s, {route:a.route, drawer:null, palette:false});
+    case 'patch': return Object.assign({}, s, a.patch);
+    case 'session': return Object.assign({}, s, {session:Object.assign({}, s.session, a.patch)});
+    case 'sessionDone':
+      if (s.items.some(function(i){ return i.id === 'KI-101'; })) return Object.assign({}, s, {session:Object.assign({}, s.session, {phase:'done'})});
+      return Object.assign({}, s, {session:Object.assign({}, s.session, {phase:'done'}), items:s.items.concat(SESSION_DRAFTS.map(function(d){ return Object.assign({}, d); })),
+        notes:[{id:uid('n'), role:'expert', text:'3 drafts from today’s CBACT04C session are ready to review.', route:'review', read:false, at:'Just now'}].concat(s.notes)});
+    case 'item': return Object.assign({}, s, {items:s.items.map(function(i){ return i.id === a.id ? Object.assign({}, i, a.patch) : i; })});
+    case 'publish':
+      var ids = a.ids;
+      return Object.assign({}, s, {items:s.items.map(function(i){ return ids.indexOf(i.id) >= 0 ? Object.assign({}, i, {status:'verified', updated:'Just now'}) : i; }), fresh:ids, pop:'library',
+        notes:[{id:uid('n'), role:'engineer', text:'Linda C. published ' + ids.length + ' new knowledge item' + (ids.length > 1 ? 's' : '') + '.', route:'tickets', read:false, at:'Just now'}].concat(s.notes)});
+    case 'toast': return Object.assign({}, s, {toasts:s.toasts.concat([{id:uid('t'), text:a.text, kind:a.kind || 'ok'}])});
+    case 'untoast': return Object.assign({}, s, {toasts:s.toasts.filter(function(t){ return t.id !== a.id; })});
+    case 'ask':
+      var th = (s.threads[a.key] || []).concat([{id:a.id, q:a.q, status:'thinking', ticket:a.ticket, owner:a.owner}]);
+      var t1 = Object.assign({}, s.threads); t1[a.key] = th;
+      return Object.assign({}, s, {threads:t1});
+    case 'answer':
+      var t2 = Object.assign({}, s.threads);
+      t2[a.key] = (s.threads[a.key] || []).map(function(m){ return m.id === a.id ? Object.assign({}, m, resolve(s, m.q, m.owner), {status:'done'}) : m; });
+      return Object.assign({}, s, {threads:t2});
+    case 'markSent':
+      var t3 = Object.assign({}, s.threads);
+      t3[a.key] = (s.threads[a.key] || []).map(function(m){ return m.id === a.id ? Object.assign({}, m, {sent:true}) : m; });
+      var tk = TICKETS.find(function(t){ return t.id === a.ticket; });
+      if (a.twin && a.twin !== 'Linda C.') return Object.assign({}, s, {threads:t3});
+      return Object.assign({}, s, {threads:t3, questions:[{id:uid('Q-'), from:'Marcus R.', ticket:a.ticket || '—', program:tk ? tk.program : 'CBACT04C', text:a.q, status:'open', at:'Just now', isNew:true}].concat(s.questions),
+        notes:[{id:uid('n'), role:'expert', text:'Marcus R. asked: “' + a.q + '”', route:'inbox', read:false, at:'Just now'}].concat(s.notes)});
+    case 'qstatus': return Object.assign({}, s, {questions:s.questions.map(function(q){ return q.id === a.id ? Object.assign({}, q, {status:a.status}) : q; })});
+    case 'answerQ':
+      var q = s.questions.find(function(x){ return x.id === a.id; });
+      var tkt = TICKETS.find(function(t){ return t.id === q.ticket; });
+      var newItem = {id:uid('KI-'), title:a.title, body:a.body, program:q.program, file:null, lines:'—', hl:[], code:null, source:'Written answer · just now', quote:'Answer to “' + q.text + '”', owner:'Linda C.', status:'verified', uses:0, updated:'Just now', tags:(tkt ? tkt.tags : [q.program]).concat(['answered'])};
+      return Object.assign({}, s, {items:s.items.concat([newItem]), fresh:[newItem.id], pop:'library', questions:s.questions.map(function(x){ return x.id === a.id ? Object.assign({}, x, {status:'answered'}) : x; }),
+        notes:[{id:uid('n'), role:'engineer', text:'Linda C. answered: “' + q.text + '”', route:'tickets', read:false, at:'Just now'}].concat(s.notes)});
+    case 'readNotes': return Object.assign({}, s, {notes:s.notes.map(function(n){ return n.role === s.role ? Object.assign({}, n, {read:true}) : n; })});
+    default: return s;
+  }
+}
+var Store = React.createContext(null);
+function useStore(){ return React.useContext(Store); }
+
+/* ---------------- motion helpers ---------------- */
+function transition(fn){
+  if (document.startViewTransition && !REDUCE) { document.startViewTransition(function(){ ReactDOM.flushSync(fn); }); }
+  else fn();
+}
+function useCount(target, dur){
+  var st = useState(REDUCE ? target : 0), v = st[0], set = st[1], from = useRef(REDUCE ? target : 0);
+  useEffect(function(){
+    if (REDUCE) { set(target); return; }
+    var t0 = null, a = from.current, raf;
+    function step(t){ if (t0 === null) t0 = t; var p = Math.min(1, (t - t0) / (dur || 900)); var e2 = 1 - Math.pow(1 - p, 3); var x = a + (target - a) * e2; from.current = x; set(x); if (p < 1) raf = requestAnimationFrame(step); }
+    raf = requestAnimationFrame(step);
+    return function(){ cancelAnimationFrame(raf); };
+  }, [target]);
+  return Math.round(v);
+}
+var streamed = {};
+function Stream(p){
+  var words = useMemo(function(){ return p.text.split(' '); }, [p.text]);
+  var st = useState(streamed[p.id] || REDUCE ? words.length : 0), n = st[0], set = st[1];
+  useEffect(function(){
+    if (n >= words.length) { streamed[p.id] = true; if (p.onDone) p.onDone(); return; }
+    var t = setTimeout(function(){ set(n + 1); }, 32);
+    return function(){ clearTimeout(t); };
+  }, [n, words.length]);
+  return html`<span>${words.slice(0, n).join(' ')}${n < words.length ? html`<span className="caret"></span>` : null}</span>`;
+}
+function Bot(p){
+  var scale = p.scale || 1;
+  return html`<div className="botbox" style=${{width:96 * scale, height:104 * scale}} aria-hidden="true">
+    <div className=${'bot ' + (p.mood || '')} style=${{transform:'scale(' + scale + ')'}}>
+      <div className="bot-body"><div className="bot-ant"><i></i></div><div className="bot-ear l"></div><div className="bot-ear r"></div>
+        <div className="bot-head"><div className="bot-face"><div className="bot-eyes"><span className="eye"></span><span className="eye"></span></div><div className="bot-mouth"><i></i><i></i><i></i><i></i><i></i></div></div></div></div>
+      <div className="bot-shadow"></div>
+    </div></div>`;
+}
+function statusTag(st){
+  var m = {verified:['t-ok','Verified'], draft:['t-warn','AI draft'], ready:['t-ok','Ready to publish'], edited:['t-ok','Edited · ready'], flagged:['t-risk','Flagged']}[st] || ['t-plain', st];
+  return html`<span className=${'tag ' + m[0]}>${st === 'verified' || st === 'ready' || st === 'edited' ? html`<${Icon} n="check" size=${12}/>` : null}${m[1]}</span>`;
+}
+
+/* ---------------- shell ---------------- */
+var NAV = {
+  expert:[{id:'home', label:'Home', icon:'home'},{id:'session', label:'Interview', icon:'mic'},{id:'review', label:'Review', icon:'review'},{id:'inbox', label:'Questions', icon:'inbox'},{id:'library', label:'Library', icon:'book'},{id:'coverage', label:'Coverage', icon:'grid'}],
+  engineer:[{id:'tickets', label:'My tickets', icon:'ticket'},{id:'ask', label:'Ask a twin', icon:'chat'},{id:'library', label:'Library', icon:'book'},{id:'coverage', label:'Coverage', icon:'grid'}]
+};
+var TITLES = {home:'Home', session:'Interview', review:'Review & publish', inbox:'Questions from engineers', library:'Knowledge library', coverage:'Knowledge coverage', tickets:'My tickets', ask:'Ask a twin'};
+
+function Sidebar(){
+  var ctx = useStore(), s = ctx.s, go = ctx.go;
+  var navRef = useRef(null), ind = useRef(null);
+  var badges = {
+    review:s.items.filter(function(i){ return i.status === 'draft' || i.status === 'ready' || i.status === 'edited'; }).length,
+    inbox:s.questions.filter(function(q){ return q.status === 'open'; }).length,
+    tickets:TICKETS.filter(function(t){ return matchesFor(s, t).length > 0; }).length
+  };
+  useLayoutEffect(function(){
+    var el = navRef.current && navRef.current.querySelector('[data-route="' + s.route + '"]');
+    if (el && ind.current) { ind.current.style.transform = 'translateY(' + el.offsetTop + 'px)'; ind.current.style.height = el.offsetHeight + 'px'; ind.current.style.opacity = 1; }
+    else if (ind.current) ind.current.style.opacity = 0;
+  }, [s.route, s.role]);
+  useEffect(function(){ if (s.pop) { var t = setTimeout(function(){ ctx.dispatch({type:'patch', patch:{pop:null}}); }, 900); return function(){ clearTimeout(t); }; } }, [s.pop]);
+  var me = s.role === 'expert' ? 'Linda C.' : 'Marcus R.';
+  return html`<aside className="side">
+    <div className="brand"><${Mark}/>HyperSquare<span className="mono muted" style=${{fontSize:11, fontWeight:500, marginLeft:'auto', border:'1px solid var(--line)', borderRadius:4, padding:'1px 6px'}}>v1.0</span></div>
+    <div className="roles" role="group" aria-label="View as">
+      <span className="thumb" style=${{transform:s.role === 'engineer' ? 'translateX(100%)' : 'none'}}></span>
+      <button aria-pressed=${s.role === 'expert'} onClick=${function(){ transition(function(){ ctx.dispatch({type:'role', role:'expert'}); }); }}>Linda<small>Expert</small></button>
+      <button aria-pressed=${s.role === 'engineer'} onClick=${function(){ transition(function(){ ctx.dispatch({type:'role', role:'engineer'}); }); }}>Marcus<small>Engineer</small></button>
+    </div>
+    <nav className="nav" ref=${navRef} aria-label="Main">
+      <span className="ind" ref=${ind}></span>
+      ${NAV[s.role].map(function(n){
+        var b = badges[n.id];
+        return html`<button key=${n.id} data-route=${n.id} className=${'navbtn' + (s.pop === n.id ? ' pop' : '')} aria-current=${s.route === n.id ? 'page' : null} onClick=${function(){ go(n.id); }}>
+          <${Icon} n=${n.icon}/>${n.label}${b ? html`<span className="badge">${b}</span>` : null}</button>`;
+      })}
+    </nav>
+    <div className="sidefoot">
+      ${s.role === 'expert' ? html`<div style=${{display:'flex', flexDirection:'column', gap:6}}>
+        <span className="label">Partner program</span>
+        <a className="partner" href=${REWARDS_URL} target="_blank" rel="noopener noreferrer">
+          <${Icon} n="bolt" cls="muted"/><span style=${{display:'flex', flexDirection:'column', lineHeight:1.3}}><span style=${{fontWeight:500}}>Expert community</span><span className="muted" style=${{fontSize:12}}>Separate site · leaderboard, bank offers</span></span><${Icon} n="ext" cls="muted" size=${14}/></a></div>` : null}
+      <div className="me"><span className="av">${PEOPLE[me].init}</span><span style=${{display:'flex', flexDirection:'column', lineHeight:1.3, minWidth:0}}><span style=${{fontWeight:500}}>${me}</span><span className="muted" style=${{fontSize:12}}>${PEOPLE[me].role}</span></span></div>
+    </div>
+  </aside>`;
+}
+
+function Topbar(){
+  var ctx = useStore(), s = ctx.s;
+  var o = useState(false), open = o[0], setOpen = o[1], ref = useRef(null);
+  var mine = s.notes.filter(function(n){ return n.role === s.role; }), unread = mine.filter(function(n){ return !n.read; }).length;
+  var th = useState(function(){ try { return localStorage.getItem('hs-theme'); } catch (err) { return null; } }), theme = th[0], setTheme = th[1];
+  useEffect(function(){ if (theme) document.documentElement.setAttribute('data-theme', theme); }, [theme]);
+  useEffect(function(){
+    if (!open) return;
+    function off(ev){ if (ref.current && !ref.current.contains(ev.target)) setOpen(false); }
+    document.addEventListener('mousedown', off); return function(){ document.removeEventListener('mousedown', off); };
+  }, [open]);
+  function toggleTheme(){
+    var cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    transition(function(){ document.documentElement.setAttribute('data-theme', next); setTheme(next); });
+    try { localStorage.setItem('hs-theme', next); } catch (err) {}
+  }
+  var isDark = (theme || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+  return html`<header className="top">
+    <div className="crumb"><span className="hide-sm">${s.role === 'expert' ? 'Expert' : 'Engineer'}</span><span className="hide-sm">/</span><strong>${TITLES[s.route]}</strong></div>
+    <button className="search" onClick=${function(){ ctx.dispatch({type:'patch', patch:{palette:true}}); }} aria-label="Search and run commands"><${Icon} n="search"/><span className="hide-sm">Search knowledge, tickets, actions</span><kbd>⌘K</kbd></button>
+    <button className="iconbtn" onClick=${toggleTheme} aria-label=${isDark ? 'Switch to light theme' : 'Switch to dark theme'}><${Icon} n=${isDark ? 'sun' : 'moon'}/></button>
+    <div style=${{position:'relative'}} ref=${ref}>
+      <button className="iconbtn" aria-label=${'Notifications, ' + unread + ' unread'} aria-expanded=${open} onClick=${function(){ setOpen(!open); if (!open) setTimeout(function(){ ctx.dispatch({type:'readNotes'}); }, 1200); }}><${Icon} n="bell"/>${unread ? html`<span className="dot"></span>` : null}</button>
+      ${open ? html`<div className="menu" role="dialog" aria-label="Notifications">
+        <div className="sec-h"><h2>Notifications</h2><span className="muted" style=${{fontSize:12}}>${unread} unread</span></div>
+        ${mine.length ? mine.slice(0, 6).map(function(n){ return html`<button key=${n.id} className="row click" onClick=${function(){ setOpen(false); ctx.go(n.route); }}>
+            <span style=${{width:7, height:7, borderRadius:1, background:n.read ? 'transparent' : 'var(--accent)', flexShrink:0}}></span>
+            <span style=${{flex:1, fontSize:13}}>${n.text}</span><span className="muted" style=${{fontSize:12, whiteSpace:'nowrap'}}>${n.at}</span></button>`; }) : html`<div className="empty">No notifications yet.</div>`}
+      </div>` : null}
+    </div>
+  </header>`;
+}
+
+/* ---------------- command palette ---------------- */
+function Palette(){
+  var ctx = useStore(), s = ctx.s;
+  var q = useState(''), text = q[0], setText = q[1], sel = useState(0), idx = sel[0], setIdx = sel[1], inp = useRef(null);
+  useEffect(function(){ if (inp.current) inp.current.focus(); }, []);
+  var actions = [];
+  NAV[s.role].forEach(function(n){ actions.push({grp:'Go to', label:TITLES[n.id], icon:n.icon, run:function(){ ctx.go(n.id); }}); });
+  if (s.role === 'expert') actions.push({grp:'Actions', label:s.session.phase === 'done' ? 'Open today’s interview summary' : 'Start today’s interview', icon:'mic', run:function(){ ctx.go('session'); }});
+  actions.push({grp:'Actions', label:s.role === 'expert' ? 'Switch to Marcus (engineer view)' : 'Switch to Linda (expert view)', icon:'swap', run:function(){ ctx.dispatch({type:'patch', patch:{palette:false}}); transition(function(){ ctx.dispatch({type:'role', role:s.role === 'expert' ? 'engineer' : 'expert'}); }); }});
+  verified(s).forEach(function(i){ actions.push({grp:'Knowledge', label:i.title, sub:i.id + ' · ' + i.program, icon:'book', run:function(){ ctx.dispatch({type:'patch', patch:{palette:false, drawer:i.id}}); }}); });
+  if (s.role === 'engineer') TICKETS.forEach(function(t){ actions.push({grp:'Tickets', label:t.title, sub:t.id, icon:'ticket', run:function(){ ctx.dispatch({type:'patch', patch:{ticket:t.id}}); ctx.go('tickets'); }}); });
+  var words = text.toLowerCase().split(/\s+/).filter(Boolean);
+  var list = actions.filter(function(a){ var hay = (a.label + ' ' + (a.sub || '') + ' ' + a.grp).toLowerCase(); return words.every(function(w){ return hay.indexOf(w) >= 0; }); }).slice(0, 14);
+  useEffect(function(){ setIdx(0); }, [text]);
+  function key(ev){
+    if (ev.key === 'ArrowDown') { ev.preventDefault(); setIdx(Math.min(list.length - 1, idx + 1)); }
+    else if (ev.key === 'ArrowUp') { ev.preventDefault(); setIdx(Math.max(0, idx - 1)); }
+    else if (ev.key === 'Enter' && list[idx]) { ev.preventDefault(); list[idx].run(); ctx.dispatch({type:'patch', patch:{palette:false}}); }
+  }
+  var lastGrp = null;
+  return html`<div>
+    <div className="scrim" style=${{zIndex:59}} onClick=${function(){ ctx.dispatch({type:'patch', patch:{palette:false}}); }}></div>
+    <div className="palette" role="dialog" aria-label="Command palette" style=${{'--tx':'-50%', transform:'translateX(-50%)'}}>
+      <label htmlFor="pal" className="sr">Search</label>
+      <input id="pal" ref=${inp} value=${text} onInput=${function(ev){ setText(ev.target.value); }} onKeyDown=${key} placeholder="Search knowledge, tickets, pages…" autoComplete="off" role="combobox" aria-expanded="true" aria-controls="pal-list"/>
+      <ul id="pal-list" role="listbox">
+        ${list.length ? list.map(function(a, i){
+          var head = a.grp !== lastGrp ? html`<div className="grp" key=${'h' + i}>${a.grp}</div>` : null; lastGrp = a.grp;
+          return html`<${React.Fragment} key=${i}>${head}<li role="option" aria-selected=${i === idx} onMouseEnter=${function(){ setIdx(i); }} onClick=${function(){ a.run(); ctx.dispatch({type:'patch', patch:{palette:false}}); }}>
+            <${Icon} n=${a.icon}/><span style=${{flex:1, minWidth:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>${a.label}</span>${a.sub ? html`<span className="mono muted" style=${{fontSize:11.5}}>${a.sub}</span>` : null}</li><//>`;
+        }) : html`<div className="empty">Nothing matches “${text}”.</div>`}
+      </ul>
+      <div style=${{display:'flex', gap:14, padding:'8px 14px', borderTop:'1px solid var(--line)', fontSize:12, color:'var(--ink3)'}}><span>↑↓ to move</span><span>Enter to open</span><span>Esc to close</span></div>
+    </div></div>`;
+}
+
+/* ---------------- drawer ---------------- */
+function Drawer(){
+  var ctx = useStore(), s = ctx.s, it = itemById(s, s.drawer);
+  if (!it) return null;
+  var used = TICKETS.filter(function(t){ return it.status === 'verified' && it.tags.some(function(g){ return t.tags.indexOf(g) >= 0; }); });
+  function close(){ ctx.dispatch({type:'patch', patch:{drawer:null}}); }
+  return html`<div>
+    <div className="scrim" onClick=${close}></div>
+    <aside className="drawer" role="dialog" aria-label=${it.title}>
+      <div className="drawer-h"><span className="mono muted" style=${{fontSize:12}}>${it.id}</span>${statusTag(it.status)}<button className="iconbtn" style=${{marginLeft:'auto'}} onClick=${close} aria-label="Close"><${Icon} n="x"/></button></div>
+      <div className="drawer-b">
+        <div style=${{display:'flex', flexDirection:'column', gap:8}}><h2 style=${{fontSize:20, lineHeight:'28px', fontWeight:600}}>${it.title}</h2><p style=${{fontSize:15, color:'var(--ink2)'}}>${it.body}</p></div>
+        <dl className="dl">
+          <dt>Program</dt><dd className="mono">${it.program}</dd>
+          <dt>Code reference</dt><dd className="mono">${it.file ? it.file + ' ' + it.lines : it.lines}</dd>
+          <dt>Source</dt><dd>${it.source}</dd>
+          <dt>Verified by</dt><dd>${it.status === 'verified' ? it.owner : 'Not yet verified'}</dd>
+          <dt>Last updated</dt><dd>${it.updated}</dd>
+          <dt>Used in answers</dt><dd className="num">${it.uses} times</dd>
+        </dl>
+        <div style=${{borderLeft:'2px solid var(--line)', paddingLeft:14, color:'var(--ink2)', fontStyle:'italic'}}>${it.quote}<div className="muted" style=${{fontStyle:'normal', fontSize:12, marginTop:4}}>${it.owner}, ${it.source}</div></div>
+        ${it.code ? html`<${Code} file=${it.file} lines=${it.code} hl=${it.hl}/>` : null}
+        ${used.length ? html`<div style=${{display:'flex', flexDirection:'column', gap:8}}><span className="label">Matches open tickets</span>${used.map(function(t){ return html`<div key=${t.id} className="row panel" style=${{borderRadius:6}}><span className="mono muted" style=${{fontSize:12}}>${t.id}</span><span style=${{flex:1}}>${t.title}</span></div>`; })}</div>` : null}
+      </div>
+      <div style=${{padding:'12px 20px', borderTop:'1px solid var(--line)', display:'flex', gap:8, justifyContent:'flex-end'}}>
+        ${s.role === 'engineer' ? html`<button className="btn btn-primary" onClick=${function(){ ctx.dispatch({type:'patch', patch:{drawer:null}}); ctx.go('ask'); }}>Ask ${it.owner.split(' ')[0]}’s twin about this</button>` : html`<button className="btn btn-secondary" onClick=${function(){ ctx.dispatch({type:'item', id:it.id, patch:{status:'draft'}}); ctx.dispatch({type:'patch', patch:{drawer:null}}); ctx.dispatch({type:'toast', text:'Moved back to review. Engineers won’t see it until you republish.'}); }}>Unpublish and revise</button>`}
+        <button className="btn btn-ghost" onClick=${close}>Close</button>
+      </div>
+    </aside></div>`;
+}
+
+/* ---------------- toasts ---------------- */
+function Toasts(){
+  var ctx = useStore(), s = ctx.s, seen = useRef({});
+  useEffect(function(){
+    s.toasts.forEach(function(t){ if (!seen.current[t.id]) { seen.current[t.id] = true; setTimeout(function(){ ctx.dispatch({type:'untoast', id:t.id}); }, 4200); } });
+  }, [s.toasts]);
+  return html`<div className="toasts" role="status" aria-live="polite">${s.toasts.map(function(t){ return html`<div key=${t.id} className="toast"><${Icon} n="check"/><span style=${{flex:1}}>${t.text}</span><span className="tbar"></span></div>`; })}</div>`;
+}
+
+/* ---------------- pages: expert ---------------- */
+function Home(){
+  var ctx = useStore(), s = ctx.s, go = ctx.go;
+  var drafts = s.items.filter(function(i){ return i.status === 'draft' || i.status === 'ready' || i.status === 'edited'; });
+  var openQ = s.questions.filter(function(q){ return q.status === 'open'; });
+  var sched = s.questions.filter(function(q){ return q.status === 'scheduled'; });
+  var mine = s.items.filter(function(i){ return i.owner === 'Linda C.' && i.status === 'verified'; });
+  var uses = useCount(mine.reduce(function(a, i){ return a + i.uses; }, 0) + 0);
+  var items = useCount(mine.length);
+  var hours = useCount(Math.round(mine.reduce(function(a, i){ return a + i.uses; }, 0) * 0.7));
+  var covered = PROGRAMS.filter(function(p){ return s.items.some(function(i){ return i.status === 'verified' && i.program === p.id; }); }).length;
+  var cov = useCount(covered);
+  var ph = s.session.phase, done = s.session.st.filter(function(x){ return x !== 'todo'; }).length;
+  return html`<div className="page enter">
+    <div className="page-head"><div><h1>Good morning, Linda</h1><p>Monday, October 26 · Today’s focus is the nightly interest job.</p></div></div>
+    <section className="panel hero">
+      <div style=${{display:'flex', flexDirection:'column', gap:10, minWidth:0}}>
+        <span className="label" style=${{color:'var(--accent-ink)'}}>${ph === 'done' ? 'Completed today' : ph === 'idle' ? 'Today’s interview' : 'In progress · question ' + (s.session.q + 1) + ' of 5'}</span>
+        <h2 style=${{fontSize:20, fontWeight:600}}>CBACT04C · Nightly interest calculation</h2>
+        <div className="meta"><span style=${{display:'inline-flex', gap:6, alignItems:'center'}}><${Icon} n="help"/>5 questions</span><span style=${{display:'inline-flex', gap:6, alignItems:'center'}}><${Icon} n="clock"/>About 15 minutes</span><span style=${{display:'inline-flex', gap:6, alignItems:'center'}}><${Icon} n="ticket"/>Linked to 2 open tickets</span></div>
+        <div className="segs" style=${{maxWidth:360, marginTop:4}}>${s.session.st.map(function(x, i){ return html`<i key=${i} className=${x === 'todo' ? (i === s.session.q && ph !== 'idle' && ph !== 'done' ? 'cur' : '') : x}></i>`; })}</div>
+      </div>
+      <div style=${{display:'flex', alignItems:'center', gap:16}}>
+        <${Bot} scale=${0.72} mood=${ph === 'done' ? 'happy' : 'glance'}/>
+        <button className="btn btn-primary btn-lg" onClick=${function(){ if (ph === 'idle') ctx.dispatch({type:'session', patch:{phase:'ask'}}); go('session'); }}>${ph === 'idle' ? 'Start interview' : ph === 'done' ? 'View summary' : 'Resume'}<${Icon} n="arrow"/></button>
+      </div>
+    </section>
+    <section className="panel"><div className="grid4">
+      <div className="stat"><span className="label">Answers reused</span><b>${uses}</b><span className="muted" style=${{fontSize:12}}>by engineers, all time</span></div>
+      <div className="stat"><span className="label">Hours saved</span><b>${hours}</b><span className="muted" style=${{fontSize:12}}>estimated, 40 min per reuse</span></div>
+      <div className="stat"><span className="label">Your verified items</span><b>${items}</b><span className="muted" style=${{fontSize:12}}>across ${new Set(mine.map(function(i){ return i.program; })).size} programs</span></div>
+      <div className="stat"><span className="label">Programs covered</span><b>${cov} / ${PROGRAMS.length}</b><span className="muted" style=${{fontSize:12}}>with at least one item</span></div>
+    </div></section>
+    <div className="grid2">
+      <section className="panel sec">
+        <div className="sec-h"><h2>Waiting for your review</h2><button className="btn btn-ghost" onClick=${function(){ go('review'); }}>Open review<${Icon} n="arrow"/></button></div>
+        ${drafts.length ? drafts.slice(0, 4).map(function(i){ return html`<button key=${i.id} className="row click" onClick=${function(){ go('review'); }}><span className="mono muted" style=${{fontSize:12, width:56}}>${i.id}</span><span style=${{flex:1, minWidth:0}}>${i.title}</span>${statusTag(i.status)}</button>`; })
+          : html`<div className="empty"><${Icon} n="check" size=${20}/>Nothing to review. New drafts appear here after each interview.</div>`}
+      </section>
+      <section className="panel sec">
+        <div className="sec-h"><h2>Questions from engineers</h2><button className="btn btn-ghost" onClick=${function(){ go('inbox'); }}>Open inbox<${Icon} n="arrow"/></button></div>
+        ${openQ.length ? openQ.slice(0, 4).map(function(q){ return html`<button key=${q.id} className="row click" onClick=${function(){ go('inbox'); }}><span className="av" style=${{width:26, height:26, fontSize:11}}>${PEOPLE[q.from].init}</span><span style=${{flex:1, minWidth:0}}><span style=${{display:'block'}}>${q.text}</span><span className="muted" style=${{fontSize:12}}>${q.from} · ${q.ticket} · ${q.at}</span></span></button>`; })
+          : html`<div className="empty">No open questions.</div>`}
+        ${sched.length ? html`<div className="row" style=${{background:'var(--surface2)'}}><${Icon} n="calendar" cls="muted"/><span style=${{fontSize:13}}>${sched.length} question${sched.length > 1 ? 's' : ''} added to your next interview (Thu, Oct 29)</span></div>` : null}
+      </section>
+    </div>
+  </div>`;
+}
+
+function Orb(p){
+  return html`<div className=${'orbwrap ' + (p.mood || '')} aria-hidden="true"><span className="ring r1"></span><span className="ring r2"></span><div className="orb"><span className="oeye"></span><span className="oeye"></span></div></div>`;
+}
+function Interview(){
+  var ctx = useStore(), s = ctx.s, S = s.session, Q = QS[S.q], ph = S.phase;
+  var ty = useState(0), typed = ty[0], setTyped = ty[1];
+  var th = useState(false), thinking = th[0], setThinking = th[1];
+  var rs = useState(0), recStart = rs[0], setRecStart = rs[1];
+  var cm = useState(false), clickMode = cm[0], setClickMode = cm[1];
+  var sc = useState(0), sec = sc[0], setSec = sc[1];
+  var tx = useState(''), typeText = tx[0], setTypeText = tx[1];
+  var fx = useState(''), fixText = fx[0], setFixText = fx[1];
+  var flyRef = useRef(null);
+  function patch(p){ ctx.dispatch({type:'session', patch:p}); }
+  useEffect(function(){ if (ph === 'idle') patch({phase:'ask'}); }, []);
+  useEffect(function(){ setTyped(ph === 'ask' ? 0 : Q.q.length); }, [S.q]);
+  useEffect(function(){
+    if (ph !== 'ask' || typed >= Q.q.length) return;
+    var t = setTimeout(function(){ setTyped(Math.min(Q.q.length, typed + 2)); }, REDUCE ? 0 : 22);
+    return function(){ clearTimeout(t); };
+  }, [typed, ph, S.q]);
+  useEffect(function(){ if (ph !== 'rec') return; var t = setInterval(function(){ setSec(Math.floor((Date.now() - recStart) / 1000)); }, 250); return function(){ clearInterval(t); }; }, [ph, recStart]);
+  function startRec(click){ setTyped(Q.q.length); setRecStart(Date.now()); setSec(0); setClickMode(click); patch({phase:'rec'}); }
+  function stopRec(){ setClickMode(false); setThinking(true); patch({phase:'reflect'}); setTimeout(function(){ setThinking(false); }, REDUCE ? 0 : 1500); }
+  function advance(status){
+    var st = S.st.slice(); st[S.q] = status;
+    if (S.q === 4) { ctx.dispatch({type:'session', patch:{st:st}}); ctx.dispatch({type:'sessionDone'}); ctx.dispatch({type:'toast', text:'Interview complete. 3 drafts are ready for review.'}); }
+    else { setTyped(0); setTypeText(''); setFixText(''); ctx.dispatch({type:'session', patch:{st:st, q:S.q + 1, phase:'ask'}}); }
+  }
+  function fly(status){
+    var card = flyRef.current, seg = document.querySelector('[data-seg="' + S.q + '"]');
+    if (card && seg && card.animate && !REDUCE) {
+      var a = card.getBoundingClientRect(), b = seg.getBoundingClientRect();
+      card.animate([{transform:'none', opacity:1}, {transform:'translate(' + (b.left + b.width / 2 - (a.left + a.width / 2)) + 'px,' + (b.top - (a.top + a.height / 2)) + 'px) scale(.06)', opacity:0}], {duration:540, easing:'cubic-bezier(.5,0,.75,0)', fill:'forwards'}).onfinish = function(){ advance(status); };
+    } else advance(status);
+  }
+  var typing = ph === 'ask' && typed < Q.q.length, isRec = ph === 'rec';
+  var mood = ph === 'done' ? 'happy' : typing ? 'talk' : isRec ? 'listen' : thinking ? 'think' : '';
+  var hl = ph === 'done' ? [] : Q.hl;
+  var hlLabel = 'lines ' + Q.hl[0][0] + (Q.hl[0][1] !== Q.hl[0][0] ? '–' + Q.hl[0][1] : '');
+  var doneN = S.st.filter(function(x){ return x !== 'todo'; }).length;
+  var showCaption = ph === 'ask' || ph === 'rec' || ph === 'type' || (ph === 'reflect' && thinking);
+  var showReflect = (ph === 'reflect' && !thinking) || ph === 'fix';
+  var canAnswer = ph === 'ask' || ph === 'rec';
+  return html`<div className="page" style=${{maxWidth:1440, paddingBottom:0}}>
+    <div className="iv2">
+      <div style=${{display:'flex', flexDirection:'column', gap:18, minWidth:0}}>
+        <section className="stage" aria-label="Interview with Ada">
+          <div className="racks" aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9].map(function(i){ return html`<i key=${i} style=${{animationDelay:(i * 0.37 % 2) + 's'}}></i>`; })}</div>
+          <div className="vignette" aria-hidden="true"></div>
+          <span className="glass chip"><${Icon} n="bolt" size=${14}/>Ada · AI interviewer</span>
+          <div className="glass selftile"><span className="av" style=${{background:'rgba(255,255,255,.85)', color:'#0E1116'}}>LC</span><span style=${{fontSize:13, opacity:.85}}>Linda (you)</span>${isRec ? html`<span className="recdot"><i></i>REC 0:${String(sec).padStart(2, '0')}</span>` : null}</div>
+          <div className="orbstage"><${Orb} mood=${mood}/></div>
+
+          ${showCaption ? html`<div className="caption" key=${'c' + S.q}>
+              <span style=${{fontSize:12, opacity:.6}}>${ph === 'reflect' ? 'Question ' + (S.q + 1) + ' of 5 · thinking' : 'Question ' + (S.q + 1) + ' of 5'}</span>
+              ${ph === 'reflect' ? html`<p style=${{display:'flex', alignItems:'center', gap:12, fontSize:16, marginTop:6}}><span className="dots" aria-hidden="true"><i style=${{background:'#A9B9FF'}}></i><i style=${{background:'#A9B9FF'}}></i><i style=${{background:'#A9B9FF'}}></i></span>Ada is structuring your answer…</p>`
+                : html`<p style=${{fontSize:19, lineHeight:'27px', fontWeight:600, marginTop:4}}>${ph === 'ask' ? Q.q.slice(0, typed) : Q.q}${typing || ph === 'ask' ? html`<span className="caret" style=${{background:'#A9B9FF'}}></span>` : null}</p>`}
+            </div>` : null}
+
+          ${showReflect ? html`<div className="reflect" ref=${flyRef}>
+              <div style=${{display:'flex', alignItems:'center', gap:8, fontWeight:600}}><${Icon} n="bolt" cls="acc"/>Here’s what I understood</div>
+              <div className="nodes">${Q.steps.map(function(p, i){ return html`<${React.Fragment} key=${i}>${i > 0 ? html`<span className="link" style=${{animationDelay:(i * 0.12 + 0.1) + 's'}}></span>` : null}<div className=${'node ' + (p[1] || '')} style=${{animationDelay:(i * 0.12) + 's'}}>${p[0]}${p[2] ? html`<span className=${'tag ' + (p[1] === 'risk' ? 't-risk' : 't-warn')} style=${{marginTop:6, alignSelf:'flex-start'}}>${p[2]}</span>` : null}</div><//>`; })}</div>
+              <p style=${{color:'var(--ink2)', fontSize:14}}>Example: ${Q.ex}</p>
+              ${ph === 'fix' ? html`<div style=${{display:'flex', flexDirection:'column', gap:6}}><label htmlFor="fix" style=${{fontWeight:500, fontSize:13}}>What should Ada change?</label><textarea id="fix" className="field" value=${fixText} onInput=${function(ev){ setFixText(ev.target.value); }} placeholder="e.g. Step 3 is wrong. Finance gets a weekly report of DEFAULT accounts." autoFocus></textarea></div>` : null}
+              <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}>
+                ${ph === 'fix' ? html`<button className="btn btn-primary btn-lg" onClick=${function(){ fly('done'); ctx.dispatch({type:'toast', text:'Correction saved. The item will show as edited in review.'}); }}><${Icon} n="check"/>Save my fix</button><button className="btn btn-secondary btn-lg" onClick=${function(){ patch({phase:'reflect'}); }}>Cancel</button>`
+                  : html`<button className="btn btn-primary btn-lg" onClick=${function(){ fly('done'); }}><${Icon} n="check"/>That’s right</button><button className="btn btn-secondary btn-lg" onClick=${function(){ patch({phase:'fix'}); }}>Not quite, let me fix it</button>`}
+              </div>
+            </div>` : null}
+
+          ${ph === 'done' ? html`<div className="reflect" style=${{alignItems:'flex-start'}}>
+              <span className="tag t-ok"><${Icon} n="check" size=${12}/>Interview complete</span>
+              <h2 style=${{fontSize:22, fontWeight:600}}>3 knowledge items drafted</h2>
+              <p style=${{color:'var(--ink2)'}}>Nothing is shared until you publish from Review.</p>
+              <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><button className="btn btn-primary btn-lg" onClick=${function(){ ctx.go('review'); }}>Review drafts<${Icon} n="arrow"/></button><button className="btn btn-secondary btn-lg" onClick=${function(){ ctx.go('home'); }}>Back to home</button></div>
+            </div>` : null}
+        </section>
+
+        ${canAnswer ? html`<div className="ivctl">
+            <div style=${{display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center'}}>
+              <button className=${'btn btn-primary btn-lg talk' + (isRec ? ' rec' : '')} aria-label="Hold to talk"
+                onPointerDown=${function(){ if (ph === 'ask') startRec(false); else if (isRec && clickMode) stopRec(); }}
+                onPointerUp=${function(){ if (!isRec || clickMode) return; if (Date.now() - recStart < 450) setClickMode(true); else stopRec(); }}
+                onPointerLeave=${function(){ if (isRec && !clickMode && Date.now() - recStart >= 450) stopRec(); }}
+                onKeyDown=${function(ev){ if (ev.key !== 'Enter' && ev.key !== ' ') return; ev.preventDefault(); if (ph === 'ask') startRec(true); else if (isRec) stopRec(); }}>
+                ${isRec ? html`<span className="bars" aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9,10,11,12,13].map(function(i){ return html`<i key=${i}></i>`; })}</span><span className="mono">0:${String(sec).padStart(2, '0')}</span>` : html`<${Icon} n="mic"/>Hold to talk`}
+              </button>
+              <button className="btn btn-secondary btn-lg" onClick=${function(){ setTyped(Q.q.length); patch({phase:'type'}); }}>Type instead</button>
+              <button className="btn btn-secondary btn-lg" onClick=${function(){ advance('skip'); ctx.dispatch({type:'toast', text:'Skipped. Ada will return to it next session.'}); }}>Skip</button>
+              <button className="btn btn-secondary btn-lg notsure" onClick=${function(){ advance('unsure'); ctx.dispatch({type:'toast', text:'Saved as an open question for your next interview.'}); }}>Not sure</button>
+            </div>
+            <span className="muted" style=${{fontSize:12.5}}>${isRec ? (clickMode ? 'Click again to finish' : 'Release to finish') : 'Hold to talk, or click once to start and stop'}</span>
+          </div>` : null}
+        ${ph === 'type' ? html`<div className="ivctl"><div style=${{display:'flex', gap:8, width:'min(680px,100%)', flexWrap:'wrap'}}><label htmlFor="ans" className="sr">Your answer</label>
+            <input id="ans" className="field" style=${{flex:'1 1 260px', height:44}} value=${typeText} onInput=${function(ev){ setTypeText(ev.target.value); }} onKeyDown=${function(ev){ if (ev.key === 'Enter') stopRec(); }} placeholder="Type your answer, then press Enter" autoFocus/>
+            <button className="btn btn-primary btn-lg" onClick=${stopRec}><${Icon} n="send"/>Send</button><button className="btn btn-ghost btn-lg" onClick=${function(){ patch({phase:'ask'}); }}>Cancel</button></div></div>` : null}
+      </div>
+
+      <${Code} file="CBACT04C.cbl" lines=${SESSION_CODE} hl=${hl} pill=${ph === 'done' ? 'All questions covered' : hlLabel + ' · Asked about this'} foot="Source: AWS CardDemo sample mainframe app (Apache 2.0)" style=${{minHeight:640}}/>
+    </div>
+    <div className="ivbar">
+      <span className="av">LC</span><span style=${{fontWeight:500}}>Linda C.</span>
+      <div className="ivsegs">${S.st.map(function(x, i){ var cur = x === 'todo' && i === S.q && ph !== 'done'; return html`<span key=${i} data-seg=${i} className=${'iseg ' + (cur ? 'cur ' : '') + x}><i style=${{width:x !== 'todo' ? '100%' : cur ? (ph === 'reflect' || ph === 'fix' ? '70%' : isRec ? '40%' : '12%') : '0%'}}></i></span>`; })}</div>
+      <span className="mono muted" style=${{fontSize:13, whiteSpace:'nowrap'}}>${ph === 'done' ? 'Complete' : 'Question ' + (S.q + 1) + ' of 5'}</span>
+    </div>
+  </div>`;
+}
+
+function Review(){
+  var ctx = useStore(), s = ctx.s;
+  var list = s.items.filter(function(i){ return ['draft','ready','edited','flagged'].indexOf(i.status) >= 0; });
+  var op = useState(''), open = op[0], setOpen = op[1];
+  var ed = useState(null), editing = ed[0], setEditing = ed[1];
+  var dr = useState(''), draft = dr[0], setDraft = dr[1];
+  var ju = useState(null), just = ju[0], setJust = ju[1];
+  var refs = useRef({});
+  var ready = list.filter(function(i){ return i.status === 'ready' || i.status === 'edited'; });
+  function mark(id, st){ ctx.dispatch({type:'item', id:id, patch:{status:st}}); setJust(id); setTimeout(function(){ setJust(null); }, 800); }
+  function publish(){
+    var ids = ready.map(function(i){ return i.id; });
+    var target = document.querySelector('[data-route="library"]');
+    var tb = target ? target.getBoundingClientRect() : null;
+    var finish = function(){ ctx.dispatch({type:'publish', ids:ids}); ctx.dispatch({type:'toast', text:ids.length + ' item' + (ids.length > 1 ? 's' : '') + ' published to the team library. Matching tickets update now.'}); };
+    if (!tb || REDUCE || !document.body.animate) { finish(); return; }
+    var n = 0;
+    ids.forEach(function(id, k){
+      var el = refs.current[id]; if (!el) return;
+      var r = el.getBoundingClientRect(), it = itemById(s, id);
+      var f = document.createElement('div'); f.className = 'fly'; f.textContent = it.title;
+      f.style.left = r.left + 'px'; f.style.top = r.top + 'px'; f.style.width = Math.min(r.width, 420) + 'px';
+      document.body.appendChild(f); el.style.opacity = '.25';
+      n += 1;
+      var dx = tb.left + 20 - r.left, dy = tb.top + tb.height / 2 - r.top - 18;
+      f.animate([{transform:'translate(0,0) scale(1)', opacity:1}, {transform:'translate(' + dx * 0.55 + 'px,' + (dy * 0.55 - 40) + 'px) scale(.7)', opacity:.9, offset:.55}, {transform:'translate(' + dx + 'px,' + dy + 'px) scale(.12)', opacity:0}], {duration:760, delay:k * 90, easing:'cubic-bezier(.55,0,.35,1)', fill:'forwards'})
+        .onfinish = function(){ f.remove(); n -= 1; if (n === 0) finish(); };
+    });
+    if (n === 0) finish();
+  }
+  return html`<div style=${{display:'flex', flexDirection:'column', minHeight:'100%'}}>
+    <div className="page enter" style=${{flex:1, maxWidth:920}}>
+      <div className="page-head"><div><h1>Review & publish</h1><p>Confirm each draft, correct it in your own words, or flag it for your next interview. Engineers only see what you publish.</p></div></div>
+      ${list.length ? list.map(function(it){
+        var isEd = editing === it.id, orig = SESSION_DRAFTS.concat(INITIAL_ITEMS).find(function(x){ return x.id === it.id; });
+        var words = orig ? new Set(orig.body.split(' ')) : null;
+        return html`<article key=${it.id} ref=${function(el){ refs.current[it.id] = el; }} className=${'panel kcard' + (it.status === 'ready' || it.status === 'edited' ? ' ready' : '') + (it.status === 'flagged' ? ' flag' : '') + (just === it.id ? ' just' : '')}>
+          <div style=${{display:'flex', alignItems:'flex-start', gap:12}}>
+            <span className="mono muted" style=${{fontSize:12, paddingTop:3, width:52}}>${it.id}</span>
+            <div style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}><h2 style=${{fontSize:17, lineHeight:'24px', fontWeight:600}}>${it.title}</h2><span className="muted" style=${{fontSize:12}}>${it.program} · ${it.source}</span></div>
+            ${statusTag(it.status)}
+          </div>
+          <div style=${{paddingLeft:64}}>
+            ${isEd ? html`<div style=${{display:'flex', flexDirection:'column', gap:8}}><label htmlFor=${'ed' + it.id} style=${{fontSize:13, fontWeight:500}}>Say it the way you’d tell a new engineer</label><textarea id=${'ed' + it.id} className="field" value=${draft} onInput=${function(ev){ setDraft(ev.target.value); }}></textarea>
+                <div style=${{display:'flex', gap:8}}><button className="btn btn-primary" onClick=${function(){ ctx.dispatch({type:'item', id:it.id, patch:{body:draft}}); mark(it.id, 'edited'); setEditing(null); }}>Save</button><button className="btn btn-ghost" onClick=${function(){ setEditing(null); }}>Cancel</button></div></div>`
+              : html`<p style=${{fontSize:15, color:'var(--ink2)', maxWidth:'70ch'}}>${it.body.split(' ').map(function(w, k){ return html`<${React.Fragment} key=${k}><span className=${it.status === 'edited' && words && !words.has(w) ? 'chg' : ''}>${w}</span> <//>`; })}</p>`}
+          </div>
+          <div style=${{paddingLeft:64, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
+            <button className="srcbtn" aria-expanded=${open === 'q' + it.id} onClick=${function(){ setOpen(open === 'q' + it.id ? '' : 'q' + it.id); }}><${Icon} n="play" size=${12}/>Your answer</button>
+            ${it.code ? html`<button className="srcbtn" aria-expanded=${open === 'c' + it.id} onClick=${function(){ setOpen(open === 'c' + it.id ? '' : 'c' + it.id); }}><${Icon} n="code" size=${12}/><span className="mono">${it.file} ${it.lines}</span></button>` : null}
+            <span style=${{flex:1}}></span>
+            ${!isEd && it.status === 'draft' ? html`<button className="btn btn-primary" onClick=${function(){ mark(it.id, 'ready'); }}><${Icon} n="check"/>Confirm</button>` : null}
+            ${!isEd && (it.status === 'ready' || it.status === 'edited') ? html`<button className="btn btn-ghost" onClick=${function(){ mark(it.id, 'draft'); }}>Undo</button>` : null}
+            ${!isEd && it.status !== 'flagged' ? html`<button className="btn btn-secondary" onClick=${function(){ setDraft(it.body); setEditing(it.id); }}><${Icon} n="edit"/>Edit</button>` : null}
+            ${!isEd && it.status !== 'flagged' ? html`<button className="btn btn-ghost" onClick=${function(){ mark(it.id, 'flagged'); ctx.dispatch({type:'toast', text:'Flagged. Ada will ask about it in your next interview.'}); }}><${Icon} n="flag"/>Flag</button>` : null}
+            ${it.status === 'flagged' ? html`<button className="btn btn-ghost" onClick=${function(){ mark(it.id, 'draft'); }}>Unflag</button>` : null}
+          </div>
+          ${open === 'q' + it.id ? html`<div className="drawerin" style=${{marginLeft:64, background:'var(--surface2)', borderRadius:6, padding:'12px 16px', display:'flex', gap:12, alignItems:'center'}}><span className="bars" style=${{color:'var(--accent)'}} aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9,10,11].map(function(i){ return html`<i key=${i}></i>`; })}</span><span style=${{fontStyle:'italic', color:'var(--ink2)'}}>${it.quote}</span></div>` : null}
+          ${open === 'c' + it.id && it.code ? html`<div className="drawerin" style=${{marginLeft:64}}><${Code} file=${it.file} lines=${it.code} hl=${it.hl}/></div>` : null}
+        </article>`;
+      }) : html`<section className="panel empty" style=${{padding:48}}><${Bot} scale=${0.6} mood="happy"/><span style=${{fontSize:15, color:'var(--ink)', fontWeight:500}}>All caught up</span><span>New drafts show up here after each interview.</span><button className="btn btn-secondary" onClick=${function(){ ctx.go('library'); }}>Open the library</button></section>`}
+    </div>
+    ${list.length ? html`<div className="sticky"><div style=${{maxWidth:864, margin:'0 auto', display:'flex', alignItems:'center', gap:14, flexWrap:'wrap'}}>
+      <span className="av">LC</span><span className="muted">Signing as <strong style=${{color:'var(--ink)'}}>Linda C.</strong></span>
+      <span style=${{marginLeft:'auto'}} className="mono">${ready.length} of ${list.filter(function(i){ return i.status !== 'flagged'; }).length} ready</span>
+      <button className="btn btn-primary btn-lg" disabled=${!ready.length} onClick=${publish}>Publish ${ready.length || ''} to library</button>
+    </div></div>` : null}
+  </div>`;
+}
+
+function Inbox(){
+  var ctx = useStore(), s = ctx.s;
+  var an = useState(null), answering = an[0], setAnswering = an[1];
+  var tt = useState(''), title = tt[0], setTitle = tt[1], bb = useState(''), body = bb[0], setBody = bb[1];
+  var groups = [['open','Open'],['scheduled','Added to next interview'],['answered','Answered']];
+  return html`<div className="page enter" style=${{maxWidth:960}}>
+    <div className="page-head"><div><h1>Questions from engineers</h1><p>Answer short questions in writing, or add them to your next interview so Ada asks you in context.</p></div></div>
+    ${groups.map(function(g){
+      var qs = s.questions.filter(function(q){ return q.status === g[0]; });
+      if (!qs.length && g[0] !== 'open') return null;
+      return html`<section key=${g[0]} className="panel sec">
+        <div className="sec-h"><h2>${g[1]}</h2><span className="mono muted">${qs.length}</span></div>
+        ${qs.length ? qs.map(function(q){ return html`<div key=${q.id} style=${{borderBottom:'1px solid var(--line2)', animation:q.isNew ? 'fresh 2.4s ease-out' : 'none'}}>
+          <div className="row" style=${{alignItems:'flex-start', borderBottom:0}}>
+            <span className="av">${PEOPLE[q.from] ? PEOPLE[q.from].init : '?'}</span>
+            <div style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}>
+              <span style=${{fontSize:15}}>${q.text}</span>
+              <span className="muted" style=${{fontSize:12}}>${q.from} · <span className="mono">${q.ticket}</span> · ${q.program} · ${q.at}</span>
+            </div>
+            ${q.status === 'open' ? html`<div style=${{display:'flex', gap:6, flexWrap:'wrap', justifyContent:'flex-end'}}>
+                <button className="btn btn-secondary" onClick=${function(){ ctx.dispatch({type:'qstatus', id:q.id, status:'scheduled'}); ctx.dispatch({type:'toast', text:'Added to your Thursday interview. Ada will ask it with the code open.'}); }}><${Icon} n="calendar"/>Add to next interview</button>
+                <button className="btn btn-primary" onClick=${function(){ setAnswering(q.id); setTitle(''); setBody(''); }}><${Icon} n="edit"/>Answer now</button></div>`
+              : q.status === 'scheduled' ? html`<span className="tag t-accent"><${Icon} n="calendar" size=${12}/>Thu, Oct 29</span>` : html`<span className="tag t-ok"><${Icon} n="check" size=${12}/>Published</span>`}
+          </div>
+          ${answering === q.id ? html`<div className="drawerin" style=${{padding:'0 18px 16px 60px', display:'flex', flexDirection:'column', gap:8}}>
+            <label htmlFor="at" style=${{fontSize:13, fontWeight:500}}>Short title</label><input id="at" className="field" value=${title} onInput=${function(ev){ setTitle(ev.target.value); }} placeholder="e.g. Re-post rejects the next cycle, not the same night"/>
+            <label htmlFor="ab" style=${{fontSize:13, fontWeight:500}}>Your answer</label><textarea id="ab" className="field" value=${body} onInput=${function(ev){ setBody(ev.target.value); }} placeholder="Explain it the way you would to a new engineer."></textarea>
+            <div style=${{display:'flex', gap:8}}><button className="btn btn-primary" disabled=${!title.trim() || !body.trim()} onClick=${function(){ ctx.dispatch({type:'answerQ', id:q.id, title:title.trim(), body:body.trim()}); setAnswering(null); ctx.dispatch({type:'toast', text:'Published and sent to ' + q.from + '.'}); }}>Publish answer</button><button className="btn btn-ghost" onClick=${function(){ setAnswering(null); }}>Cancel</button></div>
+            <span className="muted" style=${{fontSize:12}}>Written answers are published as verified and signed by you.</span>
+          </div>` : null}
+        </div>`; }) : html`<div className="empty">No open questions. Engineers can send questions from any ticket.</div>`}
+      </section>`;
+    })}
+  </div>`;
+}
+
+function Library(){
+  var ctx = useStore(), s = ctx.s, f = s.libFilter;
+  var all = s.items.filter(function(i){ return i.status === 'verified'; });
+  var progs = Array.from(new Set(all.map(function(i){ return i.program; })));
+  var words = f.q.toLowerCase().split(/\s+/).filter(Boolean);
+  var list = all.filter(function(i){ return (f.program === 'all' || i.program === f.program) && words.every(function(w){ return (i.title + ' ' + i.body + ' ' + i.program + ' ' + i.id).toLowerCase().indexOf(w) >= 0; }); })
+    .sort(function(a, b){ return (s.fresh.indexOf(b.id) >= 0) - (s.fresh.indexOf(a.id) >= 0) || b.uses - a.uses; });
+  function setF(p){ ctx.dispatch({type:'patch', patch:{libFilter:Object.assign({}, f, p)}}); }
+  return html`<div className="page enter">
+    <div className="page-head"><div><h1>Knowledge library</h1><p>Verified answers from your experts, each linked to the code and the interview it came from.</p></div>
+      <span className="mono muted">${list.length} of ${all.length} items</span></div>
+    <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}>
+      <label htmlFor="lq" className="sr">Search the library</label>
+      <input id="lq" className="field" style=${{flex:'1 1 260px'}} placeholder="Search by keyword, program or ID" value=${f.q} onInput=${function(ev){ setF({q:ev.target.value}); }}/>
+      <label htmlFor="lp" className="sr">Program</label>
+      <select id="lp" className="field" value=${f.program} onChange=${function(ev){ setF({program:ev.target.value}); }}><option value="all">All programs</option>${progs.map(function(p){ return html`<option key=${p} value=${p}>${p}</option>`; })}</select>
+    </div>
+    <section className="panel tblwrap">
+      <table className="tbl">
+        <thead><tr><th>Item</th><th>Program</th><th>Code</th><th>Expert</th><th style=${{textAlign:'right'}}>Used</th><th>Updated</th></tr></thead>
+        <tbody>${list.map(function(i){ return html`<tr key=${i.id} className=${s.fresh.indexOf(i.id) >= 0 ? 'fresh' : ''} onClick=${function(){ ctx.dispatch({type:'patch', patch:{drawer:i.id}}); }} tabIndex="0" onKeyDown=${function(ev){ if (ev.key === 'Enter') ctx.dispatch({type:'patch', patch:{drawer:i.id}}); }}>
+          <td style=${{minWidth:280}}><div style=${{fontWeight:500}}>${i.title}</div><div className="mono muted" style=${{fontSize:11.5}}>${i.id}${s.fresh.indexOf(i.id) >= 0 ? html` · <span style=${{color:'var(--accent-ink)'}}>New</span>` : null}</div></td>
+          <td className="mono">${i.program}</td><td className="mono muted" style=${{whiteSpace:'nowrap'}}>${i.lines}</td><td style=${{whiteSpace:'nowrap'}}>${i.owner}</td><td className="num mono" style=${{textAlign:'right'}}>${i.uses}</td><td className="muted" style=${{whiteSpace:'nowrap'}}>${i.updated}</td></tr>`; })}</tbody>
+      </table>
+      ${!list.length ? html`<div className="empty">No items match. Try a program ID such as CBTRN02C.</div>` : null}
+    </section>
+  </div>`;
+}
+
+function Coverage(){
+  var ctx = useStore(), s = ctx.s;
+  var rows = PROGRAMS.map(function(p){
+    var n = s.items.filter(function(i){ return i.status === 'verified' && i.program === p.id; }).length;
+    var cov = Math.min(1, n / p.target), urg = p.retireMo <= 3 ? 1 : p.retireMo <= 6 ? .7 : .4, risk = (1 - cov) * urg;
+    return Object.assign({}, p, {n:n, cov:cov, risk:risk, level:risk > .6 ? 'High' : risk > .35 ? 'Medium' : 'Low'});
+  }).sort(function(a, b){ return b.risk - a.risk; });
+  var total = rows.reduce(function(a, r){ return a + r.n; }, 0), target = rows.reduce(function(a, r){ return a + r.target; }, 0);
+  var pct = useCount(Math.round(total / target * 100)), high = rows.filter(function(r){ return r.level === 'High'; }).length;
+  return html`<div className="page enter">
+    <div className="page-head"><div><h1>Knowledge coverage</h1><p>How much of each program’s critical knowledge is captured, weighted by when its expert retires.</p></div></div>
+    <section className="panel"><div className="grid4">
+      <div className="stat"><span className="label">Overall coverage</span><b>${pct}%</b><span className="muted" style=${{fontSize:12}}>${total} of ${target} target items</span></div>
+      <div className="stat"><span className="label">High-risk programs</span><b style=${{color:high ? 'var(--risk)' : 'inherit'}}>${high}</b><span className="muted" style=${{fontSize:12}}>low coverage, expert leaving soon</span></div>
+      <div className="stat"><span className="label">Raj P. retires</span><b>Dec 2026</b><span className="muted" style=${{fontSize:12}}>3 CICS programs</span></div>
+      <div className="stat"><span className="label">Linda C. retires</span><b>Mar 2027</b><span className="muted" style=${{fontSize:12}}>5 batch programs and jobs</span></div>
+    </div></section>
+    <section className="panel tblwrap">
+      <table className="tbl">
+        <thead><tr><th>Program</th><th>Expert</th><th style=${{width:'30%'}}>Captured</th><th style=${{textAlign:'right'}}>Items</th><th>Risk</th></tr></thead>
+        <tbody>${rows.map(function(r, k){ return html`<tr key=${r.id} onClick=${function(){ ctx.dispatch({type:'patch', patch:{libFilter:{q:'', program:r.n ? r.id : 'all'}}}); ctx.go('library'); }} tabIndex="0">
+          <td><div className="mono" style=${{fontWeight:500}}>${r.id}</div><div className="muted" style=${{fontSize:12}}>${r.name}</div></td>
+          <td style=${{whiteSpace:'nowrap'}}>${r.owner}<div className="muted" style=${{fontSize:12}}>retires in ${r.retireMo} mo</div></td>
+          <td><div className="bar"><span className=${r.cov < .25 ? 'low' : r.cov < .5 ? 'mid' : ''} style=${{width:Math.max(2, r.cov * 100) + '%', animationDelay:(k * 60) + 'ms'}}></span></div></td>
+          <td className="mono num" style=${{textAlign:'right', whiteSpace:'nowrap'}}>${r.n} / ${r.target}</td>
+          <td><span className=${'tag ' + (r.level === 'High' ? 't-risk' : r.level === 'Medium' ? 't-warn' : 't-ok')}>${r.level}</span></td></tr>`; })}</tbody>
+      </table>
+    </section>
+    ${s.role === 'expert' ? html`<p className="muted" style=${{fontSize:13}}>Programs at the top are scheduled first. Each interview covers one program in about 15 minutes.</p>` : null}
+  </div>`;
+}
+
+/* ---------------- pages: engineer ---------------- */
+function QALog(p){
+  var ctx = useStore(), s = ctx.s, list = s.threads[p.tkey] || [];
+  var tx = useState(''), text = tx[0], setText = tx[1];
+  var twin = p.twin || 'Linda C.';
+  var last = list[list.length - 1];
+  function ask(q){
+    q = (q || '').trim(); if (!q) return;
+    var id = uid('m'); ctx.dispatch({type:'ask', key:p.tkey, id:id, q:q, ticket:p.ticket, owner:p.ticket ? null : twin}); setText('');
+    setTimeout(function(){ ctx.dispatch({type:'answer', key:p.tkey, id:id}); }, REDUCE ? 50 : 900);
+  }
+  var asked = new Set(list.map(function(m){ return m.q; }));
+  var sugs = (p.sugs || []).filter(function(q){ return !asked.has(q); });
+  if (p.onMood) p.onMood(!last ? '' : last.status === 'thinking' ? 'think' : !last.known ? 'shrug' : '');
+  return html`<div style=${{display:'flex', flexDirection:'column'}}>
+    ${list.map(function(m){ return html`<div key=${m.id} className="qa">
+      <span className="label">Question</span><span style=${{fontWeight:600, fontSize:15}}>${m.q}</span>
+      <span className="label" style=${{marginTop:6}}>Answer</span>
+      ${m.status === 'thinking' ? html`<div style=${{display:'flex', flexDirection:'column', gap:8}}><span className="muted" style=${{fontSize:13}}>${p.ticket ? 'Checking verified knowledge for this program…' : 'Checking ' + twin + '’s verified knowledge…'}</span><div className="skel" style=${{width:'92%'}}></div><div className="skel" style=${{width:'74%'}}></div></div>`
+        : html`<div style=${{display:'flex', flexDirection:'column', gap:10}}>
+          <span className=${'tag ' + (m.known ? 't-ok' : 't-warn')} style=${{alignSelf:'flex-start'}}>${m.known ? html`<${Icon} n="check" size=${12}/>From verified knowledge` : 'Not verified yet'}</span>
+          <p style=${{fontSize:14.5, color:'var(--ink2)', maxWidth:'72ch'}}><${Stream} id=${m.id} text=${m.text}/></p>
+          ${m.known && m.sources.length ? html`<div style=${{display:'flex', flexDirection:'column', gap:0, border:'1px solid var(--line)', borderRadius:6, overflow:'hidden'}}>
+              ${m.sources.map(function(id){ var it = itemById(s, id); return it ? html`<button key=${id} className="row click" style=${{border:0, borderBottom:'1px solid var(--line2)', background:'var(--surface)', textAlign:'left', width:'100%', padding:'9px 12px', cursor:'pointer'}} onClick=${function(){ ctx.dispatch({type:'patch', patch:{drawer:id}}); }}>
+                <span className="mono muted" style=${{fontSize:11.5, width:52}}>${it.id}</span><span style=${{flex:1, fontSize:13}}>${it.title}</span><span className="mono muted" style=${{fontSize:11.5}}>${it.file ? it.file + ' ' + it.lines : it.program}</span></button>` : null; })}
+            </div>` : null}
+          ${!m.known ? (m.sent ? html`<span className="tag t-accent" style=${{alignSelf:'flex-start'}}><${Icon} n="check" size=${12}/>Sent to ${twin} · you’ll be notified</span>`
+            : html`<button className="btn btn-secondary" style=${{alignSelf:'flex-start'}} onClick=${function(){ ctx.dispatch({type:'markSent', key:p.tkey, id:m.id, q:m.q, ticket:p.ticket, twin:twin}); ctx.dispatch({type:'toast', text:'Sent to ' + twin + '. You’ll be notified when there’s a verified answer.'}); }}><${Icon} n="send"/>Send this question to ${twin}</button>`) : null}
+        </div>`}
+    </div>`; })}
+    <div style=${{borderTop:'1px solid var(--line2)', padding:'14px 20px', display:'flex', flexDirection:'column', gap:10, background:'var(--surface2)'}}>
+      ${sugs.length ? html`<div style=${{display:'flex', gap:6, flexWrap:'wrap'}}>${sugs.map(function(q){ return html`<button key=${q} className="sug" onClick=${function(){ ask(q); }}>${q}</button>`; })}</div>` : null}
+      <form style=${{display:'flex', gap:8}} onSubmit=${function(ev){ ev.preventDefault(); ask(text); }}>
+        <label htmlFor=${'ask-' + p.tkey} className="sr">Ask ${twin}’s twin</label>
+        <input id=${'ask-' + p.tkey} className="field" style=${{flex:1, height:40}} value=${text} onInput=${function(ev){ setText(ev.target.value); }} placeholder=${'Ask ' + twin.split(' ')[0] + '’s twin a question'}/>
+        <button className="btn btn-primary" style=${{height:40}} type="submit" aria-label="Ask"><${Icon} n="send"/>Ask</button>
+      </form>
+      <span className="muted" style=${{fontSize:12}}>Answers come only from verified knowledge. Anything else goes to ${twin}.</span>
+    </div>
+  </div>`;
+}
+
+function Tickets(){
+  var ctx = useStore(), s = ctx.s;
+  var t = TICKETS.find(function(x){ return x.id === s.ticket; }) || TICKETS[0];
+  var mm = useState(''), mood = mm[0], setMood = mm[1];
+  var pl = useState(false), playing = pl[0], setPlaying = pl[1];
+  var matches = matchesFor(s, t);
+  return html`<div className="page enter" style=${{maxWidth:1320}}>
+    <div className="page-head"><div><h1>My tickets</h1><p>Synced from OpsDesk. HyperSquare finds verified expert knowledge for each ticket.</p></div></div>
+    <div className="tk">
+      <section className="panel" style=${{overflow:'hidden'}}>
+        <div className="sec-h"><h2>Assigned to me</h2><span className="mono muted">${TICKETS.length}</span></div>
+        ${TICKETS.map(function(x){ var n = matchesFor(s, x).length, isNew = matchesFor(s, x).some(function(i){ return s.fresh.indexOf(i.id) >= 0; });
+          return html`<button key=${x.id} className="tkitem" aria-current=${x.id === t.id} onClick=${function(){ transition(function(){ ctx.dispatch({type:'patch', patch:{ticket:x.id}}); }); setPlaying(false); }}>
+            <span style=${{display:'flex', alignItems:'center', gap:8}}><span className="mono muted" style=${{fontSize:12}}>${x.id}</span><span className=${'tag ' + (x.prio === 'Urgent' ? 't-risk' : x.prio === 'High' ? 't-warn' : 't-plain')}>${x.prio}</span><span className="muted" style=${{fontSize:12, marginLeft:'auto'}}>${x.age}</span></span>
+            <span style=${{fontWeight:500, color:'var(--ink)'}}>${x.title}</span>
+            <span style=${{fontSize:12, color:n ? 'var(--accent-ink)' : 'var(--ink3)', display:'inline-flex', alignItems:'center', gap:6}}><${Mark} size=${13}/>${n ? n + ' verified answer' + (n > 1 ? 's' : '') : 'No verified answers yet'}${isNew ? html`<span className="tag t-accent newtag" style=${{height:18, fontSize:11}}>New</span>` : null}</span>
+          </button>`; })}
+      </section>
+      <section className="panel" style=${{overflow:'hidden', viewTransitionName:'ticket'}}>
+        <div style=${{padding:'18px 20px', borderBottom:'1px solid var(--line2)', display:'flex', flexDirection:'column', gap:8}}>
+          <span style=${{display:'flex', gap:8, alignItems:'center'}}><span className="mono muted" style=${{fontSize:12}}>${t.id}</span><span className=${'tag ' + (t.prio === 'Urgent' ? 't-risk' : t.prio === 'High' ? 't-warn' : 't-plain')}>${t.prio}</span><span className="tag t-plain mono">${t.program}</span></span>
+          <h2 style=${{fontSize:19, fontWeight:600}}>${t.title}</h2><p style=${{color:'var(--ink2)'}}>${t.desc}</p>
+        </div>
+        <div style=${{display:'flex', alignItems:'center', gap:12, padding:'12px 20px', borderBottom:'1px solid var(--line2)', background:'var(--surface2)'}}>
+          <${Bot} scale=${0.4} mood=${mood}/>
+          <span style=${{display:'flex', flexDirection:'column', lineHeight:1.35}}><span style=${{fontWeight:600}}>Expert twins <span className="muted" style=${{fontWeight:400}}>· ${t.program} is owned by Linda C.</span></span><span className="muted" style=${{fontSize:12}}>${matches.length ? 'Found ' + matches.length + ' verified answer' + (matches.length > 1 ? 's' : '') + ' for this ticket' : 'No verified answers match this ticket yet'}</span></span>
+        </div>
+        ${matches.length ? html`<div style=${{display:'flex', flexDirection:'column'}}>
+          ${matches.map(function(i){ var fresh = s.fresh.indexOf(i.id) >= 0; return html`<button key=${i.id} className="row click" style=${{border:0, borderBottom:'1px solid var(--line2)', background:'none', textAlign:'left', width:'100%', alignItems:'flex-start', animation:fresh ? 'fresh 2.4s ease-out' : 'none'}} onClick=${function(){ ctx.dispatch({type:'patch', patch:{drawer:i.id}}); }}>
+              <span className="tag t-ok" style=${{marginTop:1}}><${Icon} n="check" size=${12}/>Verified</span>
+              <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:3}}><span style=${{fontWeight:600}}>${i.title}${fresh ? html` <span className="tag t-accent newtag" style=${{height:18, fontSize:11}}>New</span>` : null}</span><span style=${{color:'var(--ink2)', fontSize:13.5}}>${i.body}</span><span className="mono muted" style=${{fontSize:11.5}}>${i.id} · ${i.owner} · ${i.file ? i.file + ' ' + i.lines : i.program}</span></span>
+            </button>`; })}
+          ${t.clip ? html`<div className="row" style=${{gap:14}}>
+              <button className="btn btn-secondary" style=${{width:40, padding:0}} onClick=${function(){ setPlaying(!playing); }} aria-label=${playing ? 'Pause clip' : 'Play clip'}><${Icon} n=${playing ? 'pause' : 'play'}/></button>
+              <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}><span style=${{fontWeight:500}}>Linda explains the DEFAULT fallback <span className="mono muted" style=${{fontSize:12}}>1:12</span></span>
+                ${playing ? html`<span className="drawerin" style=${{fontStyle:'italic', color:'var(--ink2)', fontSize:13.5}}>“If the group row isn’t there, the job won’t stop. It quietly uses DEFAULT. That’s by design, and that’s the trap.”</span>` : html`<span className="muted" style=${{fontSize:12}}>Interview clip from Oct 26</span>`}</span>
+              ${playing ? html`<span className="bars" style=${{color:'var(--accent)'}} aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9].map(function(i){ return html`<i key=${i}></i>`; })}</span>` : null}
+            </div>` : null}
+        </div>` : html`<div className="empty" style=${{alignItems:'flex-start', textAlign:'left', padding:'18px 20px'}}>Linda hasn’t verified anything for this ticket yet. Ask below. If the twin can’t answer, send the question to her.</div>`}
+        <${QALog} key=${t.id} tkey=${t.id} ticket=${t.id} sugs=${t.sugs} onMood=${function(m){ if (m !== mood) setTimeout(function(){ setMood(m); }, 0); }}/>
+      </section>
+    </div>
+  </div>`;
+}
+
+function Ask(){
+  var ctx = useStore(), s = ctx.s, twin = s.askTwin;
+  var mm = useState(''), mood = mm[0], setMood = mm[1];
+  var twins = [{name:'Linda C.', area:'Batch: posting, interest, statements', progs:['CBTRN02C','CBACT04C','CBSTM03A']},{name:'Raj P.', area:'CICS online: account and card screens', progs:['COACTUPC','COCRDUPC']}];
+  return html`<div className="page enter" style=${{maxWidth:980}}>
+    <div className="page-head"><div><h1>Ask a twin</h1><p>Each twin answers only from what its expert has verified. When it doesn’t know, it says so and routes your question to the expert.</p></div></div>
+    <div className="grid2">${twins.map(function(t){
+      var n = s.items.filter(function(i){ return i.owner === t.name && i.status === 'verified'; }).length;
+      return html`<button key=${t.name} className="panel" style=${{textAlign:'left', padding:16, display:'flex', gap:14, alignItems:'center', cursor:'pointer', borderColor:twin === t.name ? 'var(--accent)' : 'var(--line)', boxShadow:twin === t.name ? '0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)' : 'none', transition:'border-color .2s, box-shadow .2s'}} onClick=${function(){ ctx.dispatch({type:'patch', patch:{askTwin:t.name}}); }} aria-pressed=${twin === t.name}>
+        <${Bot} scale=${0.46} mood=${twin === t.name ? mood : ''}/>
+        <span style=${{display:'flex', flexDirection:'column', gap:3, minWidth:0}}><span style=${{fontWeight:600}}>${t.name.split(' ')[0]}’s twin</span><span className="muted" style=${{fontSize:13}}>${t.area}</span><span className="mono muted" style=${{fontSize:11.5}}>${n} verified items · retires ${PEOPLE[t.name].retires}</span></span></button>`; })}</div>
+    <section className="panel" style=${{overflow:'hidden'}}>
+      <${QALog} key=${twin} tkey=${'ask-' + twin} twin=${twin} sugs=${twin === 'Linda C.' ? ['Is RC=4 from POSTTRAN a failure?','What does reason 103 mean?','Can I run INTCALC now?'] : ['Which field holds the expiration date?','How do I add a new field to the account screen?']} onMood=${function(m){ if (m !== mood) setTimeout(function(){ setMood(m); }, 0); }}/>
+    </section>
+  </div>`;
+}
+
+/* ---------------- app ---------------- */
+function App(){
+  var r = useReducer(reducer, initState), s = r[0], dispatch = r[1];
+  var contentRef = useRef(null);
+  function go(route){ transition(function(){ dispatch({type:'route', route:route}); }); if (contentRef.current) contentRef.current.scrollTop = 0; }
+  useEffect(function(){
+    function key(ev){
+      if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 'k') { ev.preventDefault(); dispatch({type:'patch', patch:{palette:!s.palette}}); }
+      else if (ev.key === 'Escape') { if (s.palette) dispatch({type:'patch', patch:{palette:false}}); else if (s.drawer) dispatch({type:'patch', patch:{drawer:null}}); }
+    }
+    window.addEventListener('keydown', key); return function(){ window.removeEventListener('keydown', key); };
+  }, [s.palette, s.drawer]);
+  useEffect(function(){ if (s.fresh.length) { var t = setTimeout(function(){ dispatch({type:'patch', patch:{fresh:[]}}); }, 9000); return function(){ clearTimeout(t); }; } }, [s.fresh]);
+  var Page = {home:Home, session:Interview, review:Review, inbox:Inbox, library:Library, coverage:Coverage, tickets:Tickets, ask:Ask}[s.route] || Home;
+  return html`<${Store.Provider} value=${{s:s, dispatch:dispatch, go:go}}>
+    <div className="shell">
+      <${Sidebar}/>
+      <div className="main"><${Topbar}/><main className="content" ref=${contentRef}><${Page} key=${s.role + s.route}/></main></div>
+    </div>
+    ${s.drawer ? html`<${Drawer}/>` : null}
+    ${s.palette ? html`<${Palette}/>` : null}
+    <${Toasts}/>
+  <//>`;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
+})();
+</script>
+</body>
+</html>

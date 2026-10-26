@@ -1,6 +1,16 @@
-# Hypersquare
+# Hypersquare 1.0
 
-A responsive, clickable prototype for a COBOL expert community and participation program.
+A clickable concept for keeping COBOL systems maintainable after their experts retire. Two separate sites link to each other:
+
+- **Expert community** (`dist/index.html`): leaderboard, weekly quiz, coding walkthrough, sample bank offers and registration.
+- **Expert workspace** (`dist/workspace/`): experts run AI interviews with Ada and publish verified knowledge; engineers get those answers inside their tickets. Open it from **Expert workspace** in the community site's top navigation.
+
+## Live link
+
+After GitHub Pages is turned on (Settings → Pages → Source: **GitHub Actions**), every push to `main` redeploys automatically:
+
+- Community: https://vickyyan-rgb.github.io/hypersquare/
+- Workspace: https://vickyyan-rgb.github.io/hypersquare/workspace/
 
 ## Run locally
 
@@ -28,7 +38,9 @@ Quiz and walkthrough points are awarded once per page session. All progress and 
 - `dist/app.js`: offers, registration, dialogs, and routing.
 - `dist/dashboard.css`: responsive dashboard and activity-dialog styles.
 - `dist/dashboard.js`: sample rankings, profile, quiz, and coding walkthrough.
-- `preview.mjs`: local preview server bound to loopback.
+- `dist/workspace/index.html`: expert workspace, a single file (React 18 and htm from public CDNs, no build).
+- `.github/workflows/pages.yml`: deploys `dist/` to GitHub Pages on every push to `main`.
+- `preview.mjs`: local preview server bound to loopback. The workspace is at http://127.0.0.1:4173/workspace/.
 
 Deploy the contents of `dist/` with any static hosting provider. Hash navigation requires no server-side route rewriting. Google Fonts are loaded externally, with local fallbacks.
 
