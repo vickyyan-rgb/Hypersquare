@@ -9,7 +9,7 @@
 <style>
 /* Layout: app shell — role-aware sidebar, top bar, routed workspace; overlays for drawer, palette, toasts. */
 :root{
-  --bg:#F4F5F8; --surface:#FFFFFF; --surface2:#F8F9FB; --sidebar:#FAFBFC; --line:#E1E4EA; --line2:#EDEFF3;
+  --bg:#F6F5F1; --surface:#FFFFFF; --surface2:#FAF9F6; --sidebar:#F9F8F4; --line:#E2E0D8; --line2:#EEECE6;
   --ink:#0E1116; --ink2:#3F4652; --ink3:#5A6271;
   --accent:#3451D1; --accent-hover:#2A43B3; --accent-ink:#2A43B3; --accent-tint:#EEF1FD; --on-accent:#FFFFFF;
   --ok:#15803D; --ok-tint:#EAF6EE; --warn:#8A5A00; --warn-tint:#FBF3DC; --risk:#B42318; --risk-tint:#FDECEA;
@@ -89,7 +89,7 @@ textarea.field{height:auto;min-height:96px;padding:10px 12px;line-height:1.5;res
 .iconbtn:hover{background:var(--surface2);color:var(--ink)}
 .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:2px;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
 .content{flex:1;overflow:auto;min-height:0;view-transition-name:content}
-.page{padding:24px 28px 48px;max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:20px;padding-right:max(28px,env(safe-area-inset-right,0px))}
+.page{padding:28px clamp(20px,3vw,48px) 56px;max-width:1600px;margin:0 auto;display:flex;flex-direction:column;gap:20px;padding-right:max(28px,env(safe-area-inset-right,0px))}
 .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .page-head h1{font-size:24px;line-height:32px;font-weight:600;letter-spacing:-.01em}
 .page-head p{color:var(--ink2);margin-top:4px;max-width:70ch}
@@ -232,7 +232,7 @@ button.row{width:100%;border:0;border-bottom:1px solid var(--line2);background:n
 .sticky{position:sticky;bottom:0;z-index:5;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 28px;padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
 
 /* tickets */
-.tk{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:16px;align-items:start}
+.tk{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:16px;align-items:start}
 .tkitem{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-bottom:1px solid var(--line2);cursor:pointer;position:relative;transition:background .15s;text-align:left;border-left:0;border-right:0;border-top:0;background:none;width:100%}
 .tkitem:hover{background:var(--surface2)}
 .tkitem[aria-current="true"]{background:var(--accent-tint)}
@@ -468,6 +468,32 @@ button.gap{align-items:flex-start}
 .chip[aria-pressed="true"]{background:none;color:var(--ink);border-bottom-color:var(--accent)}
 .chips{gap:4px 18px}
 @media (max-width:700px){.howline li{width:100%}.howline li:not(:last-child)::after{display:none}}
+/* 1.2 · interactions */
+.nb-row{display:flex;gap:14px;align-items:center}
+.donebtn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 14px var(--sans);cursor:pointer;flex-shrink:0;transition:border-color .15s,background .2s,color .2s,transform .12s}
+.donebtn:hover{border-color:var(--ink3)}
+.donebtn:active{transform:scale(.96)}
+.donebtn .tick{width:20px;height:20px;border-radius:4px;border:1.5px solid var(--ink3);display:grid;place-items:center;color:transparent;transition:background .2s,border-color .2s,color .2s}
+.donebtn.on{background:var(--ok-tint);border-color:color-mix(in srgb,var(--ok) 50%,var(--line));color:var(--ok)}
+.donebtn.on .tick{background:var(--ok);border-color:var(--ok);color:#fff;animation:tickpop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tickpop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.nextbox{transition:border-color .3s}
+.nextbox.done{border-left-color:var(--ok)}
+.nextbox.done p{color:var(--ink3);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--ok) 60%,transparent)}
+.resolved{animation:popin .35s cubic-bezier(.2,.9,.3,1.3) both}
+.flowgrid .fcol .fnode{animation:fin .45s cubic-bezier(.2,.8,.2,1) both}
+.flowgrid .fcol:nth-child(1) .fnode:nth-child(2){animation-delay:.05s}.flowgrid .fcol:nth-child(1) .fnode:nth-child(3){animation-delay:.1s}.flowgrid .fcol:nth-child(1) .fnode:nth-child(4){animation-delay:.15s}
+.flowgrid .fcol:nth-child(3) .fnode{animation-delay:.25s}
+.flowgrid .fcol:nth-child(5) .fnode:nth-child(2){animation-delay:.45s}.flowgrid .fcol:nth-child(5) .fnode:nth-child(3){animation-delay:.5s}.flowgrid .fcol:nth-child(5) .fnode:nth-child(4){animation-delay:.55s}
+.farrow{animation:fnudge 1.8s ease-in-out infinite}
+@keyframes fin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fnudge{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+.hits .row{animation:up .3s cubic-bezier(.2,.8,.2,1) both}
+.hits .row:nth-child(3){animation-delay:.04s}.hits .row:nth-child(4){animation-delay:.08s}.hits .row:nth-child(5){animation-delay:.12s}
+.gap .gap-t{font-weight:500;transition:color .3s}
+.gap.added .gap-t{color:var(--ink3)}
+.addedtag{animation:popin .3s cubic-bezier(.2,.9,.3,1.3) both}
+@media (max-width:860px){.nb-row{flex-direction:column;align-items:stretch}.donebtn{justify-content:center}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after,::view-transition-old(content),::view-transition-new(content){animation:none!important;transition:none!important}}
 </style>
 <style>html,body{margin:0}</style>
@@ -735,7 +761,7 @@ var initState = {
     {id:'n2', role:'expert', text:'1 draft from Oct 24 is waiting for your review.', route:'review', read:false, at:'Oct 24'},
     {id:'n3', role:'engineer', text:'3 tickets match verified knowledge from Linda C.', route:'tickets', read:false, at:'Today'}
   ],
-  toasts:[], drawer:null, palette:false, ticket:'INC-2041', fresh:[], libFilter:{q:'', program:'all'}, pop:null, askTwin:'Linda C.'
+  toasts:[], drawer:null, palette:false, done:{}, ticket:'INC-2041', fresh:[], libFilter:{q:'', program:'all'}, pop:null, askTwin:'Linda C.'
 };
 function reducer(s, a){
   switch (a.type) {
@@ -776,6 +802,12 @@ function reducer(s, a){
       var newItem = {id:uid('KI-'), title:a.title, body:a.body, program:q.program, file:null, lines:'—', hl:[], code:null, source:'Written answer · just now', quote:'Answer to “' + q.text + '”', owner:'Linda C.', status:'verified', uses:0, updated:'Just now', tags:(tkt ? tkt.tags : [q.program]).concat(['answered'])};
       return Object.assign({}, s, {items:s.items.concat([newItem]), fresh:[newItem.id], pop:'library', questions:s.questions.map(function(x){ return x.id === a.id ? Object.assign({}, x, {status:'answered'}) : x; }),
         notes:[{id:uid('n'), role:'engineer', text:'Linda C. answered: “' + q.text + '”', route:'tickets', read:false, at:'Just now'}].concat(s.notes)});
+    case 'stepDone':
+      var dn = Object.assign({}, s.done), was = dn[a.ticket] === a.id;
+      if (was) delete dn[a.ticket]; else dn[a.ticket] = a.id;
+      var itm = itemById(s, a.id);
+      return Object.assign({}, s, {done:dn, items:s.items.map(function(i){ return i.id === a.id ? Object.assign({}, i, {uses:i.uses + (was ? -1 : 1)}) : i; }),
+        notes:was ? s.notes : [{id:uid('n'), role:'expert', text:'Marcus R. fixed ' + a.ticket + ' with your answer “' + (itm ? itm.title : a.id) + '”.', route:'home', read:false, at:'Just now'}].concat(s.notes)});
     case 'readNotes': return Object.assign({}, s, {notes:s.notes.map(function(n){ return n.role === s.role ? Object.assign({}, n, {read:true}) : n; })});
     default: return s;
   }
@@ -837,7 +869,7 @@ function Sidebar(){
   var badges = {
     review:s.items.filter(function(i){ return i.status === 'draft' || i.status === 'ready' || i.status === 'edited'; }).length,
     inbox:s.questions.filter(function(q){ return q.status === 'open'; }).length,
-    tickets:TICKETS.filter(function(t){ return matchesFor(s, t).length > 0; }).length
+    tickets:TICKETS.filter(function(t){ return !s.done[t.id] && matchesFor(s, t).length > 0; }).length
   };
   useLayoutEffect(function(){
     var el = navRef.current && navRef.current.querySelector('[data-route="' + s.route + '"]');
@@ -1003,7 +1035,7 @@ function Home(){
   }
   var how = [['Answer a few questions','about your code'],['Check the draft','written only from your words'],['Engineers use it','in their tickets']];
   return html`<div className="page enter">
-    <div className="page-head"><div><h1>Good morning, Linda</h1><p>Monday, October 26 · ${prep.length} question${prep.length === 1 ? '' : 's'} from engineers are waiting for you.</p></div></div>
+    <div className="page-head"><div><h1>${prep.length} question${prep.length === 1 ? ' is' : 's are'} waiting for you</h1><p>Monday, October 26 · Linda C.</p></div></div>
     <ol className="howline" aria-label="How it works">${how.map(function(h, i){ return html`<li key=${i}><span className="hn">${i + 1}</span><b>${h[0]}</b><span className="muted">${h[1]}</span></li>`; })}</ol>
     <section className="panel sec">
       <div className="sec-h"><h2>Questions prepared for you</h2><span className="muted" style=${{fontSize:13}}>From real tickets</span></div>
@@ -1224,7 +1256,7 @@ function Inbox(){
   var an = useState(null), answering = an[0], setAnswering = an[1];
   var tt = useState(''), title = tt[0], setTitle = tt[1], bb = useState(''), body = bb[0], setBody = bb[1];
   var groups = [['open','Open'],['scheduled','Added to next interview'],['answered','Answered']];
-  return html`<div className="page enter" style=${{maxWidth:960}}>
+  return html`<div className="page enter" style=${{maxWidth:1240}}>
     <div className="page-head"><div><h1>Questions from engineers</h1><p>Answer short questions in writing, or add them to your next interview so Ada asks you in context.</p></div></div>
     ${groups.map(function(g){
       var qs = s.questions.filter(function(q){ return q.status === g[0]; });
@@ -1289,7 +1321,7 @@ function Library(){
         ${progs.map(function(p){ return html`<button key=${p} className="chip mono" aria-pressed=${f.program === p} onClick=${function(){ setF({program:p}); }}>${p}</button>`; })}
       </div>
     </section>
-    ${f.program !== 'all' ? html`<${FlowMap} program=${f.program}/>` : null}
+    ${f.program !== 'all' ? html`<${FlowMap} key=${f.program} program=${f.program}/>` : null}
     ${browsing ? html`<section className="panel sec">
         <div className="sec-h"><h2>Most used this month</h2><span className="muted" style=${{fontSize:13}}>Pick a program to see its data flow</span></div>
         ${list.slice(0, 5).map(function(i){ var c = cx(i); return html`<button key=${i.id} className="row click" onClick=${function(){ openIt(i.id); }}>
@@ -1321,20 +1353,24 @@ function Coverage(){
   var pct = useCount(Math.round(total / target * 100)), high = rows.filter(function(r){ return r.level === 'High'; }).length;
   var answered = new Set(s.questions.filter(function(q){ return q.status !== 'open'; }).map(function(q){ return q.ticket; }));
   var gaps = GAPS.filter(function(g){ var m = g.src.match(/INC-\d+/); return !(m && answered.has(m[0]) && g.src.indexOf('Engineer question') === 0); });
+  var ad = useState({}), added = ad[0], setAdded = ad[1];
+  var open = gaps.filter(function(g){ return !added[g.text]; }).length;
+  var gapN = useCount(open);
   return html`<div className="page enter">
     <div className="page-head"><div><h1 style=${{display:'flex', alignItems:'center', gap:10, flexWrap:'wrap'}}>Knowledge coverage<span className="tag t-accent">Manager view</span></h1><p>What’s still unknown, before each expert retires.</p></div></div>
     <section className="panel"><div className="grid4">
-      <div className="stat"><span className="label">Known gaps</span><b style=${{color:gaps.length ? 'var(--warn)' : 'inherit'}}>${gaps.length}</b><span className="muted" style=${{fontSize:13}}>listed below</span></div>
+      <div className="stat"><span className="label">Open gaps</span><b style=${{color:open ? 'var(--warn)' : 'var(--ok)'}}>${gapN}</b><span className="muted" style=${{fontSize:13}}>${gaps.length - open} added to interviews</span></div>
       <div className="stat"><span className="label">High-risk programs</span><b style=${{color:high ? 'var(--risk)' : 'inherit'}}>${high}</b><span className="muted" style=${{fontSize:13}}>low coverage, expert leaving soon</span></div>
       <div className="stat"><span className="label">Raj P. retires</span><b>Dec 2026</b><span className="muted" style=${{fontSize:13}}>3 CICS programs</span></div>
       <div className="stat"><span className="label">Overall coverage</span><b>${pct}%</b><span className="muted" style=${{fontSize:13}}>${total} of ${target} target items</span></div>
     </div></section>
     <section className="panel sec">
       <div className="sec-h"><h2>What we still don’t know</h2></div>
-      ${gaps.map(function(g, k){ return html`<button key=${k} className="row click gap" onClick=${function(){ ctx.dispatch({type:'patch', patch:{libFilter:{q:'', program:g.program}}}); ctx.go('library'); }}>
+      ${gaps.map(function(g, k){ var isAdded = !!added[g.text]; return html`<div key=${k} className=${'row gap' + (isAdded ? ' added' : '')}>
         <span className="tag t-plain mono">${g.program}</span>
-        <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2}}><span style=${{fontWeight:500}}>${g.text}</span><span className="muted" style=${{fontSize:13}}>${g.src} · ask ${g.who}</span></span>
-        ${g.urgent ? html`<span className="tag t-risk">Expert leaves soon</span>` : null}</button>`; })}
+        <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2}}><span className="gap-t">${g.text}</span><span className="muted" style=${{fontSize:13}}>${g.src}${g.urgent ? ' · expert leaves soon' : ''}</span></span>
+        ${isAdded ? html`<span className="tag t-ok addedtag"><${Icon} n="check" size=${12}/>In ${g.who.split(' ')[0]}’s next interview</span>`
+          : html`<button className="btn btn-secondary" onClick=${function(){ var n = Object.assign({}, added); n[g.text] = true; setAdded(n); ctx.dispatch({type:'toast', text:'Added to ' + g.who + '’s next interview.'}); }}><${Icon} n="calendar"/>Ask ${g.who.split(' ')[0]}</button>`}</div>`; })}
     </section>
     <section className="panel tblwrap">
       <div className="sec-h"><h2>Coverage by program</h2></div>
@@ -1397,10 +1433,12 @@ function QALog(p){
 
 function AnswerCard(p){
   var ctx = useStore(), s = ctx.s, it = p.it, c = cx(it), fresh = s.fresh.indexOf(it.id) >= 0;
+  var isDone = p.ticket && s.done[p.ticket] === it.id, otherDone = p.ticket && s.done[p.ticket] && !isDone;
+  function toggle(){ var was = isDone; ctx.dispatch({type:'stepDone', ticket:p.ticket, id:it.id}); if (!was) ctx.dispatch({type:'toast', text:'Marked done. ' + p.ticket + ' is resolved, and ' + it.owner.split(' ')[0] + ' will see her answer helped.'}); }
   return html`<article className="acard" style=${{animation:fresh ? 'fresh 2.4s ease-out' : 'none'}}>
     <div className="acard-h"><span className="tag t-ok"><${Icon} n="check" size=${12}/>Confirmed</span>${c.stale ? html`<span className="tag t-warn">Needs re-review</span>` : null}${fresh ? html`<span className="tag t-accent newtag">New</span>` : null}<span className="mono muted acard-ver">${c.version} · confirmed ${c.confirmed} by ${it.owner}</span></div>
     <h3>${it.title}</h3>
-    ${c.next ? html`<div className="nextbox"><span className="label">Next step</span><p>${c.next}</p></div>` : null}
+    ${c.next ? html`<div className=${'nextbox' + (isDone ? ' done' : '')}><div className="nb-row"><div style=${{flex:1, minWidth:0}}><span className="label">Next step</span><p>${c.next}</p></div>${p.ticket && !otherDone ? html`<button className=${'donebtn' + (isDone ? ' on' : '')} onClick=${toggle} aria-pressed=${isDone}><span className="tick"><${Icon} n="check" size=${14}/></span>${isDone ? 'Done' : 'Mark done'}</button>` : null}</div></div>` : null}
     <div className="ablock"><span className="label">Why</span><p>${it.body}</p></div>
     ${c.applies ? html`<div className="ablock"><div className="fit"><div><span className="label fit-ok">Applies when</span><p>${c.applies}</p></div>${c.notApplies ? html`<div><span className="label fit-no">Doesn’t apply when</span><p>${c.notApplies}</p></div>` : null}</div></div>` : null}
     ${c.stale ? html`<div className="stale"><${Icon} n="flag"/><span>${c.stale}</span></div>` : null}
@@ -1412,24 +1450,24 @@ function Tickets(){
   var t = TICKETS.find(function(x){ return x.id === s.ticket; }) || TICKETS[0];
   var pl = useState(false), playing = pl[0], setPlaying = pl[1];
   var matches = matchesFor(s, t);
-  return html`<div className="page enter" style=${{maxWidth:1320}}>
+  return html`<div className="page enter">
     <div className="page-head"><div><h1>My tickets</h1><p>Confirmed expert answers for each ticket.</p></div></div>
     <div className="tk">
       <section className="panel" style=${{overflow:'hidden'}}>
         <div className="sec-h"><h2>Assigned to me</h2><span className="mono muted">${TICKETS.length}</span></div>
         ${TICKETS.map(function(x){ var n = matchesFor(s, x).length, isNew = matchesFor(s, x).some(function(i){ return s.fresh.indexOf(i.id) >= 0; });
           return html`<button key=${x.id} className="tkitem" aria-current=${x.id === t.id} onClick=${function(){ transition(function(){ ctx.dispatch({type:'patch', patch:{ticket:x.id}}); }); setPlaying(false); }}>
-            <span style=${{display:'flex', alignItems:'center', gap:8}}><span className="mono muted" style=${{fontSize:12}}>${x.id}</span><span className=${'tag ' + (x.prio === 'Urgent' ? 't-risk' : x.prio === 'High' ? 't-warn' : 't-plain')}>${x.prio}</span><span className="muted" style=${{fontSize:13, marginLeft:'auto'}}>${x.age}</span></span>
+            <span style=${{display:'flex', alignItems:'center', gap:8}}><span className="mono muted" style=${{fontSize:12}}>${x.id}</span>${s.done[x.id] ? html`<span className="tag t-ok resolved"><${Icon} n="check" size=${12}/>Resolved</span>` : html`<span className=${'tag ' + (x.prio === 'Urgent' ? 't-risk' : x.prio === 'High' ? 't-warn' : 't-plain')}>${x.prio}</span>`}<span className="muted" style=${{fontSize:13, marginLeft:'auto'}}>${x.age}</span></span>
             <span style=${{fontWeight:500, color:'var(--ink)'}}>${x.title}</span>
             <span style=${{fontSize:13, color:n ? 'var(--accent-ink)' : 'var(--ink3)', display:'inline-flex', alignItems:'center', gap:6}}><${Mark} size=${13}/>${n ? n + ' confirmed answer' + (n > 1 ? 's' : '') : 'No confirmed answers yet'}${isNew ? html`<span className="tag t-accent newtag" style=${{height:18, fontSize:11}}>New</span>` : null}</span>
           </button>`; })}
       </section>
       <section className="panel" style=${{overflow:'hidden', viewTransitionName:'ticket'}}>
         <div style=${{padding:'18px 20px', borderBottom:'1px solid var(--line2)', display:'flex', flexDirection:'column', gap:8}}>
-          <span style=${{display:'flex', gap:8, alignItems:'center', flexWrap:'wrap'}}><span className="mono muted" style=${{fontSize:12}}>${t.id}</span><span className=${'tag ' + (t.prio === 'Urgent' ? 't-risk' : t.prio === 'High' ? 't-warn' : 't-plain')}>${t.prio}</span><span className="tag t-plain mono">${t.program}</span><span className="muted" style=${{fontSize:13, marginLeft:'auto'}}>${matches.length ? matches.length + ' confirmed answer' + (matches.length > 1 ? 's' : '') + ' · from ' + Array.from(new Set(matches.map(function(i){ return i.owner; }))).join(' and ') : 'No confirmed answers yet'}</span></span>
+          <span style=${{display:'flex', gap:8, alignItems:'center', flexWrap:'wrap'}}><span className="mono muted" style=${{fontSize:12}}>${t.id}</span>${s.done[t.id] ? html`<span className="tag t-ok resolved"><${Icon} n="check" size=${12}/>Resolved</span>` : html`<span className=${'tag ' + (t.prio === 'Urgent' ? 't-risk' : t.prio === 'High' ? 't-warn' : 't-plain')}>${t.prio}</span>`}<span className="tag t-plain mono">${t.program}</span><span className="muted" style=${{fontSize:13, marginLeft:'auto'}}>${matches.length ? matches.length + ' confirmed answer' + (matches.length > 1 ? 's' : '') + ' · from ' + Array.from(new Set(matches.map(function(i){ return i.owner; }))).join(' and ') : 'No confirmed answers yet'}</span></span>
           <h2 style=${{fontSize:20, fontWeight:600}}>${t.title}</h2>
         </div>
-        ${matches.length ? html`<div className="acards">${matches.map(function(i){ return html`<${AnswerCard} key=${i.id} it=${i}/>`; })}
+        ${matches.length ? html`<div className="acards">${matches.map(function(i){ return html`<${AnswerCard} key=${i.id} it=${i} ticket=${t.id}/>`; })}
           ${t.clip ? html`<div className="row" style=${{gap:14, borderTop:'1px solid var(--line2)'}}>
               <button className="btn btn-secondary" style=${{width:40, padding:0}} onClick=${function(){ setPlaying(!playing); }} aria-label=${playing ? 'Pause clip' : 'Play clip'}><${Icon} n=${playing ? 'pause' : 'play'}/></button>
               <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}><span style=${{fontWeight:500}}>Linda explains the DEFAULT fallback <span className="mono muted" style=${{fontSize:12}}>1:12</span></span>
@@ -1454,7 +1492,7 @@ function Ask(){
     .filter(function(x){ return x.n > 0; }).sort(function(a, b){ return b.n - a.n || b.i.uses - a.i.uses; }).slice(0, 4).map(function(x){ return x.i; }) : [];
   function submit(ev){ ev.preventDefault(); if (!text.trim() || !api.current) return; api.current(text); setText(''); }
   var sugs = twin === 'Linda C.' ? ['Is RC=4 from POSTTRAN a failure?','What does reason 103 mean?','Can I run INTCALC now?'] : ['Which field holds the expiration date?','How do I add a new field to the account screen?'];
-  return html`<div className="page enter" style=${{maxWidth:980}}>
+  return html`<div className="page enter" style=${{maxWidth:1240}}>
     <div className="page-head"><div><h1>Ask or search</h1><p>Search confirmed answers, or ask an expert. Nothing is guessed.</p></div></div>
     <section className="panel askhero">
       <form onSubmit=${submit} className="bigsearch big">

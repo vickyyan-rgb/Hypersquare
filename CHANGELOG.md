@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2 — 2026-10-30
+
+- Wider layouts for laptop screens: the overview and Bank offers stretch up to about 1520–1640px, and the workspace pages up to 1600px.
+- Quieter, more professional look: warm neutral background, no decorative icons beside headings, plain text labels instead of pills, neutral initials, flat panels.
+- Overview: "How one answer helps" is a short auto-playing demo (Linda's answer is typed out, the draft gets a Confirmed stamp, Marcus's ticket flips from Open to Resolved). Click a step to jump; hover to pause.
+- Overview: sections fade in as you scroll, leaderboard rows slide in, points count up, and finishing the weekly quiz counts your points up with a "+75".
+- Workspace, engineer: "Mark done" on a ticket's next step resolves the ticket and adds one to the answer's use count, which the expert sees on her home page.
+- Workspace, coverage: each open gap has an "Ask Linda / Ask Raj" button that adds it to the expert's next interview.
+- Workspace, library: the data-flow map animates in when you pick a program.
+- Expert home leads with the task: "3 questions are waiting for you".
+
 ## 1.1 — 2026-10-30
 
 Changes from the six user interviews. The Interview and Review pages are owned by a teammate and were left as they were, except for the code panel.
