@@ -204,6 +204,52 @@ button.row{width:100%;border:0;border-bottom:1px solid var(--line2);background:n
 @keyframes ohop{0%,100%{transform:translateY(0)}40%{transform:translateY(-16px)}}
 @keyframes rup{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes nodein{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+/* interview v2: question first, small Ada, answer guide, history */
+.ivl{display:flex;flex-direction:column;gap:16px;min-width:0}
+.adabar{display:flex;align-items:center;gap:12px;padding:10px 16px 10px 10px;border-radius:12px;background:radial-gradient(ellipse at 80% 0%,#2B3870 0%,#171C33 55%,#0A0D18 100%);color:#E8EAEF}
+.adahelp{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;height:34px}.adahelp:hover{background:rgba(255,255,255,.18)}
+.recdot2{display:inline-flex;align-items:center;gap:6px;font:500 12px var(--mono);color:#FFB4AE}.recdot2 i{width:7px;height:7px;border-radius:50%;background:#F05A4F;animation:pulse 1.2s ease-in-out infinite}
+.orbwrap.sm{width:56px;height:56px}.orbwrap.sm .orb{width:42px;height:42px;gap:7px;box-shadow:0 6px 18px rgba(52,81,209,.5),inset 0 -5px 9px rgba(42,67,179,.35),inset 0 4px 8px rgba(255,255,255,.75)}
+.orbwrap.sm .oeye{width:5px;height:9px;border-radius:3px}.orbwrap.sm .ring{inset:6px;border-width:1.5px}
+.orbwrap.sm.listen .oeye{height:11px}.orbwrap.sm.think .oeye{height:4px}.orbwrap.sm.happy .oeye{width:8px;height:5px;border-width:2px}
+.ivintro,.ivq,.ivreflect,.ivedit,.ivhist{padding:22px 24px;display:flex;flex-direction:column;gap:14px;border-radius:12px}
+.ivsteps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ivsteps li{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line2);border-radius:8px;background:var(--surface2)}
+.ivsteps b{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);font:600 13px var(--sans)}
+.ivsteps div,.ivguide>div>div,.rvflow li div{display:flex;flex-direction:column;gap:2px;font-size:13.5px}.ivsteps span,.ivguide span,.rvflow li span{color:var(--ink2)}
+.ivguide{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:8px;background:var(--accent-tint)}
+.ivguide>div{display:flex;gap:12px;align-items:flex-start}.ivguide .gi{color:var(--accent-ink);padding-top:2px}
+.ivq{border-color:color-mix(in srgb,var(--accent) 35%,var(--line));box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 8%,transparent);animation:up .35s cubic-bezier(.2,.8,.2,1) both}
+.ivq-text{font-size:22px;line-height:31px;font-weight:600;color:var(--ink);max-width:62ch;min-height:62px}
+.ivhints{display:flex;flex-wrap:wrap;gap:8px}.ivhints span{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2);background:var(--surface2);border:1px solid var(--line2);border-radius:999px;padding:4px 10px}
+.codeed{min-height:150px;font:13px/1.55 var(--mono);white-space:pre;overflow:auto}
+.lbl{display:inline-flex;align-items:center;gap:6px;font:600 11.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.ivcmp,.rvcmp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:14px}
+.ivsaid,.rvsaid{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:8px;background:var(--surface2);border:1px solid var(--line2)}
+.rvsaid .srcbtn{align-self:flex-start}
+.ivsaid p,.rvsaid p{font-style:italic;color:var(--ink);font-size:14.5px;line-height:1.55}
+.ivread,.rvai{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:8px;border:1px dashed color-mix(in srgb,var(--accent) 45%,var(--line))}
+.rvai p{font-size:14.5px;line-height:1.55;color:var(--ink)}
+.codebox{margin:0;padding:10px 12px;border-radius:6px;background:#0E1116;color:#DDE3FF;font-size:12px;line-height:1.5;overflow:auto;white-space:pre}
+.ivsteplist{list-style:none;padding:0;margin:0;counter-reset:st;display:flex;flex-direction:column;gap:6px}
+.ivsteplist li{counter-increment:st;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font-size:14px;line-height:1.35;animation:nodein .3s cubic-bezier(.2,.8,.2,1) both}
+.ivsteplist li::before{content:counter(st);font:600 11px var(--mono);color:var(--ink3);width:12px}
+.ivsteplist li>span:first-of-type{flex:1;min-width:160px}
+.ivsteplist li.warn{border-color:color-mix(in srgb,var(--warn) 60%,transparent)}.ivsteplist li.risk{border-color:color-mix(in srgb,var(--risk) 60%,transparent)}
+.ivfu{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:8px;background:var(--warn-tint);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent)}
+.ivfu p{font-size:14.5px;color:var(--ink)}
+.ivhist{gap:4px;padding:16px 20px}
+.ivhrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line2)}.ivhrow:first-of-type{border-top:0}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rvflow{padding:16px 20px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.rvflow ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.rvflow li{display:flex;gap:10px;align-items:flex-start;position:relative}
+.rvn{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent-tint);color:var(--accent-ink);font:600 12px var(--sans)}
+.rvmeta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px}.rvmeta span{display:inline-flex;align-items:center;gap:5px}
+.rvopen{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:8px;background:var(--warn-tint);color:var(--ink);font-size:14px;border:1px solid color-mix(in srgb,var(--warn) 30%,transparent)}
+.rvopen>svg{color:var(--warn);margin-top:2px;flex-shrink:0}.rvopen.done{background:var(--surface2);border-color:var(--line2)}
+@media (max-width:900px){.ivcmp,.rvcmp{grid-template-columns:minmax(0,1fr)}.rvflow ol,.ivsteps{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.ivq-text{font-size:19px;line-height:27px}.ivintro,.ivq,.ivreflect,.ivedit{padding:18px}}
 @media (max-width:1100px){.iv2{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:700px){.racks{padding:34px 20px 0}.selftile{width:120px;height:80px}.selftile span:last-child{display:none}.nodes{flex-direction:column;align-items:stretch}.nodes .link{width:1px;height:10px;align-self:center}.stage{min-height:640px}.reflect{left:12px;right:12px;bottom:12px;padding:16px}.ivbar{margin:16px -16px 0;padding:12px 16px}.ivbar>span:nth-child(2){display:none}}
 
@@ -457,19 +503,19 @@ var INITIAL_ITEMS = [
   {id:'KI-072', title:'Run INTCALC only after POSTTRAN finishes', body:'Interest is computed on the category balances that posting updates. If INTCALC runs first, customers are billed on yesterday’s balances.', program:'INTCALC', file:null, lines:'JCL', hl:[], code:null, source:'Interview · Oct 12 · 21:10', quote:'“Order is POSTTRAN, then INTCALC, then statements. Never shuffle it.”', owner:'Linda C.', status:'verified', uses:11, updated:'Oct 12', tags:['INTCALC','POSTTRAN','CBACT04C','order']},
   {id:'KI-061', title:'The Group ID on the account screen decides the interest rate', body:'ACCT-GROUP-ID, edited on the account update screen, is the key INTCALC uses to find a disclosure group rate. A group with no rate row falls back to DEFAULT.', program:'COACTUPC', file:null, lines:'L432', hl:[], code:null, source:'Interview · Oct 5 · 18:44', quote:'“Ops changes a group on screen and nobody tells batch.”', owner:'Raj P.', status:'verified', uses:7, updated:'Oct 5', tags:['COACTUPC','DEFAULT','CBACT04C','group']},
   {id:'KI-077', title:'CBSTM03A loops with GO TO, not PERFORM', body:'The statement program jumps back to 0000-START and 1000-MAINLINE with GO TO. Keep that structure when you change it, and test against a full statement run.', program:'CBSTM03A', file:null, lines:'L761–815', hl:[], code:null, source:'Interview · Oct 19 · 09:05', quote:'“Somebody always wants to clean it up. Don’t do it the week before month-end.”', owner:'Linda C.', status:'verified', uses:4, updated:'Oct 19', tags:['CBSTM03A','statements']},
-  {id:'KI-093', title:'Run CREASTMT only after posting and interest finish', body:'Statements read the balances that POSTTRAN and INTCALC update. If CREASTMT runs early, customers get statements without last night’s interest.', program:'CBSTM03A', file:null, lines:'JCL', hl:[], code:null, source:'Interview · Oct 24 · 08:12', quote:'“Statements are the last thing. Always.”', owner:'Linda C.', status:'draft', uses:0, updated:'Oct 24', tags:['CBSTM03A','statements','order','INTCALC']}
+  {id:'KI-093', said:'Statements are the last thing. Always. Posting, then interest, then statements.', version:'CREASTMT JCL · Oct 2026', open:'What to do if CREASTMT already ran before INTCALC finished.',  title:'Run CREASTMT only after posting and interest finish', body:'Statements read the balances that POSTTRAN and INTCALC update. If CREASTMT runs early, customers get statements without last night’s interest.', program:'CBSTM03A', file:null, lines:'JCL', hl:[], code:null, source:'Interview · Oct 24 · 08:12', quote:'“Statements are the last thing. Always.”', owner:'Linda C.', status:'draft', uses:0, updated:'Oct 24', tags:['CBSTM03A','statements','order','INTCALC']}
 ];
 var SESSION_DRAFTS = [
-  {id:'KI-101', title:'Add a rate row before launching a new card group', body:'If a new card group goes live without a row in the disclosure group file, INTCALC quietly bills those accounts at the DEFAULT rate. Add the rate row first.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L415–439', hl:[[436,438]], code:C04.rate, source:'Interview · today · 02:14', quote:'“We never wanted billing to stop for one bad record. So if the group is missing, it falls back to DEFAULT, and nobody notices.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','INTCALC','group']},
-  {id:'KI-102', title:'Check the INTCALC output every morning', body:'Search last night’s SYSOUT for ‘DISCLOSURE GROUP RECORD MISSING’. Any hit means an account was billed at the DEFAULT rate.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L418', hl:[[418,419]], code:C04.rate.slice(0, 6), source:'Interview · today · 05:40', quote:'“Nobody gets paged. The only trace is that DISPLAY line in SYSOUT, so I check it with my coffee.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','SYSOUT','INTCALC']},
-  {id:'KI-103', title:'If the DEFAULT row is missing, INTCALC abends', body:'Restore the DEFAULT row in the disclosure group file, then rerun INTCALC. Don’t correct accounts by hand.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L443–458', hl:[[455,458]], code:C04.abend, source:'Interview · today · 11:05', quote:'“Put the DEFAULT row back first. Then rerun. Don’t touch the accounts.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','abend','INTCALC']}
+  {id:'KI-101', said:'We never wanted billing to stop for one bad record. So if the group is missing, it falls back to DEFAULT, and nobody notices. When product launches a new card group, the rate row has to go in first.', version:'CBACT04C.cbl · rev 14 · Oct 24',  title:'Add a rate row before launching a new card group', body:'If a new card group goes live without a row in the disclosure group file, INTCALC quietly bills those accounts at the DEFAULT rate. Add the rate row first.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L415–439', hl:[[436,438]], code:C04.rate, source:'Interview · today · 02:14', quote:'“We never wanted billing to stop for one bad record. So if the group is missing, it falls back to DEFAULT, and nobody notices.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','INTCALC','group']},
+  {id:'KI-102', said:'Nobody gets paged. The only trace is that DISPLAY line in SYSOUT, so I check it with my coffee every morning.', version:'CBACT04C.cbl · rev 14 · Oct 24', open:'Who checks SYSOUT when Linda is away.',  title:'Check the INTCALC output every morning', body:'Search last night’s SYSOUT for ‘DISCLOSURE GROUP RECORD MISSING’. Any hit means an account was billed at the DEFAULT rate.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L418', hl:[[418,419]], code:C04.rate.slice(0, 6), source:'Interview · today · 05:40', quote:'“Nobody gets paged. The only trace is that DISPLAY line in SYSOUT, so I check it with my coffee.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','SYSOUT','INTCALC']},
+  {id:'KI-103', said:'Put the DEFAULT row back first. Then rerun. Don’t touch the accounts by hand.', version:'CBACT04C.cbl · rev 14 · Oct 24',  title:'If the DEFAULT row is missing, INTCALC abends', body:'Restore the DEFAULT row in the disclosure group file, then rerun INTCALC. Don’t correct accounts by hand.', program:'CBACT04C', file:'CBACT04C.cbl', lines:'L443–458', hl:[[455,458]], code:C04.abend, source:'Interview · today · 11:05', quote:'“Put the DEFAULT row back first. Then rerun. Don’t touch the accounts.”', owner:'Linda C.', status:'draft', uses:0, updated:'Today', tags:['CBACT04C','DEFAULT','abend','INTCALC']}
 ];
 var QS = [
-  {short:'Why fall back to DEFAULT', hl:[[436,438]], q:'When an account’s disclosure group is missing, this job uses the DEFAULT rate instead of stopping. Why was it built that way?', steps:[['Look up the account group’s interest rate','',''],['Found: use the group’s rate','',''],['Not found: quietly use the DEFAULT rate','warn','Silent fallback'],['DEFAULT row missing too: the job abends','risk','Job stops']], ex:'A new “Travel” card group goes live without a rate row, so its accounts are billed at the DEFAULT rate.'},
-  {short:'How anyone would notice', hl:[[418,419]], q:'How would anyone know an account was charged the DEFAULT rate?', steps:[['The job falls back to DEFAULT','',''],['It writes “DISCLOSURE GROUP RECORD MISSING” to SYSOUT','',''],['Nobody is alerted or paged','warn','No alert'],['It’s only caught if someone reads the job output','risk','Easy to miss']], ex:'Search last night’s SYSOUT for the message. Every hit is an account billed at DEFAULT.'},
-  {short:'The interest formula', hl:[[464,465]], q:'Interest is balance × rate ÷ 1200. Does that hold for every card product?', steps:[['Monthly interest = balance × rate ÷ 1200','',''],['The rate is an annual %, so ÷12 months and ÷100','',''],['Same formula for every card group','',''],['Promo rates are just a different rate row','warn','Assumption']], ex:'A $1,200 balance at 18% gives $18 of interest this month.'},
-  {short:'Fees that aren’t here', hl:[[518,519]], q:'1400-COMPUTE-FEES says “To be implemented.” How are fees charged today?', steps:[['1400-COMPUTE-FEES is empty','',''],['This job charges no fees','warn','Gap'],['Fees come from a separate process','',''],['Get a review before adding fee logic here','risk','Needs review']], ex:'Ticket CHG-118 (“add a monthly fee”) shouldn’t go into CBACT04C without review.'},
-  {short:'When DEFAULT is missing too', hl:[[455,458]], q:'If the DEFAULT row is also missing, the job abends. What should the on-call engineer do?', steps:[['The DEFAULT rate row is also missing','',''],['Job stops: ERROR READING DEFAULT DISCLOSURE GROUP','risk','Abend'],['Restore the DEFAULT row in the disclosure group file','',''],['Rerun INTCALC. Don’t touch the accounts','','']], ex:'Put the DEFAULT row back first, then rerun. Fixing accounts by hand makes it worse.'}
+  {said:'We never wanted billing to stop because of one bad record. So if the group is missing, it falls back to DEFAULT. Honestly, nobody notices when that happens.', short:'Why fall back to DEFAULT', hl:[[436,438]], q:'When an account’s disclosure group is missing, this job uses the DEFAULT rate instead of stopping. Why was it built that way?', steps:[['Look up the account group’s interest rate','',''],['Found: use the group’s rate','',''],['Not found: quietly use the DEFAULT rate','warn','Silent fallback'],['DEFAULT row missing too: the job abends','risk','Job stops']], ex:'A new “Travel” card group goes live without a rate row, so its accounts are billed at the DEFAULT rate.'},
+  {said:'Nobody gets paged. The only trace is that DISPLAY line in SYSOUT, so I check it every morning with my coffee.', fu:'Does anyone besides you check SYSOUT when you are away? If not, should I note that as a risk?', fuStep:2, short:'How anyone would notice', hl:[[418,419]], q:'How would anyone know an account was charged the DEFAULT rate?', steps:[['The job falls back to DEFAULT','',''],['It writes “DISCLOSURE GROUP RECORD MISSING” to SYSOUT','',''],['Nobody is alerted or paged','warn','No alert'],['It’s only caught if someone reads the job output','risk','Easy to miss']], ex:'Search last night’s SYSOUT for the message. Every hit is an account billed at DEFAULT.'},
+  {said:'Yes, it is balance times rate over 1200 for every group. Promo rates are just another rate row, I think.', fu:'You said “I think” about promo rates. Should I keep that as not confirmed, or do you know for sure?', fuStep:3, short:'The interest formula', hl:[[464,465]], q:'Interest is balance × rate ÷ 1200. Does that hold for every card product?', steps:[['Monthly interest = balance × rate ÷ 1200','',''],['The rate is an annual %, so ÷12 months and ÷100','',''],['Same formula for every card group','',''],['Promo rates are just a different rate row','warn','Assumption']], ex:'A $1,200 balance at 18% gives $18 of interest this month.'},
+  {said:'Fees are not in this job. There is a separate process for that. I would have to check which one.', fu:'You weren’t sure which process charges fees. Should I leave it as unknown, or can you name it?', fuStep:2, short:'Fees that aren’t here', hl:[[518,519]], q:'1400-COMPUTE-FEES says “To be implemented.” How are fees charged today?', steps:[['1400-COMPUTE-FEES is empty','',''],['This job charges no fees','warn','Gap'],['Fees come from a separate process','',''],['Get a review before adding fee logic here','risk','Needs review']], ex:'Ticket CHG-118 (“add a monthly fee”) shouldn’t go into CBACT04C without review.'},
+  {said:'Put the DEFAULT row back first, then rerun INTCALC. Don’t touch the accounts by hand, that makes it worse.', short:'When DEFAULT is missing too', hl:[[455,458]], q:'If the DEFAULT row is also missing, the job abends. What should the on-call engineer do?', steps:[['The DEFAULT rate row is also missing','',''],['Job stops: ERROR READING DEFAULT DISCLOSURE GROUP','risk','Abend'],['Restore the DEFAULT row in the disclosure group file','',''],['Rerun INTCALC. Don’t touch the accounts','','']], ex:'Put the DEFAULT row back first, then rerun. Fixing accounts by hand makes it worse.'}
 ];
 var TICKETS = [
   {id:'INC-2041', title:'Customer disputes July interest on new Travel card', prio:'High', age:'2h ago', program:'CBACT04C', desc:'Cardholder on the new Travel card says July interest is higher than the rate in her agreement. Three similar calls this week.', tags:['CBACT04C','DEFAULT','INTCALC'], clip:true,
@@ -828,7 +874,27 @@ function Home(){
 }
 
 function Orb(p){
-  return html`<div className=${'orbwrap ' + (p.mood || '')} aria-hidden="true"><span className="ring r1"></span><span className="ring r2"></span><div className="orb"><span className="oeye"></span><span className="oeye"></span></div></div>`;
+  return html`<div className=${'orbwrap ' + (p.sm ? 'sm ' : '') + (p.mood || '')} aria-hidden="true"><span className="ring r1"></span><span className="ring r2"></span><div className="orb"><span className="oeye"></span><span className="oeye"></span></div></div>`;
+}
+var IV_GUIDE = [
+  ['chat', 'Who reads this', 'Engineers in their first month on CBACT04C, like Marcus (week 2). Assume they can read COBOL but don’t know this system.'],
+  ['clock', 'How much detail', 'What happens, why it was built that way, and what to check. One or two minutes per answer is enough.'],
+  ['help', 'Not sure?', 'Say so, or skip. Ada keeps it as an open question and never fills in an answer for you.']
+];
+var ST_LABEL = {done:['t-ok','Confirmed'], edited:['t-ok','Corrected'], skip:['t-plain','Skipped'], unsure:['t-warn','Not sure']};
+function IvIntro(p){
+  return html`<section className="panel ivintro enter" aria-label="How this interview works">
+    <span className="tag t-accent" style=${{alignSelf:'flex-start'}}><${Icon} n="clock" size=${12}/>About 15 minutes · 5 questions · stop any time</span>
+    <h2 style=${{fontSize:22, fontWeight:600}}>How this interview works</h2>
+    <ol className="ivsteps">
+      <li><b>1</b><div><strong>Ada asks about real code</strong><span>Each question points to the lines it is about, shown on the right.</span></div></li>
+      <li><b>2</b><div><strong>Answer your way</strong><span>Talk, type, or edit the code and add one sentence on why.</span></div></li>
+      <li><b>3</b><div><strong>Check what Ada understood</strong><span>Your words sit next to her summary. Fix anything that is off.</span></div></li>
+      <li><b>4</b><div><strong>You decide what gets shared</strong><span>Answers become drafts. Nothing reaches engineers until you publish in Review.</span></div></li>
+    </ol>
+    <div className="ivguide">${IV_GUIDE.map(function(g){ return html`<div key=${g[1]}><span className="gi"><${Icon} n=${g[0]} size=${16}/></span><div><strong>${g[1]}</strong><span>${g[2]}</span></div></div>`; })}</div>
+    <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><button className="btn btn-primary btn-lg" onClick=${p.onStart}>${p.resume ? 'Back to the question' : 'Start interview'}<${Icon} n="arrow"/></button></div>
+  </section>`;
 }
 function Interview(){
   var ctx = useStore(), s = ctx.s, S = s.session, Q = QS[S.q], ph = S.phase;
@@ -839,9 +905,16 @@ function Interview(){
   var sc = useState(0), sec = sc[0], setSec = sc[1];
   var tx = useState(''), typeText = tx[0], setTypeText = tx[1];
   var fx = useState(''), fixText = fx[0], setFixText = fx[1];
+  var cd = useState(''), codeText = cd[0], setCodeText = cd[1];
+  var cw = useState(''), codeWhy = cw[0], setCodeWhy = cw[1];
+  var sd = useState(null), said = sd[0], setSaid = sd[1];
+  var fu = useState('none'), fuState = fu[0], setFu = fu[1];
+  var fa = useState(''), fuText = fa[0], setFuText = fa[1];
+  var gd = useState(false), guide = gd[0], setGuide = gd[1];
+  var hs = useState([]), hist = hs[0], setHist = hs[1];
   var flyRef = useRef(null);
   function patch(p){ ctx.dispatch({type:'session', patch:p}); }
-  useEffect(function(){ if (ph === 'idle') patch({phase:'ask'}); }, []);
+  useEffect(function(){ if (ph === 'idle') patch({phase:'intro'}); }, []);
   useEffect(function(){ setTyped(ph === 'ask' ? 0 : Q.q.length); }, [S.q]);
   useEffect(function(){
     if (ph !== 'ask' || typed >= Q.q.length) return;
@@ -849,62 +922,60 @@ function Interview(){
     return function(){ clearTimeout(t); };
   }, [typed, ph, S.q]);
   useEffect(function(){ if (ph !== 'rec') return; var t = setInterval(function(){ setSec(Math.floor((Date.now() - recStart) / 1000)); }, 250); return function(){ clearInterval(t); }; }, [ph, recStart]);
+  var hlLabel = 'lines ' + Q.hl[0][0] + (Q.hl[0][1] !== Q.hl[0][0] ? '–' + Q.hl[0][1] : '');
+  function qLines(){ var a = Q.hl[0][0], b = Q.hl[0][1]; return SESSION_CODE.filter(function(r){ return r && r[0] >= a && r[0] <= b; }).map(function(r){ return r[1]; }).join('\n'); }
   function startRec(click){ setTyped(Q.q.length); setRecStart(Date.now()); setSec(0); setClickMode(click); patch({phase:'rec'}); }
-  function stopRec(){ setClickMode(false); setThinking(true); patch({phase:'reflect'}); setTimeout(function(){ setThinking(false); }, REDUCE ? 0 : 1500); }
+  function toReflect(x){ setSaid(x); setFu(Q.fu ? 'open' : 'none'); setFuText(''); setThinking(true); patch({phase:'reflect'}); setTimeout(function(){ setThinking(false); }, REDUCE ? 0 : 1300); }
+  function stopRec(){ setClickMode(false); toReflect({kind:'Voice · transcript', text:Q.said}); }
+  function sendTyped(){ toReflect({kind:'Typed', text:typeText.trim() || Q.said}); }
+  function sendCode(){ toReflect({kind:'Code edit · ' + hlLabel, text:codeWhy.trim() || 'No reason given yet.', code:codeText}); }
   function advance(status){
-    var st = S.st.slice(); st[S.q] = status;
+    var st = S.st.slice(); st[S.q] = status === 'edited' ? 'done' : status;
+    setHist(hist.concat([{q:S.q, status:status, said:said, fu:fuState}]));
+    setSaid(null); setFu('none');
     if (S.q === 4) { ctx.dispatch({type:'session', patch:{st:st}}); ctx.dispatch({type:'sessionDone'}); ctx.dispatch({type:'toast', text:'Interview complete. 3 drafts are ready for review.'}); }
-    else { setTyped(0); setTypeText(''); setFixText(''); ctx.dispatch({type:'session', patch:{st:st, q:S.q + 1, phase:'ask'}}); }
+    else { setTyped(0); setTypeText(''); setFixText(''); setCodeWhy(''); ctx.dispatch({type:'session', patch:{st:st, q:S.q + 1, phase:'ask'}}); }
   }
   function fly(status){
     var card = flyRef.current, seg = document.querySelector('[data-seg="' + S.q + '"]');
     if (card && seg && card.animate && !REDUCE) {
       var a = card.getBoundingClientRect(), b = seg.getBoundingClientRect();
-      card.animate([{transform:'none', opacity:1}, {transform:'translate(' + (b.left + b.width / 2 - (a.left + a.width / 2)) + 'px,' + (b.top - (a.top + a.height / 2)) + 'px) scale(.06)', opacity:0}], {duration:540, easing:'cubic-bezier(.5,0,.75,0)', fill:'forwards'}).onfinish = function(){ advance(status); };
+      card.animate([{transform:'none', opacity:1}, {transform:'translate(' + (b.left + b.width / 2 - (a.left + a.width / 2)) + 'px,' + (b.top - (a.top + a.height / 2)) + 'px) scale(.06)', opacity:0}], {duration:520, easing:'cubic-bezier(.5,0,.75,0)', fill:'forwards'}).onfinish = function(){ advance(status); };
     } else advance(status);
   }
+  var intro = ph === 'intro' || guide;
   var typing = ph === 'ask' && typed < Q.q.length, isRec = ph === 'rec';
   var mood = ph === 'done' ? 'happy' : typing ? 'talk' : isRec ? 'listen' : thinking ? 'think' : '';
-  var hl = ph === 'done' ? [] : Q.hl;
-  var hlLabel = 'lines ' + Q.hl[0][0] + (Q.hl[0][1] !== Q.hl[0][0] ? '–' + Q.hl[0][1] : '');
-  var doneN = S.st.filter(function(x){ return x !== 'todo'; }).length;
-  var showCaption = ph === 'ask' || ph === 'rec' || ph === 'type' || (ph === 'reflect' && thinking);
-  var showReflect = (ph === 'reflect' && !thinking) || ph === 'fix';
-  var canAnswer = ph === 'ask' || ph === 'rec';
+  var status = intro ? 'Ready when you are' : ph === 'done' ? 'Interview complete' : typing ? 'Asking…' : isRec ? 'Listening…' : thinking ? 'Structuring your answer…' : ph === 'type' ? 'Waiting for your typed answer' : ph === 'code' ? 'Waiting for your code edit' : (ph === 'reflect' || ph === 'fix') ? 'Check what I understood' : 'Your turn';
+  var hl = ph === 'done' || intro ? [] : Q.hl;
+  var showReflect = !intro && (ph === 'reflect' || ph === 'fix');
+  var canAnswer = !intro && (ph === 'ask' || ph === 'rec');
+  var showQ = !intro && ph !== 'done';
   return html`<div className="page" style=${{maxWidth:1440, paddingBottom:0}}>
     <div className="iv2">
-      <div style=${{display:'flex', flexDirection:'column', gap:18, minWidth:0}}>
-        <section className="stage" aria-label="Interview with Ada">
-          <div className="racks" aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9].map(function(i){ return html`<i key=${i} style=${{animationDelay:(i * 0.37 % 2) + 's'}}></i>`; })}</div>
-          <div className="vignette" aria-hidden="true"></div>
-          <span className="glass chip"><${Icon} n="bolt" size=${14}/>Ada · AI interviewer</span>
-          <div className="glass selftile"><span className="av" style=${{background:'rgba(255,255,255,.85)', color:'#0E1116'}}>LC</span><span style=${{fontSize:13, opacity:.85}}>Linda (you)</span>${isRec ? html`<span className="recdot"><i></i>REC 0:${String(sec).padStart(2, '0')}</span>` : null}</div>
-          <div className="orbstage"><${Orb} mood=${mood}/></div>
-
-          ${showCaption ? html`<div className="caption" key=${'c' + S.q}>
-              <span style=${{fontSize:12, opacity:.6}}>${ph === 'reflect' ? 'Question ' + (S.q + 1) + ' of 5 · thinking' : 'Question ' + (S.q + 1) + ' of 5'}</span>
-              ${ph === 'reflect' ? html`<p style=${{display:'flex', alignItems:'center', gap:12, fontSize:16, marginTop:6}}><span className="dots" aria-hidden="true"><i style=${{background:'#A9B9FF'}}></i><i style=${{background:'#A9B9FF'}}></i><i style=${{background:'#A9B9FF'}}></i></span>Ada is structuring your answer…</p>`
-                : html`<p style=${{fontSize:19, lineHeight:'27px', fontWeight:600, marginTop:4}}>${ph === 'ask' ? Q.q.slice(0, typed) : Q.q}${typing || ph === 'ask' ? html`<span className="caret" style=${{background:'#A9B9FF'}}></span>` : null}</p>`}
-            </div>` : null}
-
-          ${showReflect ? html`<div className="reflect" ref=${flyRef}>
-              <div style=${{display:'flex', alignItems:'center', gap:8, fontWeight:600}}><${Icon} n="bolt" cls="acc"/>Here’s what I understood</div>
-              <div className="nodes">${Q.steps.map(function(p, i){ return html`<${React.Fragment} key=${i}>${i > 0 ? html`<span className="link" style=${{animationDelay:(i * 0.12 + 0.1) + 's'}}></span>` : null}<div className=${'node ' + (p[1] || '')} style=${{animationDelay:(i * 0.12) + 's'}}>${p[0]}${p[2] ? html`<span className=${'tag ' + (p[1] === 'risk' ? 't-risk' : 't-warn')} style=${{marginTop:6, alignSelf:'flex-start'}}>${p[2]}</span>` : null}</div><//>`; })}</div>
-              <p style=${{color:'var(--ink2)', fontSize:14}}>Example: ${Q.ex}</p>
-              ${ph === 'fix' ? html`<div style=${{display:'flex', flexDirection:'column', gap:6}}><label htmlFor="fix" style=${{fontWeight:500, fontSize:13}}>What should Ada change?</label><textarea id="fix" className="field" value=${fixText} onInput=${function(ev){ setFixText(ev.target.value); }} placeholder="e.g. Step 3 is wrong. Finance gets a weekly report of DEFAULT accounts." autoFocus></textarea></div>` : null}
-              <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}>
-                ${ph === 'fix' ? html`<button className="btn btn-primary btn-lg" onClick=${function(){ fly('done'); ctx.dispatch({type:'toast', text:'Correction saved. The item will show as edited in review.'}); }}><${Icon} n="check"/>Save my fix</button><button className="btn btn-secondary btn-lg" onClick=${function(){ patch({phase:'reflect'}); }}>Cancel</button>`
-                  : html`<button className="btn btn-primary btn-lg" onClick=${function(){ fly('done'); }}><${Icon} n="check"/>That’s right</button><button className="btn btn-secondary btn-lg" onClick=${function(){ patch({phase:'fix'}); }}>Not quite, let me fix it</button>`}
-              </div>
-            </div>` : null}
-
-          ${ph === 'done' ? html`<div className="reflect" style=${{alignItems:'flex-start'}}>
-              <span className="tag t-ok"><${Icon} n="check" size=${12}/>Interview complete</span>
-              <h2 style=${{fontSize:22, fontWeight:600}}>3 knowledge items drafted</h2>
-              <p style=${{color:'var(--ink2)'}}>Nothing is shared until you publish from Review.</p>
-              <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><button className="btn btn-primary btn-lg" onClick=${function(){ ctx.go('review'); }}>Review drafts<${Icon} n="arrow"/></button><button className="btn btn-secondary btn-lg" onClick=${function(){ ctx.go('home'); }}>Back to home</button></div>
-            </div>` : null}
+      <div className="ivl">
+        <section className="adabar" aria-label="Ada, AI interviewer">
+          <${Orb} sm=${true} mood=${mood}/>
+          <div style=${{display:'flex', flexDirection:'column', minWidth:0}}><strong style=${{fontSize:14}}>Ada · AI interviewer</strong><span style=${{fontSize:12.5, opacity:.75}} aria-live="polite">${status}</span></div>
+          <span style=${{flex:1}}></span>
+          ${isRec ? html`<span className="recdot2"><i></i>REC 0:${String(sec).padStart(2, '0')}</span>` : null}
+          ${!intro && ph !== 'done' ? html`<button className="btn adahelp" onClick=${function(){ setGuide(true); }}><${Icon} n="help" size=${15}/>How this works</button>` : null}
         </section>
+
+        ${intro ? html`<${IvIntro} resume=${guide} onStart=${function(){ if (guide) setGuide(false); else patch({phase:'ask'}); }}/>` : null}
+
+        ${showQ ? html`<section className="panel ivq" key=${'q' + S.q}>
+            <div style=${{display:'flex', alignItems:'center', gap:10, flexWrap:'wrap'}}>
+              <span className="mono muted" style=${{fontSize:12.5}}>Question ${S.q + 1} of 5</span>
+              <span className="tag t-accent"><${Icon} n="code" size=${12}/>CBACT04C · ${hlLabel}</span>
+            </div>
+            <p className="ivq-text">${ph === 'ask' ? Q.q.slice(0, typed) : Q.q}${typing ? html`<span className="caret"></span>` : null}</p>
+            <div className="ivhints">
+              <span><${Icon} n="chat" size=${13}/>For new engineers on CBACT04C</span>
+              <span><${Icon} n="clock" size=${13}/>1–2 min: what happens, why, what to check</span>
+              <span><${Icon} n="help" size=${13}/>“Not sure” is a fine answer</span>
+            </div>
+          </section>` : null}
 
         ${canAnswer ? html`<div className="ivctl">
             <div style=${{display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center'}}>
@@ -915,23 +986,83 @@ function Interview(){
                 onKeyDown=${function(ev){ if (ev.key !== 'Enter' && ev.key !== ' ') return; ev.preventDefault(); if (ph === 'ask') startRec(true); else if (isRec) stopRec(); }}>
                 ${isRec ? html`<span className="bars" aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9,10,11,12,13].map(function(i){ return html`<i key=${i}></i>`; })}</span><span className="mono">0:${String(sec).padStart(2, '0')}</span>` : html`<${Icon} n="mic"/>Hold to talk`}
               </button>
-              <button className="btn btn-secondary btn-lg" onClick=${function(){ setTyped(Q.q.length); patch({phase:'type'}); }}>Type instead</button>
-              <button className="btn btn-secondary btn-lg" onClick=${function(){ advance('skip'); ctx.dispatch({type:'toast', text:'Skipped. Ada will return to it next session.'}); }}>Skip</button>
-              <button className="btn btn-secondary btn-lg notsure" onClick=${function(){ advance('unsure'); ctx.dispatch({type:'toast', text:'Saved as an open question for your next interview.'}); }}>Not sure</button>
+              <button className="btn btn-secondary btn-lg" disabled=${isRec} onClick=${function(){ setTyped(Q.q.length); patch({phase:'type'}); }}><${Icon} n="kbd"/>Type</button>
+              <button className="btn btn-secondary btn-lg" disabled=${isRec} onClick=${function(){ setTyped(Q.q.length); setCodeText(qLines()); setCodeWhy(''); patch({phase:'code'}); }}><${Icon} n="code"/>Edit code</button>
+              <button className="btn btn-secondary btn-lg" disabled=${isRec} onClick=${function(){ advance('skip'); ctx.dispatch({type:'toast', text:'Skipped. Ada will return to it next session.'}); }}>Skip</button>
+              <button className="btn btn-secondary btn-lg notsure" disabled=${isRec} onClick=${function(){ advance('unsure'); ctx.dispatch({type:'toast', text:'Saved as an open question. Ada won’t guess an answer.'}); }}>Not sure</button>
             </div>
             <span className="muted" style=${{fontSize:12.5}}>${isRec ? (clickMode ? 'Click again to finish' : 'Release to finish') : 'Hold to talk, or click once to start and stop'}</span>
           </div>` : null}
-        ${ph === 'type' ? html`<div className="ivctl"><div style=${{display:'flex', gap:8, width:'min(680px,100%)', flexWrap:'wrap'}}><label htmlFor="ans" className="sr">Your answer</label>
-            <input id="ans" className="field" style=${{flex:'1 1 260px', height:44}} value=${typeText} onInput=${function(ev){ setTypeText(ev.target.value); }} onKeyDown=${function(ev){ if (ev.key === 'Enter') stopRec(); }} placeholder="Type your answer, then press Enter" autoFocus/>
-            <button className="btn btn-primary btn-lg" onClick=${stopRec}><${Icon} n="send"/>Send</button><button className="btn btn-ghost btn-lg" onClick=${function(){ patch({phase:'ask'}); }}>Cancel</button></div></div>` : null}
+
+        ${!intro && ph === 'type' ? html`<section className="panel ivedit"><label htmlFor="ans" style=${{fontWeight:500, fontSize:13.5}}>Your answer</label>
+            <textarea id="ans" className="field" value=${typeText} onInput=${function(ev){ setTypeText(ev.target.value); }} placeholder="Explain it the way you would to a new teammate. Short is fine." autoFocus></textarea>
+            <div style=${{display:'flex', gap:8}}><button className="btn btn-primary btn-lg" onClick=${sendTyped}><${Icon} n="send"/>Send</button><button className="btn btn-ghost btn-lg" onClick=${function(){ patch({phase:'ask'}); }}>Cancel</button></div></section>` : null}
+
+        ${!intro && ph === 'code' ? html`<section className="panel ivedit">
+            <label htmlFor="codeed" style=${{fontWeight:500, fontSize:13.5}}>Edit ${hlLabel} the way you would change or annotate it</label>
+            <textarea id="codeed" className="field mono codeed" spellCheck=${false} value=${codeText} onInput=${function(ev){ setCodeText(ev.target.value); }} autoFocus></textarea>
+            <label htmlFor="codewhy" style=${{fontWeight:500, fontSize:13.5}}>Why? One sentence is enough</label>
+            <input id="codewhy" className="field" value=${codeWhy} onInput=${function(ev){ setCodeWhy(ev.target.value); }} placeholder="e.g. Log the group ID so on-call can find the affected accounts"/>
+            <div style=${{display:'flex', gap:8}}><button className="btn btn-primary btn-lg" onClick=${sendCode}><${Icon} n="send"/>Send edit</button><button className="btn btn-ghost btn-lg" onClick=${function(){ patch({phase:'ask'}); }}>Cancel</button></div></section>` : null}
+
+        ${showReflect ? html`<section className="panel ivreflect" ref=${flyRef}>
+            ${thinking ? html`<p style=${{display:'flex', alignItems:'center', gap:12, fontSize:15}}><span className="dots" aria-hidden="true"><i></i><i></i><i></i></span>Ada is structuring your answer…</p>`
+            : html`<${React.Fragment}>
+              <div className="ivcmp">
+                <div className="ivsaid">
+                  <span className="lbl">What you said · ${said ? said.kind : ''}</span>
+                  ${said && said.code ? html`<pre className="mono codebox">${said.code}</pre>` : null}
+                  <p>“${said ? said.text : ''}”</p>
+                </div>
+                <div className="ivread">
+                  <span className="lbl"><${Icon} n="bolt" size=${13} cls="acc"/>What Ada understood · AI summary</span>
+                  <ol className="ivsteplist">${Q.steps.map(function(p, i){
+                    var isFu = Q.fu && i === Q.fuStep;
+                    var tag = isFu && fuState === 'unknown' ? ['t-warn', 'Unknown · kept open'] : isFu && fuState === 'answered' ? ['t-ok', 'Clarified by you'] : p[2] ? [p[1] === 'risk' ? 't-risk' : 't-warn', p[2]] : null;
+                    return html`<li key=${i} className=${p[1] || ''} style=${{animationDelay:(i * 0.08) + 's'}}><span>${p[0]}</span>${tag ? html`<span className=${'tag ' + tag[0]}>${tag[1]}</span>` : null}</li>`; })}</ol>
+                  <p style=${{color:'var(--ink2)', fontSize:13.5}}>Example: ${Q.ex}</p>
+                </div>
+              </div>
+              ${Q.fu ? html`<div className="ivfu">
+                  <span className="lbl"><${Icon} n="help" size=${13}/>Ada’s follow-up, instead of guessing</span>
+                  <p>${Q.fu}</p>
+                  ${fuState === 'open' ? html`<div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><button className="btn btn-secondary" onClick=${function(){ setFu('answering'); }}>Answer it</button><button className="btn btn-ghost" onClick=${function(){ setFu('unknown'); }}>Keep as unknown</button></div>`
+                    : fuState === 'answering' ? html`<div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><input className="field" style=${{flex:'1 1 240px'}} value=${fuText} onInput=${function(ev){ setFuText(ev.target.value); }} placeholder="Your answer" autoFocus/><button className="btn btn-primary" onClick=${function(){ setFu('answered'); }}>Save</button><button className="btn btn-ghost" onClick=${function(){ setFu('open'); }}>Cancel</button></div>`
+                    : fuState === 'answered' ? html`<span className="tag t-ok" style=${{alignSelf:'flex-start'}}><${Icon} n="check" size=${12}/>Added to this answer${fuText ? ': “' + fuText + '”' : ''}</span>`
+                    : html`<span className="tag t-warn" style=${{alignSelf:'flex-start'}}>Kept as unknown. Engineers will see “not confirmed by Linda”.</span>`}
+                </div>` : null}
+              ${ph === 'fix' ? html`<div style=${{display:'flex', flexDirection:'column', gap:6}}><label htmlFor="fix" style=${{fontWeight:500, fontSize:13}}>What should Ada change?</label><textarea id="fix" className="field" value=${fixText} onInput=${function(ev){ setFixText(ev.target.value); }} placeholder="e.g. Step 3 is wrong. Finance gets a weekly report of DEFAULT accounts." autoFocus></textarea></div>` : null}
+              <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}>
+                ${ph === 'fix' ? html`<button className="btn btn-primary btn-lg" onClick=${function(){ fly('edited'); ctx.dispatch({type:'toast', text:'Correction saved. The item will show as edited in review.'}); }}><${Icon} n="check"/>Save my fix</button><button className="btn btn-secondary btn-lg" onClick=${function(){ patch({phase:'reflect'}); }}>Cancel</button>`
+                  : html`<button className="btn btn-primary btn-lg" onClick=${function(){ fly('done'); }}><${Icon} n="check"/>That’s right</button><button className="btn btn-secondary btn-lg" onClick=${function(){ patch({phase:'fix'}); }}>Not quite, let me fix it</button>`}
+              </div>
+            <//>`}
+          </section>` : null}
+
+        ${!intro && ph === 'done' ? html`<section className="panel ivreflect" style=${{alignItems:'flex-start'}}>
+            <span className="tag t-ok"><${Icon} n="check" size=${12}/>Interview complete</span>
+            <h2 style=${{fontSize:22, fontWeight:600}}>3 knowledge items drafted</h2>
+            <p style=${{color:'var(--ink2)'}}>Next, check each draft in Review. Nothing is shared until you publish.</p>
+            <div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><button className="btn btn-primary btn-lg" onClick=${function(){ ctx.go('review'); }}>Review drafts<${Icon} n="arrow"/></button><button className="btn btn-secondary btn-lg" onClick=${function(){ ctx.go('home'); }}>Back to home</button></div>
+          </section>` : null}
+
+        ${hist.length && !intro ? html`<section className="panel ivhist" aria-label="Earlier in this session">
+            <span className="lbl">Earlier in this session</span>
+            ${hist.slice().reverse().map(function(h){ var m = ST_LABEL[h.status] || ST_LABEL.done; return html`<div key=${h.q} className="ivhrow">
+              <span className="mono muted" style=${{fontSize:12, width:24}}>Q${h.q + 1}</span>
+              <div style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2}}><strong style=${{fontSize:13.5, fontWeight:500}}>${QS[h.q].short}</strong>${h.said ? html`<span className="muted ell" style=${{fontSize:12.5}}>“${h.said.text}”</span>` : null}</div>
+              ${h.fu === 'unknown' ? html`<span className="tag t-warn">1 unknown</span>` : null}
+              <span className=${'tag ' + m[0]}>${m[1]}</span>
+            </div>`; })}
+          </section>` : null}
       </div>
 
-      <${Code} file="CBACT04C.cbl" lines=${SESSION_CODE} hl=${hl} pill=${ph === 'done' ? 'All questions covered' : hlLabel + ' · Asked about this'} foot="Source: AWS CardDemo sample mainframe app (Apache 2.0)" style=${{minHeight:640}}/>
+      <${Code} file="CBACT04C.cbl" lines=${SESSION_CODE} hl=${hl} pill=${ph === 'done' ? 'All questions covered' : intro ? 'The code Ada will ask about' : hlLabel + ' · Asked about this'} foot="Source: AWS CardDemo sample mainframe app (Apache 2.0)" style=${{minHeight:640}}/>
     </div>
     <div className="ivbar">
       <span className="av">LC</span><span style=${{fontWeight:500}}>Linda C.</span>
-      <div className="ivsegs">${S.st.map(function(x, i){ var cur = x === 'todo' && i === S.q && ph !== 'done'; return html`<span key=${i} data-seg=${i} className=${'iseg ' + (cur ? 'cur ' : '') + x}><i style=${{width:x !== 'todo' ? '100%' : cur ? (ph === 'reflect' || ph === 'fix' ? '70%' : isRec ? '40%' : '12%') : '0%'}}></i></span>`; })}</div>
-      <span className="mono muted" style=${{fontSize:13, whiteSpace:'nowrap'}}>${ph === 'done' ? 'Complete' : 'Question ' + (S.q + 1) + ' of 5'}</span>
+      <div className="ivsegs">${S.st.map(function(x, i){ var cur = x === 'todo' && i === S.q && ph !== 'done' && ph !== 'intro'; return html`<span key=${i} data-seg=${i} className=${'iseg ' + (cur ? 'cur ' : '') + x}><i style=${{width:x !== 'todo' ? '100%' : cur ? (ph === 'reflect' || ph === 'fix' ? '70%' : isRec || ph === 'type' || ph === 'code' ? '40%' : '12%') : '0%'}}></i></span>`; })}</div>
+      <span className="mono muted" style=${{fontSize:13, whiteSpace:'nowrap'}}>${ph === 'done' ? 'Complete' : ph === 'intro' ? 'Not started' : 'Question ' + (S.q + 1) + ' of 5'}</span>
     </div>
   </div>`;
 }
@@ -943,6 +1074,8 @@ function Review(){
   var ed = useState(null), editing = ed[0], setEditing = ed[1];
   var dr = useState(''), draft = dr[0], setDraft = dr[1];
   var ju = useState(null), just = ju[0], setJust = ju[1];
+  var oa = useState(null), oAns = oa[0], setOAns = oa[1];
+  var ot = useState(''), oText = ot[0], setOText = ot[1];
   var refs = useRef({});
   var ready = list.filter(function(i){ return i.status === 'ready' || i.status === 'edited'; });
   function mark(id, st){ ctx.dispatch({type:'item', id:id, patch:{status:st}}); setJust(id); setTimeout(function(){ setJust(null); }, 800); }
@@ -966,40 +1099,60 @@ function Review(){
     });
     if (n === 0) finish();
   }
+  var FLOW = [['mic','Ada drafted these','from your interview answers'],['check','You check each one','Confirm, edit, or flag it'],['book','Publish','confirmed items go to the Library'],['ticket','Engineers see it','in matching tickets, with your name and date']];
   return html`<div style=${{display:'flex', flexDirection:'column', minHeight:'100%'}}>
-    <div className="page enter" style=${{flex:1, maxWidth:920}}>
-      <div className="page-head"><div><h1>Review & publish</h1><p>Confirm each draft, correct it in your own words, or flag it for your next interview. Engineers only see what you publish.</p></div></div>
+    <div className="page enter" style=${{flex:1, maxWidth:1040}}>
+      <div className="page-head"><div><h1>Review & publish</h1><p>Check what Ada wrote against what you said. Engineers only see what you publish.</p></div></div>
+      <section className="panel rvflow" aria-label="How publishing works">
+        <ol>${FLOW.map(function(f, i){ return html`<li key=${i}><span className="rvn">${i + 1}</span><div><strong>${f[1]}</strong><span>${f[2]}</span></div></li>`; })}</ol>
+        <p className="muted" style=${{fontSize:12.5}}>Published items can be unpublished or revised any time from the Library.</p>
+      </section>
       ${list.length ? list.map(function(it){
         var isEd = editing === it.id, orig = SESSION_DRAFTS.concat(INITIAL_ITEMS).find(function(x){ return x.id === it.id; });
         var words = orig ? new Set(orig.body.split(' ')) : null;
-        return html`<article key=${it.id} ref=${function(el){ refs.current[it.id] = el; }} className=${'panel kcard' + (it.status === 'ready' || it.status === 'edited' ? ' ready' : '') + (it.status === 'flagged' ? ' flag' : '') + (just === it.id ? ' just' : '')}>
+        var conf = it.status === 'ready' || it.status === 'edited';
+        return html`<article key=${it.id} ref=${function(el){ refs.current[it.id] = el; }} className=${'panel kcard' + (conf ? ' ready' : '') + (it.status === 'flagged' ? ' flag' : '') + (just === it.id ? ' just' : '')}>
           <div style=${{display:'flex', alignItems:'flex-start', gap:12}}>
             <span className="mono muted" style=${{fontSize:12, paddingTop:3, width:52}}>${it.id}</span>
-            <div style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}><h2 style=${{fontSize:17, lineHeight:'24px', fontWeight:600}}>${it.title}</h2><span className="muted" style=${{fontSize:12}}>${it.program} · ${it.source}</span></div>
+            <div style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}><h2 style=${{fontSize:17, lineHeight:'24px', fontWeight:600}}>${it.title}</h2>
+              <span className="muted rvmeta"><span>${it.program} · ${it.source}</span><span><${Icon} n="code" size=${12}/>${it.version || it.program + ' · current build'}</span><span><${Icon} n="calendar" size=${12}/>${conf ? 'Confirmed by you · today' : it.status === 'flagged' ? 'Flagged · not confirmed' : 'Not confirmed yet'}</span></span></div>
             ${statusTag(it.status)}
           </div>
-          <div style=${{paddingLeft:64}}>
-            ${isEd ? html`<div style=${{display:'flex', flexDirection:'column', gap:8}}><label htmlFor=${'ed' + it.id} style=${{fontSize:13, fontWeight:500}}>Say it the way you’d tell a new engineer</label><textarea id=${'ed' + it.id} className="field" value=${draft} onInput=${function(ev){ setDraft(ev.target.value); }}></textarea>
-                <div style=${{display:'flex', gap:8}}><button className="btn btn-primary" onClick=${function(){ ctx.dispatch({type:'item', id:it.id, patch:{body:draft}}); mark(it.id, 'edited'); setEditing(null); }}>Save</button><button className="btn btn-ghost" onClick=${function(){ setEditing(null); }}>Cancel</button></div></div>`
-              : html`<p style=${{fontSize:15, color:'var(--ink2)', maxWidth:'70ch'}}>${it.body.split(' ').map(function(w, k){ return html`<${React.Fragment} key=${k}><span className=${it.status === 'edited' && words && !words.has(w) ? 'chg' : ''}>${w}</span> <//>`; })}</p>`}
+          <div className="rvcmp">
+            <div className="rvsaid"><span className="lbl">Your words</span><p>${it.said || it.quote}</p>
+              <button className="srcbtn" aria-expanded=${open === 'q' + it.id} onClick=${function(){ setOpen(open === 'q' + it.id ? '' : 'q' + it.id); }}><${Icon} n="play" size=${12}/>${open === 'q' + it.id ? 'Playing clip…' : 'Play clip'}</button></div>
+            <div className="rvai"><span className="lbl"><${Icon} n="bolt" size=${13} cls="acc"/>${it.status === 'edited' ? 'Summary · edited by you' : 'Ada’s summary · AI draft, check it'}</span>
+              ${isEd ? html`<div style=${{display:'flex', flexDirection:'column', gap:8}}><label htmlFor=${'ed' + it.id} className="sr">Edit summary</label><textarea id=${'ed' + it.id} className="field" value=${draft} onInput=${function(ev){ setDraft(ev.target.value); }}></textarea>
+                  <div style=${{display:'flex', gap:8}}><button className="btn btn-primary" onClick=${function(){ ctx.dispatch({type:'item', id:it.id, patch:{body:draft}}); mark(it.id, 'edited'); setEditing(null); }}>Save</button><button className="btn btn-ghost" onClick=${function(){ setEditing(null); }}>Cancel</button></div></div>`
+                : html`<p>${it.body.split(' ').map(function(w, k){ return html`<${React.Fragment} key=${k}><span className=${it.status === 'edited' && words && !words.has(w) ? 'chg' : ''}>${w}</span> <//>`; })}</p>`}
+            </div>
           </div>
-          <div style=${{paddingLeft:64, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
-            <button className="srcbtn" aria-expanded=${open === 'q' + it.id} onClick=${function(){ setOpen(open === 'q' + it.id ? '' : 'q' + it.id); }}><${Icon} n="play" size=${12}/>Your answer</button>
+          ${it.open ? html`<div className=${'rvopen' + (it.openState ? ' done' : '')}>
+              <${Icon} n="help" size=${16}/>
+              <div style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:8}}>
+                <span><strong>Ada wasn’t sure, so she didn’t fill this in:</strong> ${it.open}</span>
+                ${it.openState === 'answered' ? html`<span className="tag t-ok" style=${{alignSelf:'flex-start'}}><${Icon} n="check" size=${12}/>Your answer: “${it.openAnswer}”</span>`
+                  : it.openState === 'unknown' ? html`<span className="tag t-warn" style=${{alignSelf:'flex-start'}}>Kept as unknown. Engineers will see “not confirmed”.</span>`
+                  : oAns === it.id ? html`<div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><input className="field" style=${{flex:'1 1 240px'}} value=${oText} onInput=${function(ev){ setOText(ev.target.value); }} placeholder="Your answer" autoFocus/><button className="btn btn-primary" onClick=${function(){ ctx.dispatch({type:'item', id:it.id, patch:{openState:'answered', openAnswer:oText || '—'}}); setOAns(null); setOText(''); }}>Save</button><button className="btn btn-ghost" onClick=${function(){ setOAns(null); }}>Cancel</button></div>`
+                  : html`<div style=${{display:'flex', gap:8, flexWrap:'wrap'}}><button className="btn btn-secondary" onClick=${function(){ setOAns(it.id); setOText(''); }}>Answer now</button><button className="btn btn-ghost" onClick=${function(){ ctx.dispatch({type:'item', id:it.id, patch:{openState:'unknown'}}); }}>Keep as unknown</button><button className="btn btn-ghost" onClick=${function(){ ctx.dispatch({type:'toast', text:'Added to your next interview.'}); ctx.dispatch({type:'item', id:it.id, patch:{openState:'unknown'}}); }}>Add to next interview</button></div>`}
+              </div>
+            </div>` : null}
+          <div style=${{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
             ${it.code ? html`<button className="srcbtn" aria-expanded=${open === 'c' + it.id} onClick=${function(){ setOpen(open === 'c' + it.id ? '' : 'c' + it.id); }}><${Icon} n="code" size=${12}/><span className="mono">${it.file} ${it.lines}</span></button>` : null}
             <span style=${{flex:1}}></span>
             ${!isEd && it.status === 'draft' ? html`<button className="btn btn-primary" onClick=${function(){ mark(it.id, 'ready'); }}><${Icon} n="check"/>Confirm</button>` : null}
-            ${!isEd && (it.status === 'ready' || it.status === 'edited') ? html`<button className="btn btn-ghost" onClick=${function(){ mark(it.id, 'draft'); }}>Undo</button>` : null}
+            ${!isEd && conf ? html`<button className="btn btn-ghost" onClick=${function(){ mark(it.id, 'draft'); }}>Undo</button>` : null}
             ${!isEd && it.status !== 'flagged' ? html`<button className="btn btn-secondary" onClick=${function(){ setDraft(it.body); setEditing(it.id); }}><${Icon} n="edit"/>Edit</button>` : null}
             ${!isEd && it.status !== 'flagged' ? html`<button className="btn btn-ghost" onClick=${function(){ mark(it.id, 'flagged'); ctx.dispatch({type:'toast', text:'Flagged. Ada will ask about it in your next interview.'}); }}><${Icon} n="flag"/>Flag</button>` : null}
             ${it.status === 'flagged' ? html`<button className="btn btn-ghost" onClick=${function(){ mark(it.id, 'draft'); }}>Unflag</button>` : null}
           </div>
-          ${open === 'q' + it.id ? html`<div className="drawerin" style=${{marginLeft:64, background:'var(--surface2)', borderRadius:6, padding:'12px 16px', display:'flex', gap:12, alignItems:'center'}}><span className="bars" style=${{color:'var(--accent)'}} aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9,10,11].map(function(i){ return html`<i key=${i}></i>`; })}</span><span style=${{fontStyle:'italic', color:'var(--ink2)'}}>${it.quote}</span></div>` : null}
-          ${open === 'c' + it.id && it.code ? html`<div className="drawerin" style=${{marginLeft:64}}><${Code} file=${it.file} lines=${it.code} hl=${it.hl}/></div>` : null}
+          ${open === 'c' + it.id && it.code ? html`<div className="drawerin"><${Code} file=${it.file} lines=${it.code} hl=${it.hl}/></div>` : null}
         </article>`;
       }) : html`<section className="panel empty" style=${{padding:48}}><${Bot} scale=${0.6} mood="happy"/><span style=${{fontSize:15, color:'var(--ink)', fontWeight:500}}>All caught up</span><span>New drafts show up here after each interview.</span><button className="btn btn-secondary" onClick=${function(){ ctx.go('library'); }}>Open the library</button></section>`}
     </div>
-    ${list.length ? html`<div className="sticky"><div style=${{maxWidth:864, margin:'0 auto', display:'flex', alignItems:'center', gap:14, flexWrap:'wrap'}}>
+    ${list.length ? html`<div className="sticky"><div style=${{maxWidth:984, margin:'0 auto', display:'flex', alignItems:'center', gap:14, flexWrap:'wrap'}}>
       <span className="av">LC</span><span className="muted">Signing as <strong style=${{color:'var(--ink)'}}>Linda C.</strong></span>
+      <span className="muted" style=${{fontSize:12.5}}>Goes to the Library and matching engineer tickets</span>
       <span style=${{marginLeft:'auto'}} className="mono">${ready.length} of ${list.filter(function(i){ return i.status !== 'flagged'; }).length} ready</span>
       <button className="btn btn-primary btn-lg" disabled=${!ready.length} onClick=${publish}>Publish ${ready.length || ''} to library</button>
     </div></div>` : null}
