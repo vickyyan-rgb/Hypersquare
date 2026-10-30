@@ -35,23 +35,23 @@ function formatPoints(n){return n.toLocaleString('en-US');}
 function dashboardView(){const remaining=Math.max(0,500-community.points);return `<div class="dashboard">
   <header class="dash-header"><a class="brand" href="#/" aria-label="HyperSquare home">${mark}HyperSquare</a><nav class="dash-nav" aria-label="Main navigation"><a href="#/" class="active" aria-current="page">Overview</a><a href="#/offers">Bank offers</a><a href="workspace/" target="_blank" rel="noopener">Expert workspace ${icon('up')}</a></nav><div class="dash-account"><span class="demo-label">Demo</span><button class="avatar-button" data-dashboard="profile" aria-label="Open your profile">${avatar({},true)}</button></div></header>
   <section class="dash-hero" aria-labelledby="hero-title">
-    <div class="hero-text"><div class="eyebrow">THE HYPERSQUARE KNOWLEDGE PROGRAM</div><h1 id="hero-title">Preserve what COBOL experts know. <em>Help the next engineer.</em></h1><p>Retiring experts answer short, specific questions about the code they built. AI organizes each answer, the expert confirms it, and newer engineers find it right inside their tickets.</p>
+    <div class="hero-text"><div class="eyebrow">THE HYPERSQUARE KNOWLEDGE PROGRAM</div><h1 id="hero-title">Preserve what COBOL experts know. <em>Help the next engineer.</em></h1><p>Experts answer short questions about their code. Once they confirm an answer, new engineers see it in their tickets.</p>
       <div class="hero-actions"><a class="hero-primary" href="workspace/" target="_blank" rel="noopener">Open Expert Workspace ${icon('up')}</a><button class="hero-secondary" data-scrollto="participate">What it takes ${icon('down')}</button></div></div>
     <aside class="example-card" aria-labelledby="example-title"><div class="example-head"><h2 id="example-title">How one answer helps</h2><span class="sample-chip">Sample scenario</span></div>
       <ol class="example-steps">
-        <li><span class="ex-num">1</span><div><small>The expert answers</small><strong>Linda explains what return code 4 from the nightly posting job means.</strong><q>“It just means something went to rejects. Read DALYREJS and re-post only those.”</q></div></li>
-        <li><span class="ex-num">2</span><div><small>AI organizes · the expert confirms</small><strong>AI drafts a short answer linked to CBTRN02C, lines 229–231. Linda marks it correct.</strong></div></li>
-        <li><span class="ex-num">3</span><div><small>A newer engineer uses it</small><strong>Marcus gets ticket INC-2043 at 2 a.m. The confirmed answer is in his ticket, and the interest job runs on time.</strong></div></li>
+        <li><span class="ex-num">1</span><div><small>Expert answers</small><strong>Linda explains return code 4.</strong><q>“It just means something went to rejects.”</q></div></li>
+        <li><span class="ex-num">2</span><div><small>Expert confirms</small><strong>She checks the AI draft and confirms it.</strong></div></li>
+        <li><span class="ex-num">3</span><div><small>Engineer uses it</small><strong>Marcus sees it in ticket INC-2043 and fixes it at 2 a.m.</strong></div></li>
       </ol></aside>
   </section>
   <section class="participate" id="participate" aria-labelledby="participate-title"><div class="section-head"><div><div class="eyebrow">WHAT IT TAKES · WHAT YOU GET</div><h2 id="participate-title">Short sessions. <em>Clear rewards.</em></h2></div><span class="sample-chip">Amounts are examples</span></div>
     <div class="give-get">
-      <article><span class="gg-icon">${dashIcon('clock')}</span><h3>About 15 minutes</h3><p>One program and 3–5 specific questions per session. Pause anytime and pick up later.</p></article>
-      <article><span class="gg-icon">${dashIcon('wallet')}</span><h3>Paid per session</h3><p><b>Example:</b> $60 for each session you confirm. Rates would be set with the partner bank.</p></article>
-      <article><span class="gg-icon">${dashIcon('sparkle')}</span><h3>Points unlock perks</h3><p><b>Example:</b> each confirmed answer earns 50 points. 500 points unlocks the partner bank offers.</p><a class="gg-link" href="#/offers">See sample offers ${icon('arrow')}</a></article>
-      <article><span class="gg-icon">${icon('shield')}</span><h3>You stay in control</h3><p>Nothing is shared until you confirm it. You can edit or withdraw an answer later.</p></article>
+      <article><span class="gg-icon">${dashIcon('clock')}</span><h3>About 15 minutes</h3><p>3–5 questions per session. Pause anytime.</p></article>
+      <article><span class="gg-icon">${dashIcon('wallet')}</span><h3>Paid per session</h3><p><b>Example:</b> $60 per confirmed session.</p></article>
+      <article><span class="gg-icon">${dashIcon('sparkle')}</span><h3>Points unlock perks</h3><p><b>Example:</b> 50 points per answer. 500 unlocks bank offers.</p><a class="gg-link" href="#/offers">See sample offers ${icon('arrow')}</a></article>
+      <article><span class="gg-icon">${icon('shield')}</span><h3>You stay in control</h3><p>Nothing is shared until you confirm it.</p></article>
     </div></section>
-  <section class="community" aria-labelledby="community-title"><div class="section-head"><div><div class="eyebrow">COMMUNITY · OPTIONAL</div><h2 id="community-title">Leaderboard and practice</h2></div><p>Extras for experts who enjoy them. You don’t need them to take part.</p></div>
+  <section class="community" aria-labelledby="community-title"><div class="section-head"><div><div class="eyebrow">COMMUNITY · OPTIONAL</div><h2 id="community-title">Leaderboard and practice</h2></div><p>Optional. Not needed to take part.</p></div>
   <div class="dashboard-grid">
     <section class="board-panel alltime-panel" aria-labelledby="alltime-title"><div class="panel-heading"><div><h2 id="alltime-title">Leaderboard ${dashIcon('crown')}</h2><p>Points from confirmed answers, not volume.</p></div><span class="board-tab">All time</span></div><div class="table-labels" aria-hidden="true"><span>Rank</span><span>Expert</span><span>Points</span><span>Change</span></div>
       <ol class="leader-list" aria-label="All-time sample rankings">${members.map((m,i)=>`<li class="leader-row"><span class="rank ${i<3?'top '+(i===1?'second':i===2?'third':''):''}" aria-label="Rank ${i+1}">${String(i+1).padStart(2,'0')}</span><div class="leader-person">${avatar(m)}<div class="person-text"><strong>${m.name}</strong><small>${m.role}</small></div></div><span class="leader-points">${formatPoints(m.points)}</span><span class="leader-change ${m.change?'':'neutral'}">${m.change?'↗ '+m.change:'—'}</span></li>`).join('')}</ol>

@@ -1006,7 +1006,7 @@ function Home(){
     <div className="page-head"><div><h1>Good morning, Linda</h1><p>Monday, October 26 · ${prep.length} question${prep.length === 1 ? '' : 's'} from engineers are waiting for you.</p></div></div>
     <ol className="howline" aria-label="How it works">${how.map(function(h, i){ return html`<li key=${i}><span className="hn">${i + 1}</span><b>${h[0]}</b><span className="muted">${h[1]}</span></li>`; })}</ol>
     <section className="panel sec">
-      <div className="sec-h"><h2>Questions prepared for you</h2><span className="muted" style=${{fontSize:13}}>Built from real tickets · ${prep.length} waiting</span></div>
+      <div className="sec-h"><h2>Questions prepared for you</h2><span className="muted" style=${{fontSize:13}}>From real tickets</span></div>
       ${prep.map(function(p, k){
         var isSession = p.route === 'session';
         var state = isSession ? (ph === 'done' ? 'Completed today' : ph === 'idle' ? null : 'In progress · question ' + (s.session.q + 1) + ' of 5') : null;
@@ -1280,10 +1280,10 @@ function Library(){
   function setF(p){ ctx.dispatch({type:'patch', patch:{libFilter:Object.assign({}, f, p)}}); }
   function openIt(id){ ctx.dispatch({type:'patch', patch:{drawer:id}}); }
   return html`<div className="page enter">
-    <div className="page-head"><div><h1>Knowledge library</h1><p>Search answers your experts have confirmed. Each one links to the code, its version and the interview it came from.</p></div></div>
+    <div className="page-head"><div><h1>Knowledge library</h1><p>Confirmed answers, linked to the code.</p></div></div>
     <section className="panel libsearch">
       <label htmlFor="lq" className="sr">Search the library</label>
-      <div className="bigsearch"><${Icon} n="search"/><input id="lq" placeholder="Search by question, keyword, program or ID, e.g. “RC=4” or “DEFAULT rate”" value=${f.q} onInput=${function(ev){ setF({q:ev.target.value}); }}/>${f.q ? html`<button className="iconbtn" aria-label="Clear search" onClick=${function(){ setF({q:''}); }}><${Icon} n="x"/></button>` : null}</div>
+      <div className="bigsearch"><${Icon} n="search"/><input id="lq" placeholder="Search, e.g. “RC=4” or “DEFAULT rate”" value=${f.q} onInput=${function(ev){ setF({q:ev.target.value}); }}/>${f.q ? html`<button className="iconbtn" aria-label="Clear search" onClick=${function(){ setF({q:''}); }}><${Icon} n="x"/></button>` : null}</div>
       <div className="chips" role="group" aria-label="Filter by program">
         <button className="chip" aria-pressed=${f.program === 'all'} onClick=${function(){ setF({program:'all'}); }}>All programs</button>
         ${progs.map(function(p){ return html`<button key=${p} className="chip mono" aria-pressed=${f.program === p} onClick=${function(){ setF({program:p}); }}>${p}</button>`; })}
@@ -1291,7 +1291,7 @@ function Library(){
     </section>
     ${f.program !== 'all' ? html`<${FlowMap} program=${f.program}/>` : null}
     ${browsing ? html`<section className="panel sec">
-        <div className="sec-h"><h2>Most used this month</h2><span className="muted" style=${{fontSize:13}}>Pick a program above to see how its data flows</span></div>
+        <div className="sec-h"><h2>Most used this month</h2><span className="muted" style=${{fontSize:13}}>Pick a program to see its data flow</span></div>
         ${list.slice(0, 5).map(function(i){ var c = cx(i); return html`<button key=${i.id} className="row click" onClick=${function(){ openIt(i.id); }}>
           <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2}}><span style=${{fontWeight:500}}>${i.title}</span><span className="mono muted" style=${{fontSize:12}}>${i.id} · ${c.version} · confirmed ${c.confirmed} by ${i.owner}</span></span>
           ${c.stale ? html`<span className="tag t-warn">Needs re-review</span>` : null}<span className="mono muted" style=${{fontSize:13, whiteSpace:'nowrap'}}>used ${i.uses}×</span></button>`; })}
@@ -1322,7 +1322,7 @@ function Coverage(){
   var answered = new Set(s.questions.filter(function(q){ return q.status !== 'open'; }).map(function(q){ return q.ticket; }));
   var gaps = GAPS.filter(function(g){ var m = g.src.match(/INC-\d+/); return !(m && answered.has(m[0]) && g.src.indexOf('Engineer question') === 0); });
   return html`<div className="page enter">
-    <div className="page-head"><div><h1 style=${{display:'flex', alignItems:'center', gap:10, flexWrap:'wrap'}}>Knowledge coverage<span className="tag t-accent">Manager view</span></h1><p>For team leads planning interviews: what is still unknown, and how much of each program is captured before its expert retires. Experts don’t need to track this page.</p></div></div>
+    <div className="page-head"><div><h1 style=${{display:'flex', alignItems:'center', gap:10, flexWrap:'wrap'}}>Knowledge coverage<span className="tag t-accent">Manager view</span></h1><p>What’s still unknown, before each expert retires.</p></div></div>
     <section className="panel"><div className="grid4">
       <div className="stat"><span className="label">Known gaps</span><b style=${{color:gaps.length ? 'var(--warn)' : 'inherit'}}>${gaps.length}</b><span className="muted" style=${{fontSize:13}}>listed below</span></div>
       <div className="stat"><span className="label">High-risk programs</span><b style=${{color:high ? 'var(--risk)' : 'inherit'}}>${high}</b><span className="muted" style=${{fontSize:13}}>low coverage, expert leaving soon</span></div>
@@ -1330,7 +1330,7 @@ function Coverage(){
       <div className="stat"><span className="label">Overall coverage</span><b>${pct}%</b><span className="muted" style=${{fontSize:13}}>${total} of ${target} target items</span></div>
     </div></section>
     <section className="panel sec">
-      <div className="sec-h"><h2>What we still don’t know</h2><span className="muted" style=${{fontSize:13}}>From engineer questions, unanswered questions and code scans</span></div>
+      <div className="sec-h"><h2>What we still don’t know</h2></div>
       ${gaps.map(function(g, k){ return html`<button key=${k} className="row click gap" onClick=${function(){ ctx.dispatch({type:'patch', patch:{libFilter:{q:'', program:g.program}}}); ctx.go('library'); }}>
         <span className="tag t-plain mono">${g.program}</span>
         <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2}}><span style=${{fontWeight:500}}>${g.text}</span><span className="muted" style=${{fontSize:13}}>${g.src} · ask ${g.who}</span></span>
@@ -1390,7 +1390,7 @@ function QALog(p){
         <input id=${'ask-' + p.tkey} className="field" style=${{flex:1, height:40}} value=${text} onInput=${function(ev){ setText(ev.target.value); }} placeholder=${p.ticket ? 'Ask a question about this ticket' : 'Ask ' + twin.split(' ')[0] + ' a question'}/>
         <button className="btn btn-primary" style=${{height:40}} type="submit" aria-label="Ask"><${Icon} n="send"/>Ask</button>
       </form>`}
-      <span className="muted" style=${{fontSize:12}}>Answers come only from what the expert confirmed. Anything else goes to ${twin.replace(/\.$/, '')}.</span>
+      <span className="muted" style=${{fontSize:12}}>Only confirmed answers. Anything else goes to ${twin.replace(/\.$/, '')}.</span>
     </div>
   </div>`;
 }
@@ -1401,8 +1401,8 @@ function AnswerCard(p){
     <div className="acard-h"><span className="tag t-ok"><${Icon} n="check" size=${12}/>Confirmed</span>${c.stale ? html`<span className="tag t-warn">Needs re-review</span>` : null}${fresh ? html`<span className="tag t-accent newtag">New</span>` : null}<span className="mono muted acard-ver">${c.version} · confirmed ${c.confirmed} by ${it.owner}</span></div>
     <h3>${it.title}</h3>
     ${c.next ? html`<div className="nextbox"><span className="label">Next step</span><p>${c.next}</p></div>` : null}
-    <div className="ablock"><span className="label">Why · in ${it.owner.split(' ')[0]}’s words</span><p>${it.body}</p><p className="aquote">${it.quote}</p></div>
-    ${c.applies ? html`<div className="ablock"><span className="label">Check it fits your situation</span><div className="fit"><div><span className="label fit-ok">Applies when</span><p>${c.applies}</p></div>${c.notApplies ? html`<div><span className="label fit-no">Doesn’t apply when</span><p>${c.notApplies}</p></div>` : null}</div></div>` : null}
+    <div className="ablock"><span className="label">Why</span><p>${it.body}</p></div>
+    ${c.applies ? html`<div className="ablock"><div className="fit"><div><span className="label fit-ok">Applies when</span><p>${c.applies}</p></div>${c.notApplies ? html`<div><span className="label fit-no">Doesn’t apply when</span><p>${c.notApplies}</p></div>` : null}</div></div>` : null}
     ${c.stale ? html`<div className="stale"><${Icon} n="flag"/><span>${c.stale}</span></div>` : null}
     <div><button className="btn btn-ghost" style=${{paddingLeft:0}} onClick=${function(){ ctx.dispatch({type:'patch', patch:{drawer:it.id}}); }}><${Icon} n="code"/>See code and source · <span className="mono">${it.file ? it.file + ' ' + it.lines : it.program}</span></button></div>
   </article>`;
@@ -1413,7 +1413,7 @@ function Tickets(){
   var pl = useState(false), playing = pl[0], setPlaying = pl[1];
   var matches = matchesFor(s, t);
   return html`<div className="page enter" style=${{maxWidth:1320}}>
-    <div className="page-head"><div><h1>My tickets</h1><p>Synced from OpsDesk. Each ticket shows confirmed expert answers first: the next step, the reasoning, and when it applies.</p></div></div>
+    <div className="page-head"><div><h1>My tickets</h1><p>Confirmed expert answers for each ticket.</p></div></div>
     <div className="tk">
       <section className="panel" style=${{overflow:'hidden'}}>
         <div className="sec-h"><h2>Assigned to me</h2><span className="mono muted">${TICKETS.length}</span></div>
@@ -1436,7 +1436,7 @@ function Tickets(){
                 ${playing ? html`<span className="drawerin" style=${{fontStyle:'italic', color:'var(--ink2)', fontSize:14}}>“If the group row isn’t there, the job won’t stop. It quietly uses DEFAULT. That’s by design, and that’s the trap.”</span>` : html`<span className="muted" style=${{fontSize:13}}>Interview clip from Oct 26</span>`}</span>
               ${playing ? html`<span className="bars" style=${{color:'var(--accent)'}} aria-hidden="true">${[0,1,2,3,4,5,6,7,8,9].map(function(i){ return html`<i key=${i}></i>`; })}</span>` : null}
             </div>` : null}
-        </div>` : html`<div className="empty" style=${{alignItems:'flex-start', textAlign:'left', padding:'18px 20px'}}>Linda hasn’t confirmed anything for this ticket yet. Ask below. If there’s no confirmed answer, send the question to her.</div>`}
+        </div>` : html`<div className="empty" style=${{alignItems:'flex-start', textAlign:'left', padding:'18px 20px'}}>No confirmed answers yet. Ask below.</div>`}
         <details className="tkbg"><summary><span className="label">Ticket background</span></summary><p>${t.desc}</p><span className="muted" style=${{fontSize:13}}>Opened ${t.age} · OpsDesk</span></details>
         <${QALog} key=${t.id} tkey=${t.id} ticket=${t.id} sugs=${t.sugs}/>
       </section>
@@ -1455,7 +1455,7 @@ function Ask(){
   function submit(ev){ ev.preventDefault(); if (!text.trim() || !api.current) return; api.current(text); setText(''); }
   var sugs = twin === 'Linda C.' ? ['Is RC=4 from POSTTRAN a failure?','What does reason 103 mean?','Can I run INTCALC now?'] : ['Which field holds the expiration date?','How do I add a new field to the account screen?'];
   return html`<div className="page enter" style=${{maxWidth:980}}>
-    <div className="page-head"><div><h1>Ask or search</h1><p>Search answers your experts have confirmed, or ask a question. If there’s no confirmed answer, nothing is guessed: your question goes to the expert.</p></div></div>
+    <div className="page-head"><div><h1>Ask or search</h1><p>Search confirmed answers, or ask an expert. Nothing is guessed.</p></div></div>
     <section className="panel askhero">
       <form onSubmit=${submit} className="bigsearch big">
         <${Icon} n="search"/><label htmlFor="askbig" className="sr">Ask a question or search</label>
@@ -1469,7 +1469,7 @@ function Ask(){
       </div>
       ${hits.length ? html`<div className="hits drawerin"><span className="label">Confirmed answers that match</span>${hits.map(function(i){ var c = cx(i); return html`<button key=${i.id} className="row click" onClick=${function(){ ctx.dispatch({type:'patch', patch:{drawer:i.id}}); }}>
           <span style=${{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2}}><span style=${{fontWeight:500}}>${i.title}</span><span className="muted" style=${{fontSize:13}}>${c.next || i.body}</span></span><span className="mono muted" style=${{fontSize:12, whiteSpace:'nowrap'}}>${i.id} · ${c.confirmed}</span></button>`; })}</div>`
-        : words.length ? html`<p className="muted" style=${{fontSize:14}}>No confirmed answer matches yet. Press Ask: if there’s still no answer, you can send it to ${twin.split(' ')[0]}.</p>` : null}
+        : words.length ? html`<p className="muted" style=${{fontSize:14}}>No confirmed answer yet. Press Ask to check with ${twin.split(' ')[0]}.</p>` : null}
     </section>
     <section className="panel" style=${{overflow:'hidden'}}>
       <div className="sec-h"><h2>Your questions to ${twin.split(' ')[0]}</h2><span className="muted" style=${{fontSize:13}}>${PEOPLE[twin].role} · retires ${PEOPLE[twin].retires}</span></div>
