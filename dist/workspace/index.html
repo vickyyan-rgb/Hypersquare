@@ -494,6 +494,10 @@ button.gap{align-items:flex-start}
 .gap.added .gap-t{color:var(--ink3)}
 .addedtag{animation:popin .3s cubic-bezier(.2,.9,.3,1.3) both}
 @media (max-width:860px){.nb-row{flex-direction:column;align-items:stretch}.donebtn{justify-content:center}}
+.sidelink{display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border:0;border-radius:6px;background:none;color:var(--ink2);font:500 14px var(--sans);cursor:pointer;width:100%;text-align:left}
+.sidelink:hover{background:var(--surface);color:var(--ink)}
+.sidelink[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+@media (max-width:860px){.sidefoot{display:flex!important;flex-direction:row;padding:0 0 8px;border-top:0}.sidefoot>*:not(.sidelink){display:none!important}.sidelink{width:auto;border:1px solid var(--line);background:var(--surface)}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after,::view-transition-old(content),::view-transition-new(content){animation:none!important;transition:none!important}}
 </style>
 <style>html,body{margin:0}</style>
@@ -858,8 +862,8 @@ function statusTag(st){
 
 /* ---------------- shell ---------------- */
 var NAV = {
-  expert:[{id:'home', label:'Home', icon:'home'},{id:'session', label:'Interview', icon:'mic'},{id:'review', label:'Review', icon:'review'},{id:'inbox', label:'Questions', icon:'inbox'},{id:'library', label:'Library', icon:'book'},{id:'coverage', label:'Coverage', icon:'grid'}],
-  engineer:[{id:'ask', label:'Ask or search', icon:'search'},{id:'tickets', label:'My tickets', icon:'ticket'},{id:'library', label:'Library', icon:'book'},{id:'coverage', label:'Coverage', icon:'grid'}]
+  expert:[{id:'home', label:'Home', icon:'home'},{id:'session', label:'Interview', icon:'mic'},{id:'review', label:'Review', icon:'review'},{id:'library', label:'My answers', icon:'book'}],
+  engineer:[{id:'ask', label:'Ask or search', icon:'search'},{id:'tickets', label:'My tickets', icon:'ticket'},{id:'library', label:'Library', icon:'book'}]
 };
 var TITLES = {home:'Home', session:'Interview', review:'Review & publish', inbox:'Questions from engineers', library:'Knowledge library', coverage:'Knowledge coverage', tickets:'My tickets', ask:'Ask or search'};
 
@@ -868,6 +872,7 @@ function Sidebar(){
   var navRef = useRef(null), ind = useRef(null);
   var badges = {
     review:s.items.filter(function(i){ return i.status === 'draft' || i.status === 'ready' || i.status === 'edited'; }).length,
+    home:s.questions.filter(function(q){ return q.status === 'open'; }).length,
     inbox:s.questions.filter(function(q){ return q.status === 'open'; }).length,
     tickets:TICKETS.filter(function(t){ return !s.done[t.id] && matchesFor(s, t).length > 0; }).length
   };
@@ -879,7 +884,7 @@ function Sidebar(){
   useEffect(function(){ if (s.pop) { var t = setTimeout(function(){ ctx.dispatch({type:'patch', patch:{pop:null}}); }, 900); return function(){ clearTimeout(t); }; } }, [s.pop]);
   var me = s.role === 'expert' ? 'Linda C.' : 'Marcus R.';
   return html`<aside className="side">
-    <div className="brand"><${Mark}/>HyperSquare<span className="mono muted" style=${{fontSize:11, fontWeight:500, marginLeft:'auto', border:'1px solid var(--line)', borderRadius:4, padding:'1px 6px'}}>v1.0</span></div>
+    <div className="brand"><${Mark}/>HyperSquare<span className="mono muted" style=${{fontSize:11, fontWeight:500, marginLeft:'auto', border:'1px solid var(--line)', borderRadius:4, padding:'1px 6px'}}>v1.2</span></div>
     <div className="roles" role="group" aria-label="View as">
       <span className="thumb" style=${{transform:s.role === 'engineer' ? 'translateX(100%)' : 'none'}}></span>
       <button aria-pressed=${s.role === 'expert'} onClick=${function(){ transition(function(){ ctx.dispatch({type:'role', role:'expert'}); }); }}>Linda<small>Expert</small></button>
@@ -894,6 +899,7 @@ function Sidebar(){
       })}
     </nav>
     <div className="sidefoot">
+      <button className="sidelink" aria-current=${s.route === 'coverage' ? 'page' : null} onClick=${function(){ go('coverage'); }}><${Icon} n="grid"/><span>Coverage</span><span className="muted" style=${{marginLeft:'auto', fontSize:12}}>Manager view</span></button>
       ${s.role === 'expert' ? html`<div style=${{display:'flex', flexDirection:'column', gap:6}}>
         <span className="label">Partner program</span>
         <a className="partner" href=${REWARDS_URL} target="_blank" rel="noopener noreferrer">
@@ -922,7 +928,7 @@ function Topbar(){
   }
   var isDark = (theme || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
   return html`<header className="top">
-    <div className="crumb"><span className="hide-sm">${s.role === 'expert' ? 'Expert' : 'Engineer'}</span><span className="hide-sm">/</span><strong>${TITLES[s.route]}</strong></div>
+    <div className="crumb"><span className="hide-sm">${s.role === 'expert' ? 'Expert' : 'Engineer'}</span><span className="hide-sm">/</span><strong>${s.role === 'expert' && s.route === 'library' ? 'My answers' : TITLES[s.route]}</strong></div>
     <button className="search" onClick=${function(){ ctx.dispatch({type:'patch', patch:{palette:true}}); }} aria-label="Search and run commands"><${Icon} n="search"/><span className="hide-sm">Search knowledge, tickets, actions</span><kbd>⌘K</kbd></button>
     <button className="iconbtn" onClick=${toggleTheme} aria-label=${isDark ? 'Switch to light theme' : 'Switch to dark theme'}><${Icon} n=${isDark ? 'sun' : 'moon'}/></button>
     <div style=${{position:'relative'}} ref=${ref}>
@@ -943,7 +949,9 @@ function Palette(){
   var q = useState(''), text = q[0], setText = q[1], sel = useState(0), idx = sel[0], setIdx = sel[1], inp = useRef(null);
   useEffect(function(){ if (inp.current) inp.current.focus(); }, []);
   var actions = [];
-  NAV[s.role].forEach(function(n){ actions.push({grp:'Go to', label:TITLES[n.id], icon:n.icon, run:function(){ ctx.go(n.id); }}); });
+  NAV[s.role].forEach(function(n){ actions.push({grp:'Go to', label:n.label, icon:n.icon, run:function(){ ctx.go(n.id); }}); });
+  if (s.role === 'expert') actions.push({grp:'Go to', label:'All questions from engineers', icon:'inbox', run:function(){ ctx.go('inbox'); }});
+  actions.push({grp:'Go to', label:'Coverage (manager view)', icon:'grid', run:function(){ ctx.go('coverage'); }});
   if (s.role === 'expert') actions.push({grp:'Actions', label:s.session.phase === 'done' ? 'Open today’s interview summary' : 'Start today’s interview', icon:'mic', run:function(){ ctx.go('session'); }});
   actions.push({grp:'Actions', label:s.role === 'expert' ? 'Switch to Marcus (engineer view)' : 'Switch to Linda (expert view)', icon:'swap', run:function(){ ctx.dispatch({type:'patch', patch:{palette:false}}); transition(function(){ ctx.dispatch({type:'role', role:s.role === 'expert' ? 'engineer' : 'expert'}); }); }});
   verified(s).forEach(function(i){ actions.push({grp:'Knowledge', label:i.title, sub:i.id + ' · ' + i.program, icon:'book', run:function(){ ctx.dispatch({type:'patch', patch:{palette:false, drawer:i.id}}); }}); });
@@ -1059,7 +1067,7 @@ function Home(){
           : html`<div className="empty"><${Icon} n="check" size=${20}/>Nothing to review. New drafts appear here after each interview.</div>`}
       </section>
       <section className="panel sec">
-        <div className="sec-h"><h2>All questions</h2><button className="btn btn-ghost" onClick=${function(){ go('inbox'); }}>Open inbox<${Icon} n="arrow"/></button></div>
+        <div className="sec-h"><h2>All questions</h2><button className="btn btn-ghost" onClick=${function(){ go('inbox'); }}>See all<${Icon} n="arrow"/></button></div>
         ${openQ.length ? openQ.slice(0, 4).map(function(q){ return html`<button key=${q.id} className="row click" onClick=${function(){ go('inbox'); }}><span className="av" style=${{width:26, height:26, fontSize:11}}>${PEOPLE[q.from].init}</span><span style=${{flex:1, minWidth:0}}><span style=${{display:'block'}}>${q.text}</span><span className="muted" style=${{fontSize:13}}>${q.from} · ${q.ticket} · ${q.at}</span></span></button>`; })
           : html`<div className="empty">No open questions.</div>`}
       </section>
@@ -1303,7 +1311,8 @@ function FlowMap(p){
 function Library(){
   var ctx = useStore(), s = ctx.s, f = s.libFilter;
   var sa = useState(false), showAll = sa[0], setShowAll = sa[1];
-  var all = s.items.filter(function(i){ return i.status === 'verified'; });
+  var mineOnly = s.role === 'expert';
+  var all = s.items.filter(function(i){ return i.status === 'verified' && (!mineOnly || i.owner === 'Linda C.'); });
   var progs = Array.from(new Set(all.map(function(i){ return i.program; })));
   var words = f.q.toLowerCase().split(/\s+/).filter(Boolean);
   var list = all.filter(function(i){ return (f.program === 'all' || i.program === f.program) && words.every(function(w){ return (i.title + ' ' + i.body + ' ' + i.program + ' ' + i.id + ' ' + i.tags.join(' ')).toLowerCase().indexOf(w) >= 0; }); })
@@ -1312,7 +1321,7 @@ function Library(){
   function setF(p){ ctx.dispatch({type:'patch', patch:{libFilter:Object.assign({}, f, p)}}); }
   function openIt(id){ ctx.dispatch({type:'patch', patch:{drawer:id}}); }
   return html`<div className="page enter">
-    <div className="page-head"><div><h1>Knowledge library</h1><p>Confirmed answers, linked to the code.</p></div></div>
+    <div className="page-head"><div><h1>${mineOnly ? 'My answers' : 'Knowledge library'}</h1><p>${mineOnly ? 'What you’ve confirmed. Open one to revise or withdraw it.' : 'Confirmed answers, linked to the code.'}</p></div></div>
     <section className="panel libsearch">
       <label htmlFor="lq" className="sr">Search the library</label>
       <div className="bigsearch"><${Icon} n="search"/><input id="lq" placeholder="Search, e.g. “RC=4” or “DEFAULT rate”" value=${f.q} onInput=${function(ev){ setF({q:ev.target.value}); }}/>${f.q ? html`<button className="iconbtn" aria-label="Clear search" onClick=${function(){ setF({q:''}); }}><${Icon} n="x"/></button>` : null}</div>

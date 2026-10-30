@@ -10,6 +10,7 @@
 - Workspace, coverage: each open gap has an "Ask Linda / Ask Raj" button that adds it to the expert's next interview.
 - Workspace, library: the data-flow map animates in when you pick a program.
 - Expert home leads with the task: "3 questions are waiting for you".
+- Leaner sidebar. Expert: Home, Interview, Review, My answers (her own confirmed answers). Engineer: Ask or search, My tickets, Library. Questions stays reachable from Home; Coverage moved to a small "Manager view" link at the bottom of the sidebar.
 
 ## 1.1 — 2026-10-30
 

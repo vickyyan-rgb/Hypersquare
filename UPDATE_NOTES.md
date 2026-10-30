@@ -41,6 +41,13 @@
 - 修了 Library 详情面板滑不动、代码块被压扁的问题。
 - 专家首页：开头是「3 questions are waiting for you」，问题都来自真实工单并标了时长，下面一行写清三步流程。
 
+### 侧边栏精简（v1.2 之后补充）
+- 专家只留 4 个：Home → Interview → Review → My answers（只显示 Linda 自己确认过的答案，可以修改或撤回）。
+- Questions 不在侧边栏了：Home 已经列出所有等待的问题，点 Answer / See all 还能进原来的页面。
+- Coverage 是给经理看的，移到侧边栏底部的「Coverage · Manager view」小链接。
+- 工程师：Ask or search、My tickets、Library。
+- 版本标签改成 v1.2。
+
 ### 全局
 - 字体换成 Atkinson Hyperlegible（Braille Institute 设计，适合年长读者），代码用 Atkinson Hyperlegible Mono。
 - 宽度适配 Mac 屏幕：社区站最宽约 1640px，工作台最宽 1600px。
