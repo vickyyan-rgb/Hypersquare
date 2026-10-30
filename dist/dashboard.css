@@ -220,3 +220,4 @@ body.dashboard-page{height:auto;min-height:100dvh;overflow:auto}
 .example-steps strong{font-size:16px}
 .give-get h3{font-size:17px}
 .give-get p{font-size:15px}
+.dash-hero h1,.section-head h2,.give-get h3,.example-steps strong{text-wrap:balance}
