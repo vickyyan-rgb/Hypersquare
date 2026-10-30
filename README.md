@@ -1,4 +1,4 @@
-# Hypersquare 1.0
+# HyperSquare 1.1
 
 A clickable concept for keeping COBOL systems maintainable after their experts retire. Two separate sites link to each other:
 
@@ -9,8 +9,8 @@ A clickable concept for keeping COBOL systems maintainable after their experts r
 
 After GitHub Pages is turned on (Settings → Pages → Source: **GitHub Actions**), every push to `main` redeploys automatically:
 
-- Community: https://vickyyan-rgb.github.io/hypersquare/
-- Workspace: https://vickyyan-rgb.github.io/hypersquare/workspace/
+- Community: https://vickyyan-rgb.github.io/Hypersquare/
+- Workspace: https://vickyyan-rgb.github.io/Hypersquare/workspace/
 
 ## Run locally
 
@@ -24,7 +24,7 @@ Open http://127.0.0.1:4173. No dependencies or build step are required.
 
 ## Pages and interactions
 
-- `#/` or `#/hypersquare`: single-screen dashboard with all-time and weekly sample leaderboards, personal points, and profile access.
+- `#/` or `#/hypersquare`: overview that explains the program first (purpose, sample scenario, time, pay and points), followed by the optional leaderboard, weekly quiz and coding walkthrough.
 - **Weekly COBOL quiz**: three questions, answer explanations, and 25 demo points per correct answer.
 - **COBOL NOW!**: an editable sample coding walkthrough with guided pattern checking and a one-time 75-point demo reward. This is not a COBOL compiler.
 - `#/offers`: illustrative bank offers and participation requirements.
