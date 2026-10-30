@@ -222,3 +222,5 @@ body.dashboard-page{height:auto;min-height:100dvh;overflow:auto}
 .give-get p{font-size:15px}
 .dash-hero h1,.section-head h2,.give-get h3,.example-steps strong{text-wrap:balance}
 .nowrap{white-space:nowrap}
+.cobol-cta>span{text-align:left}
+.quiz-copy>small{letter-spacing:0;font-size:13px;text-transform:none}
