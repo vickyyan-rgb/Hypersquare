@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.2 — 2026-10-30 (Interview + Review & publish)
+
+From the six usability tests (Task 2 and Task 3 findings).
+
+### Interview
+- A short "How this interview works" intro before the first question: time (about 15 min, 5 questions), the four steps, who reads the answers, how much detail to give, and that "Not sure" is fine. It can be reopened from "How this works".
+- Ada is now a small header bar; the current question is the main focus, with answer hints under it.
+- An "Edit code" answer button opens the code panel's editor; saving a code change with a reason counts as the answer.
+- After each answer, "What you said" sits next to "What Ada understood". When an answer is uncertain, Ada asks a follow-up instead of guessing ("Answer it" / "Keep as unknown").
+- "Earlier in this session" lists past questions, answers and their status.
+
+### Review & publish
+- A four-step explanation of what publishing does (draft → you check → Library → engineers' tickets).
+- Each draft shows the expert's own words beside Ada's summary, the code version, and whether the expert has confirmed it.
+- Points Ada wasn't sure about are listed instead of filled in; the expert can answer, keep them as unknown, or add them to the next interview.
+
 ## 1.1 — 2026-10-30
 
 Changes from the six user interviews. The Interview and Review pages are owned by a teammate and were left as they were, except for the code panel.
