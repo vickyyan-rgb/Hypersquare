@@ -872,7 +872,7 @@ function Sidebar(){
   var navRef = useRef(null), ind = useRef(null);
   var badges = {
     review:s.items.filter(function(i){ return i.status === 'draft' || i.status === 'ready' || i.status === 'edited'; }).length,
-    home:s.questions.filter(function(q){ return q.status === 'open'; }).length,
+    home:PREP.filter(function(p){ if (!p.q) return s.session.phase !== 'done'; var q = s.questions.find(function(x){ return x.id === p.q; }); return q && q.status === 'open'; }).length,
     inbox:s.questions.filter(function(q){ return q.status === 'open'; }).length,
     tickets:TICKETS.filter(function(t){ return !s.done[t.id] && matchesFor(s, t).length > 0; }).length
   };
@@ -1037,13 +1037,14 @@ function Home(){
   var hours = useCount(Math.round(mine.reduce(function(a, i){ return a + i.uses; }, 0) * 0.7));
   var ph = s.session.phase;
   var prep = PREP.filter(function(p){ if (!p.q) return true; var q = s.questions.find(function(x){ return x.id === p.q; }); return q && q.status === 'open'; });
+  var waiting = prep.filter(function(p){ return p.q || s.session.phase !== 'done'; }).length;
   function open(p){
     if (p.route === 'session') { if (ph === 'idle') ctx.dispatch({type:'session', patch:{phase:'ask'}}); go('session'); }
     else go(p.route);
   }
   var how = [['Answer a few questions','about your code'],['Check the draft','written only from your words'],['Engineers use it','in their tickets']];
   return html`<div className="page enter">
-    <div className="page-head"><div><h1>${prep.length} question${prep.length === 1 ? ' is' : 's are'} waiting for you</h1><p>Monday, October 26 · Linda C.</p></div></div>
+    <div className="page-head"><div><h1>${waiting ? waiting + ' question' + (waiting === 1 ? ' is' : 's are') + ' waiting for you' : 'You’re all caught up'}</h1><p>Monday, October 26 · Linda C.</p></div></div>
     <ol className="howline" aria-label="How it works">${how.map(function(h, i){ return html`<li key=${i}><span className="hn">${i + 1}</span><b>${h[0]}</b><span className="muted">${h[1]}</span></li>`; })}</ol>
     <section className="panel sec">
       <div className="sec-h"><h2>Questions prepared for you</h2><span className="muted" style=${{fontSize:13}}>From real tickets</span></div>
