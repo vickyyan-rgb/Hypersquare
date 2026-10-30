@@ -1,5 +1,7 @@
 # HyperSquare 1.1
 
+> **组员同步后先看 [UPDATE_NOTES.md](UPDATE_NOTES.md)**：v1.2 改了什么、Interview/Review 合并时要注意的地方。
+
 A clickable concept for keeping COBOL systems maintainable after their experts retire. Two separate sites link to each other:
 
 - **Expert community** (`dist/index.html`): leaderboard, weekly quiz, coding walkthrough, sample bank offers and registration.
