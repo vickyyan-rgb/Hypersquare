@@ -21,6 +21,10 @@ Changes from the six user interviews. The Interview and Review pages are owned b
 - Fixed: the side drawer's code block collapsed and the drawer did not scroll properly.
 - Plainer wording (no "twin" language), larger body text, fewer boxed cards.
 
+### Type and alignment
+- All three sites use Atkinson Hyperlegible Next (text) and Atkinson Hyperlegible Mono (code), designed by the Braille Institute for legibility. The serif-italic accents were removed.
+- Overview: the leaderboard, weekly panels and the quiz/COBOL NOW! row share one column grid; rank numbers sit in one fixed-width column; section headings stack their notes underneath.
+
 ## 1.0 — 2026-10-26
 
 ### Added

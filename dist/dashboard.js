@@ -41,7 +41,7 @@ function dashboardView(){const remaining=Math.max(0,500-community.points);return
       <ol class="example-steps">
         <li><span class="ex-num">1</span><div><small>Expert answers</small><strong>Linda explains return code 4.</strong><q>“It just means something went to rejects.”</q></div></li>
         <li><span class="ex-num">2</span><div><small>Expert confirms</small><strong>She checks the AI draft and confirms it.</strong></div></li>
-        <li><span class="ex-num">3</span><div><small>Engineer uses it</small><strong>Marcus sees it in ticket INC-2043 and fixes it at 2 a.m.</strong></div></li>
+        <li><span class="ex-num">3</span><div><small>Engineer uses it</small><strong>Marcus sees it in ticket INC-2043 and fixes it at 2&nbsp;a.m.</strong></div></li>
       </ol></aside>
   </section>
   <section class="participate" id="participate" aria-labelledby="participate-title"><div class="section-head"><div><div class="eyebrow">WHAT IT TAKES · WHAT YOU GET</div><h2 id="participate-title">Short sessions. <em>Clear rewards.</em></h2></div><span class="sample-chip">Amounts are examples</span></div>
