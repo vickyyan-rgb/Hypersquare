@@ -42,10 +42,10 @@ function storyView(){const tabs=['Linda answers','She confirms','Marcus uses it'
   </div>
   <div class="story-bar" aria-hidden="true"><i></i></div></aside>`;}
 function dashboardView(){const remaining=Math.max(0,500-community.points);return `<div class="dashboard">
-  <header class="dash-header"><a class="brand" href="#/" aria-label="HyperSquare home">${mark}HyperSquare</a><nav class="dash-nav" aria-label="Main navigation"><a href="#/" class="active" aria-current="page">Overview</a><a href="#/offers">Bank offers</a><a href="workspace/" target="_blank" rel="noopener">Expert workspace ${icon('up')}</a></nav><div class="dash-account"><span class="demo-label">Demo</span><button class="avatar-button" data-dashboard="profile" aria-label="Open your profile">${avatar({},true)}</button></div></header>
+  <header class="dash-header"><a class="brand" href="#/" aria-label="HyperSquare home">${mark}HyperSquare</a><nav class="dash-nav" aria-label="Main navigation"><a href="#/" class="active" aria-current="page">Overview</a><a href="#/offers">Bank offers</a><a href="workspace/?v=1.2.2" target="_blank" rel="noopener">Expert workspace ${icon('up')}</a></nav><div class="dash-account"><span class="demo-label">Demo</span><button class="avatar-button" data-dashboard="profile" aria-label="Open your profile">${avatar({},true)}</button></div></header>
   <section class="dash-hero" aria-labelledby="hero-title">
     <div class="hero-text"><h1 id="hero-title">Preserve what COBOL experts know. <em>Help the next engineer.</em></h1><p>Experts answer short questions about their code. Once they confirm an answer, new engineers see it in their tickets.</p>
-      <div class="hero-actions"><a class="hero-primary" href="workspace/" target="_blank" rel="noopener">Open Expert Workspace ${icon('up')}</a><button class="hero-secondary" data-scrollto="participate">What it takes ${icon('down')}</button></div></div>
+      <div class="hero-actions"><a class="hero-primary" href="workspace/?v=1.2.2" target="_blank" rel="noopener">Open Expert Workspace ${icon('up')}</a><button class="hero-secondary" data-scrollto="participate">What it takes ${icon('down')}</button></div></div>
     ${storyView()}
   </section>
   <section class="participate reveal" id="participate" aria-labelledby="participate-title"><div class="section-head"><div><h2 id="participate-title">What it takes, what you get</h2></div><span class="sample-chip">Amounts are examples</span></div>

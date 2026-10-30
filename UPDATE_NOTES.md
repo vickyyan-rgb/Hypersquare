@@ -6,7 +6,7 @@
 - 社区站：https://vickyyan-rgb.github.io/Hypersquare/
 - 工作台：https://vickyyan-rgb.github.io/Hypersquare/workspace/
 
-看到旧版本就按 Cmd+Shift+R 强制刷新。
+看到旧版本就按 Cmd+Shift+R 强制刷新。社区站里指向工作台的链接现在带版本号（例如 `workspace/?v=1.2.2`），每次更新后从社区站点进去就是最新版。
 
 ## 同步前先看
 
