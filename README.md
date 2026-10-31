@@ -1,4 +1,6 @@
-# HyperSquare 1.1
+# HyperSquare 1.2
+
+> **组员同步后先看 [UPDATE_NOTES.md](UPDATE_NOTES.md)**：v1.2 改了什么、Interview/Review 合并时要注意的地方。
 
 A clickable concept for keeping COBOL systems maintainable after their experts retire. Two separate sites link to each other:
 
