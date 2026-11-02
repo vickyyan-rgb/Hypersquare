@@ -126,12 +126,13 @@ function cobolWorkspaceIcon(name){
     mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
     review:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="m8 12 3 3 5-6"/>',
     book:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M5 16h14"/>',
+    chat:'<path d="M5 5h14v10H9l-4 4z"/>',
     grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
   };
   return paths[name]?`<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`:icon(name);
 }
 function cobolWorkspaceSidebar(){
-  const links=[['home','Home','home'],['session','Interview','mic'],['review','Review','review'],['library','My answers','book'],['coverage','Library','grid'],['leaderboard','Leaderboard','trophy']];
+  const links=[['home','Home','home'],['session','Interview','mic'],['review','Review','review'],['library','My answers','book'],['inbox','Questions','chat'],['coverage','Library','grid'],['leaderboard','Leaderboard','trophy']];
   return `<aside class="cd-workspace-sidebar" aria-label="Expert workspace">
     <a class="cd-workspace-brand" href="workspace/index.html#/expert/home" title="Expert Home">${mark}<span>HyperSquare</span><small>v1.2</small></a>
     <div class="cd-workspace-roles" role="group" aria-label="View as"><a class="is-selected" href="workspace/index.html#/expert/home" aria-label="Linda, Expert view">Linda<small>Expert</small></a><a href="workspace/index.html#/engineer/ask" aria-label="Marcus, Engineer view">Marcus<small>Engineer</small></a></div>
