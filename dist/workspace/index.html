@@ -1264,7 +1264,7 @@ function Home(){
   var interviewLabel=ph==='idle'?'Start interview':ph==='done'?'View interview':'Resume interview';
   var interviewMeta=ph==='idle'?'About 30 minutes · 5 questions':ph==='done'?'Interview complete':'In progress · Question '+(s.session.q+1)+' of 5';
   return html`<div className="page enter home-landing">
-    <header className="home-welcome"><h1>Share your COBOL expertise.</h1><p>Choose how you’d like to contribute today.</p></header>
+    <header className="home-welcome"><h1>Share your COBOL expertise.</h1></header>
     <div className="home-actions">
       <article className="home-action" aria-labelledby="home-interview-title">
         <span className="home-action-symbol" aria-hidden="true"><${Icon} n="mic"/></span>
