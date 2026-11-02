@@ -1,16 +1,16 @@
 /* Monochrome interface; code areas retain their own syntax and diff colors. */
 :root {
-  color-scheme: light;
+  color-scheme: only light;
   accent-color: #666666;
   --forest: #222222;
   --deep: #171717;
   --lime: #b8b8b8;
-  --paper: #f4f4f4;
+  --paper: #ffffff;
   --white: #ffffff;
-  --bg: #f4f4f4;
+  --bg: #ffffff;
   --surface: #ffffff;
   --surface2: #f6f6f6;
-  --sidebar: #f0f0f0;
+  --sidebar: #ffffff;
   --ink: #292929;
   --ink2: #4e4e4e;
   --ink3: #717171;
@@ -34,7 +34,7 @@
 }
 
 body.dashboard-page { background: var(--paper); }
-.dashboard .dash-header { background: rgb(244 244 244 / 95%); }
+.dashboard .dash-header { background: rgb(255 255 255 / 95%); }
 .dashboard .hero-primary { background: var(--accent); color: var(--on-accent); }
 .dashboard .hero-primary:hover { background: var(--accent-hover); box-shadow: 0 8px 22px rgb(41 41 41 / 15%); }
 .dashboard .hero-primary:focus-visible { outline-color: var(--accent); }
@@ -49,64 +49,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 }
 ::selection { background: var(--accent); color: var(--on-accent); }
 
-/* Neutral light and dark palettes for the workspace. */
-@media (prefers-color-scheme: dark) {
-  :root.workspace-document:not([data-theme="light"]) {
-    color-scheme: dark;
-    accent-color: #aeaeae;
-    --bg: #1b1b1b;
-    --surface: #262626;
-    --surface2: #2d2d2d;
-    --sidebar: #212121;
-    --line: #414141;
-    --line2: #353535;
-    --ink: #efefef;
-    --ink2: #c3c3c3;
-    --ink3: #9e9e9e;
-    --accent: #aeaeae;
-    --accent-hover: #c3c3c3;
-    --accent-ink: #c9c9c9;
-    --accent-tint: #373737;
-    --on-accent: #222222;
-    --ok: #b4b4b4;
-    --ok-tint: #303030;
-    --warn: #b5b5b5;
-    --warn-tint: #313131;
-    --risk: #a9a9a9;
-    --risk-tint: #303030;
-    --code: #14171b;
-    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 30px rgb(0 0 0 / 45%);
-    --overlay: rgb(0 0 0 / 55%);
-  }
-}
-:root.workspace-document[data-theme="dark"] {
-  color-scheme: dark;
-  accent-color: #aeaeae;
-  --bg: #1b1b1b;
-  --surface: #262626;
-  --surface2: #2d2d2d;
-  --sidebar: #212121;
-  --line: #414141;
-  --line2: #353535;
-  --ink: #efefef;
-  --ink2: #c3c3c3;
-  --ink3: #9e9e9e;
-  --accent: #aeaeae;
-  --accent-hover: #c3c3c3;
-  --accent-ink: #c9c9c9;
-  --accent-tint: #373737;
-  --on-accent: #222222;
-  --ok: #b4b4b4;
-  --ok-tint: #303030;
-  --warn: #b5b5b5;
-  --warn-tint: #313131;
-  --risk: #a9a9a9;
-  --risk-tint: #303030;
-  --code: #14171b;
-  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 30px rgb(0 0 0 / 45%);
-  --overlay: rgb(0 0 0 / 55%);
-}
-
+/* The interface always uses a white, light background. */
 /* Native controls and dialogs also use sharp corners. */
 :where(button, input:not([type="radio"]):not([type="checkbox"]), select, textarea, dialog, [role="dialog"]) { border-radius: 0 !important; }
 /* Small badges rendered with inline styles follow the same geometry. */

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="workspace-document">
+<html lang="en" class="workspace-document" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -9,25 +9,14 @@
 <style>
 /* Layout: app shell — role-aware sidebar, top bar, routed workspace; overlays for drawer, palette, toasts. */
 :root{
-  --bg:#eeeeee; --surface:#ffffff; --surface2:#f7f7f7; --sidebar:#f5f5f5; --line:#e4e4e4; --line2:#efefef;
+  color-scheme:only light;
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f7f7f7; --sidebar:#ffffff; --line:#e4e4e4; --line2:#efefef;
   --ink:#111111; --ink2:#464646; --ink3:#626262;
   --accent:#5b5b5b; --accent-hover:#4c4c4c; --accent-ink:#4c4c4c; --accent-tint:#f1f1f1; --on-accent:#ffffff;
   --ok:#6c6c6c; --ok-tint:#f3f3f3; --warn:#626262; --warn-tint:#f3f3f3; --risk:#555555; --risk-tint:#f0f0f0;
   --code:#101113; --shadow:0 1px 2px rgba(17,17,17,.05),0 8px 24px rgba(17,17,17,.08); --overlay:rgba(17,17,17,.28);
   --sans:'Atkinson Hyperlegible Next',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'Atkinson Hyperlegible Mono',ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0e0e0e; --surface:#171717; --surface2:#1d1d1d; --sidebar:#131313; --line:#2b2b2b; --line2:#242424;
-  --ink:#eaeaea; --ink2:#bebebe; --ink3:#9c9c9c;
-  --accent:#909090; --accent-hover:#a6a6a6; --accent-ink:#bbbbbb; --accent-tint:#232323; --on-accent:#0e0e0e;
-  --ok:#b8b8b8; --ok-tint:#242424; --warn:#bdbdbd; --warn-tint:#262626; --risk:#a5a5a5; --risk-tint:#202020;
-  --code:#0a0b0c; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45); --overlay:rgba(0,0,0,.55); color-scheme:dark }}
-:root[data-theme="dark"]{
-  --bg:#0e0e0e; --surface:#171717; --surface2:#1d1d1d; --sidebar:#131313; --line:#2b2b2b; --line2:#242424;
-  --ink:#eaeaea; --ink2:#bebebe; --ink3:#9c9c9c;
-  --accent:#909090; --accent-hover:#a6a6a6; --accent-ink:#bbbbbb; --accent-tint:#232323; --on-accent:#0e0e0e;
-  --ok:#b8b8b8; --ok-tint:#242424; --warn:#bdbdbd; --warn-tint:#262626; --risk:#a5a5a5; --risk-tint:#202020;
-  --code:#0a0b0c; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45); --overlay:rgba(0,0,0,.55); color-scheme:dark }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -658,7 +647,7 @@ button.gap{align-items:flex-start}
 @media(max-width:600px){.page.ask-page{padding:16px 12px 12px;gap:12px}.ada-heading-actions{gap:4px}.ada-heading-actions .btn{padding:0 9px;font-size:12px}.ada-welcome h2{font-size:23px}.ada-messages{padding:20px 14px}.ada-compose{padding:12px}.ada-user{max-width:92%}.ada-input-actions>span{display:none}.ada-input-actions{justify-content:flex-end}.ada-prompts{flex-direction:column;width:100%}}
 </style>
 <style>html,body{margin:0}</style>
-<link rel="stylesheet" href="../theme.css?v=monochrome-20261101-1">
+<link rel="stylesheet" href="../theme.css?v=white-background-20261101-1">
 <link rel="stylesheet" href="leaderboard.css?v=monochrome-20261101-1">
 </head>
 <body>
@@ -1134,9 +1123,6 @@ function Sidebar(){
 
 function Topbar(){
   var ctx = useStore(), s = ctx.s;
-  useEffect(function(){
-    try { var theme=localStorage.getItem('hs-theme');if(theme)document.documentElement.setAttribute('data-theme',theme); } catch(err) {}
-  }, []);
   return html`<header className="top">
     <div className="crumb"><span className="hide-sm">${s.role === 'expert' ? 'Expert' : 'Engineer'}</span><span className="hide-sm">/</span><strong>${s.role === 'expert' && s.route === 'library' ? 'My answers' : TITLES[s.route]}</strong></div>
     <button type="button" className="iconbtn account-shortcut" aria-label="Account information" onClick=${function(){ctx.go('account');}}><span className="av">${accountInitials(s.accounts[s.role].name)}</span></button>
