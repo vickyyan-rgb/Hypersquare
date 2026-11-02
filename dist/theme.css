@@ -1,0 +1,108 @@
+/* Muted slate accents and gray surfaces, shared across HyperSquare. */
+:root {
+  color-scheme: light;
+  accent-color: #59677d;
+  --forest: #252a31;
+  --deep: #1d2228;
+  --lime: #aeb9cb;
+  --paper: #f3f4f5;
+  --white: #fff;
+  --bg: #f3f4f5;
+  --surface: #fff;
+  --surface2: #f5f6f7;
+  --sidebar: #eef0f2;
+  --ink: #252a31;
+  --ink2: #484f59;
+  --ink3: #6c727c;
+  --muted: #6c727c;
+  --line: #d9dce0;
+  --line2: #e8eaed;
+  --accent: #59677d;
+  --accent-hover: #46536a;
+  --accent-ink: #4c5b74;
+  --accent-tint: #e8ecf1;
+  --on-accent: #fff;
+  --ok: #55705f;
+  --ok-tint: #eef2ef;
+  --warn: #826f4f;
+  --warn-tint: #f3f0e9;
+  --risk: #8b6262;
+  --risk-tint: #f3eded;
+  --code: #1d2228;
+  --shadow: 0 1px 2px rgb(0 0 0 / 5%), 0 8px 24px rgb(0 0 0 / 8%);
+  --overlay: rgb(0 0 0 / 28%);
+}
+
+body.dashboard-page { background: var(--paper); }
+.dashboard .dash-header { background: rgb(243 244 245 / 95%); }
+.dashboard .hero-primary { background: var(--accent); color: var(--on-accent); }
+.dashboard .hero-primary:hover { background: var(--accent-hover); box-shadow: 0 8px 22px rgb(37 42 49 / 15%); }
+.dashboard .hero-primary:focus-visible { outline-color: var(--accent); }
+.dashboard .dash-hero h1,
+.dashboard .section-head h2 { color: var(--ink); }
+.dashboard .gg-link { color: var(--accent-ink); }
+.dashboard .story-tabs button span { color: var(--accent); }
+.dashboard .points-panel,
+.dashboard .cobol-cta { background: #292f37; }
+button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible {
+  outline-color: var(--accent);
+}
+::selection { background: var(--accent); color: var(--on-accent); }
+
+/* Preserve the workspace theme switch with subdued colors in both modes. */
+@media (prefers-color-scheme: dark) {
+  :root.workspace-document:not([data-theme="light"]) {
+    color-scheme: dark;
+    accent-color: #a3afc1;
+    --bg: #181b20;
+    --surface: #22262c;
+    --surface2: #292e35;
+    --sidebar: #1d2126;
+    --line: #3b424b;
+    --line2: #30363e;
+    --ink: #eceff2;
+    --ink2: #bdc4cd;
+    --ink3: #979fa9;
+    --accent: #a3afc1;
+    --accent-hover: #bbc4d1;
+    --accent-ink: #c0cad9;
+    --accent-tint: #303845;
+    --on-accent: #1d232b;
+    --ok: #a5b9aa;
+    --ok-tint: #29332d;
+    --warn: #c7b48f;
+    --warn-tint: #363129;
+    --risk: #c8a0a0;
+    --risk-tint: #382e30;
+    --code: #14171b;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 30px rgb(0 0 0 / 45%);
+    --overlay: rgb(0 0 0 / 55%);
+  }
+}
+:root.workspace-document[data-theme="dark"] {
+  color-scheme: dark;
+  accent-color: #a3afc1;
+  --bg: #181b20;
+  --surface: #22262c;
+  --surface2: #292e35;
+  --sidebar: #1d2126;
+  --line: #3b424b;
+  --line2: #30363e;
+  --ink: #eceff2;
+  --ink2: #bdc4cd;
+  --ink3: #979fa9;
+  --accent: #a3afc1;
+  --accent-hover: #bbc4d1;
+  --accent-ink: #c0cad9;
+  --accent-tint: #303845;
+  --on-accent: #1d232b;
+  --ok: #a5b9aa;
+  --ok-tint: #29332d;
+  --warn: #c7b48f;
+  --warn-tint: #363129;
+  --risk: #c8a0a0;
+  --risk-tint: #382e30;
+  --code: #14171b;
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 30px rgb(0 0 0 / 45%);
+  --overlay: rgb(0 0 0 / 55%);
+}
