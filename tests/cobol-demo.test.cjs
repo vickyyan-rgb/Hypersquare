@@ -3,7 +3,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
 const root = path.join(__dirname, '../dist');
-let pending = new Map(), nextTimer = 0, visibilityChange;
+let pending = new Map(), nextTimer = 0, visibilityChange, keydown;
 const sceneNodes=Object.fromEntries(['[data-code-lines]','[data-editor-feedback]','[data-editor-status]','[data-round-points]','[data-demo-chip]','[data-cobol-scene]'].map(s=>[s,{innerHTML:'',textContent:'',className:'',dataset:{}}]));
 const pointer={style:{},className:''};
 const stage={clientWidth:1200,clientHeight:700,getBoundingClientRect:()=>({left:0,top:0,right:1200,bottom:700})};
@@ -11,7 +11,7 @@ const anchor={getBoundingClientRect:()=>({left:240,top:220,bottom:248})};
 Object.assign(sceneNodes,{'[data-demo-mouse]':pointer,'[data-editor-stage]':stage,'[data-edit-anchor]':anchor});
 const context = {
   app:{innerHTML:''}, state:{}, location:{hash:'#/cobol-now'},
-  document:{hidden:false, querySelectorAll:()=>[], querySelector:s=>sceneNodes[s]||null, addEventListener(name,fn){if(name==='visibilitychange')visibilityChange=fn;}},
+  document:{hidden:false, querySelectorAll:()=>[], querySelector:s=>sceneNodes[s]||null, addEventListener(name,fn){if(name==='visibilitychange')visibilityChange=fn;if(name==='keydown')keydown=fn;}},
   window:{matchMedia:()=>({matches:true})}, matchMedia:()=>({matches:true}),
   setTimeout(fn){const id=++nextTimer;pending.set(id,fn);return id;},
   clearTimeout(id){pending.delete(id);},
@@ -26,8 +26,17 @@ assert.equal(typeof context.startCobolDemo,'function','COBOL NOW needs a six-que
 const read=expression=>vm.runInContext(expression,context);
 vm.runInContext('shownPoints=285',context);
 function tick(){assert(pending.size,'Expected an automatic playback step');const [id,fn]=pending.entries().next().value;pending.delete(id);fn();}
-function finishEditing(expected='answer'){let limit=1000;while(read('cobolPlayback.phase')!==expected&&limit-->0)tick();assert.equal(read('cobolPlayback.phase'),expected);}
-function finishRound(){let limit=2000;while(read('cobolPlayback.phase')!=='complete'&&limit-->0)tick();assert.equal(read('cobolPlayback.phase'),'complete');}
+function finishEditing(expected='ready'){let limit=1000;while(read('cobolPlayback.phase')!==expected&&limit-->0)tick();assert.equal(read('cobolPlayback.phase'),expected);}
+function finishRound(){let limit=2000;while(read('cobolPlayback.phase')!=='complete'&&limit-->0){if(read('cobolPlayback.phase')==='ready')context.enterCobolAnswer();else tick();}assert.equal(read('cobolPlayback.phase'),'complete');}
+// Regression: finishing the typing animation must not reveal a result or award points.
+context.startCobolDemo();
+for(let limit=1000;context.cobolEditorSnapshot().text!==read('cobolChallenges[0].fix')&&limit>0;limit--)tick();
+assert.equal(context.cobolEditorFeedback(),'','Wait for Enter before displaying correctness');
+assert.equal(context.cobolRoundPoints(),0,'Typing alone must not earn points');
+assert.equal(pending.size,0,'Wait indefinitely for submission');
+context.showCobolResults();
+assert.equal(read('community.points'),285,'Final score cannot bypass answer submission');
+assert.notEqual(read('cobolPlayback.phase'),'complete');
 context.startCobolDemo();
 assert(context.app.innerHTML.includes('Question 1 of 6'));
 assert(!/<(?:input|textarea)\b/.test(context.app.innerHTML),'Demo must not require answer entry');
@@ -66,12 +75,27 @@ for(let i=0;i<6;i++){
   }
   finishEditing();
   assert.equal(context.cobolEditorSnapshot().text,answer);
+  assert.equal(context.cobolEditorFeedback(),'','Every answer waits for submission');
+  assert.equal(pending.size,0);
+  assert.equal(context.cobolRoundPoints(),[0,25,50,75,75,100][i]);
+  context.enterCobolAnswer();
+  assert.equal(read('cobolPlayback.phase'),'answer');
+  assert.equal(context.cobolRoundPoints(),[25,50,75,75,100,125][i]);
+  assert.equal(pending.size,1,'Submission schedules one result display');
+  context.enterCobolAnswer();
+  assert.equal(read('cobolPlayback.phase'),'answer','Double submission must not skip feedback');
   if(i===3){
-    assert(context.cobolDemoView().includes('Needs rounding'));
+    assert(context.cobolDemoView().includes('Not correct'));
     tick();assert.equal(read('cobolPlayback.phase'),'point');
-    finishEditing('corrected');
+    finishEditing();
     assert.equal(context.cobolEditorSnapshot().text,read('cobolChallenges[3].fix'));
     assert(context.cobolEditorSnapshot().text.includes('WS-FEE ROUNDED'));
+    assert.equal(context.cobolEditorFeedback(),'','Check the correction only after Enter');
+    context.enterCobolAnswer();
+    assert.equal(read('cobolPlayback.phase'),'corrected');
+    assert(context.cobolEditorFeedback().includes('Correct'));
+  } else {
+    assert(context.cobolEditorFeedback().includes('Correct'));
   }
   tick(); // next question, or the final score
 }
@@ -105,7 +129,7 @@ assert.equal(read('cobolPlayback.typed'),progressBeforeHidden,'Returning to the 
 context.stopCobolDemo();
 assert.equal(pending.size,0,'Leaving the page must cancel playback');
 assert.equal(read('community.points'),410);
-context.startCobolDemo();context.showCobolResults();
+context.startCobolDemo();finishRound();
 assert.equal(pending.size,0);assert(context.app.innerHTML.includes('5 / 6'));
 assert.equal(read('community.points'),410);
 for(const id of ['hero-title','community-title','weekly-title'])assert(context.dashboardView().includes(`id="${id}"`));
@@ -122,7 +146,7 @@ context.location.hash='#/';context.route();
 assert.equal(classes.get('cobol-demo-page'),false);assert.equal(classes.get('dashboard-page'),true);
 assert.equal(pending.size,0);assert(context.app.innerHTML.includes('Help preserve COBOL expertise'));
 vm.runInContext('community.cobolDemoAward=null;community.points=785;community.weekly=0',context);
-context.location.hash='#/cobol-now';context.startCobolDemo();context.showCobolResults();
+context.location.hash='#/cobol-now';context.startCobolDemo();finishRound();
 assert.equal(read('community.points'),910);assert(context.app.innerHTML.includes('New award unlocked'));
 assert(!context.app.innerHTML.includes('-410 points'));
 context.startCobolDemo();
@@ -133,19 +157,26 @@ assert.equal(pending.size,1);
 finishEditing();
 context.toggleCobolDemo();
 context.enterCobolAnswer();
-assert.equal(read('cobolPlayback.index'),1);
-assert.equal(read('cobolPlayback.phase'),'question');
-assert.equal(read('cobolPlayback.paused'),true,'Manual advance preserves pause');
+assert.equal(read('cobolPlayback.index'),0);
+assert.equal(read('cobolPlayback.phase'),'answer');
+assert.equal(read('cobolPlayback.paused'),true,'Submission preserves pause');
 assert.equal(pending.size,0);
-vm.runInContext("cobolPlayback.index=3;cobolPlayback.phase='answer';cobolPlayback.correcting=false",context);
-context.enterCobolAnswer();
-assert.equal(read('cobolPlayback.correcting'),true,'Enter keeps the rounding correction in the playthrough');
-assert.equal(read('cobolPlayback.phase'),'point');
-context.toggleCobolDemo();finishEditing('corrected');context.enterCobolAnswer();
-assert.equal(read('cobolPlayback.index'),4);assert.equal(pending.size,1,'Manual advance leaves only one playback timer');
-vm.runInContext("cobolPlayback.index=5;cobolPlayback.phase='answer';cobolPlayback.correcting=false",context);
-context.enterCobolAnswer();
+context.toggleCobolDemo();tick();
+finishEditing();
+context.toggleCobolDemo();context.toggleCobolDemo();
+assert.equal(pending.size,0,'Resume cannot submit a waiting answer');
+context.document.hidden=true;visibilityChange();
+context.document.hidden=false;visibilityChange();
+assert.equal(pending.size,0,'Returning to the tab cannot submit a waiting answer');
+assert.equal(context.cobolEditorFeedback(),'');
+keydown({key:'Enter',repeat:true,target:{},preventDefault(){}});
+assert.equal(read('cobolPlayback.phase'),'ready','Held keys must not submit');
+let prevented=false;
+keydown({key:'Enter',repeat:false,target:{},preventDefault(){prevented=true;}});
+assert(prevented);assert.equal(read('cobolPlayback.phase'),'answer','Keyboard Enter submits');
+assert.equal(pending.size,1);
+finishRound();
 assert.equal(read('cobolPlayback.phase'),'complete');assert.equal(pending.size,0);
 assert.equal(read('community.points'),910,'Enter does not award replay points again');
 console.log('Passed: full-page code scene, mouse movement, selection, in-place edits, correction, six questions, pause/visibility resume, scoring, replay, routes, cleanup, and one-time rewards.');
-console.log('Passed: Enter readiness, next question, paused advance, correction, final score, and timer cleanup.');
+console.log('Passed: Enter gates every result and points, incorrect-answer correction, keyboard submission, pause/visibility, double submission, final score, and timer cleanup.');

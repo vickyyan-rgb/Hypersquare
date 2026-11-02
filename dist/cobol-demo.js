@@ -66,7 +66,7 @@ function cobolDemoScore(){
 function stopCobolDemo(){clearTimeout(cobolTimer);cobolTimer=null;cobolPlayback.active=false;cobolAutoPaused=false;}
 function scheduleCobolDemo(){
   clearTimeout(cobolTimer);cobolTimer=null;
-  if(!cobolPlayback.active||cobolPlayback.paused||cobolPlayback.phase==='complete')return;
+  if(!cobolPlayback.active||cobolPlayback.paused||['ready','complete'].includes(cobolPlayback.phase))return;
   const delays={question:4000,point:1000,select:850,deleting:450,typing:75,answer:5500,corrected:5500};
   cobolTimer=setTimeout(advanceCobolDemo,delays[cobolPlayback.phase]||5500);
 }
@@ -76,9 +76,9 @@ function startCobolDemo(){
   cobolAutoPaused=document.hidden;
   renderCobolDemo();scheduleCobolDemo();window.scrollTo?.(0,0);
 }
-function advanceCobolDemo(manual=false){
+function advanceCobolDemo(){
   cobolTimer=null;
-  if(!cobolPlayback.active||(cobolPlayback.paused&&!manual)||location.hash!=='#/cobol-now')return;
+  if(!cobolPlayback.active||cobolPlayback.paused||['ready','complete'].includes(cobolPlayback.phase)||location.hash!=='#/cobol-now')return;
   let newQuestion=false;
   if(cobolPlayback.phase==='question')cobolPlayback.phase='point';
   else if(cobolPlayback.phase==='point')cobolPlayback.phase='select';
@@ -87,7 +87,7 @@ function advanceCobolDemo(manual=false){
   else if(cobolPlayback.phase==='typing'){
     const edit=cobolCurrentEdit();
     cobolPlayback.typed=Math.min(edit.insert.length,cobolPlayback.typed+1);
-    if(cobolPlayback.typed===edit.insert.length)cobolPlayback.phase=cobolPlayback.correcting?'corrected':'answer';
+    if(cobolPlayback.typed===edit.insert.length)cobolPlayback.phase='ready';
   }
   else if(cobolPlayback.phase==='answer'&&!cobolChallenges[cobolPlayback.index].correct){cobolPlayback.correcting=true;cobolPlayback.typed=0;cobolPlayback.phase='point';}
   else if(cobolPlayback.index<cobolChallenges.length-1){cobolPlayback.index++;cobolPlayback.phase='question';cobolPlayback.typed=0;cobolPlayback.correcting=false;newQuestion=true;}
@@ -95,19 +95,21 @@ function advanceCobolDemo(manual=false){
   if(newQuestion)renderCobolDemo();else updateCobolScene();
   scheduleCobolDemo();
 }
-function canEnterCobolAnswer(){return cobolPlayback.active&&['answer','corrected'].includes(cobolPlayback.phase);}
+function canEnterCobolAnswer(){return cobolPlayback.active&&cobolPlayback.phase==='ready';}
 function enterCobolAnswer(){
   if(!canEnterCobolAnswer())return;
   clearTimeout(cobolTimer);cobolTimer=null;
-  advanceCobolDemo(true);
+  cobolPlayback.phase=cobolPlayback.correcting?'corrected':'answer';
+  updateCobolScene();scheduleCobolDemo();
 }
 function toggleCobolDemo(){
   if(!cobolPlayback.active||cobolPlayback.phase==='complete')return;
   cobolPlayback.paused=!cobolPlayback.paused;cobolAutoPaused=false;
   updateCobolScene();scheduleCobolDemo();
 }
+function canShowCobolResults(){return cobolPlayback.active&&cobolPlayback.index===cobolChallenges.length-1&&['answer','corrected'].includes(cobolPlayback.phase);}
 function showCobolResults(){
-  if(!cobolPlayback.active)return;
+  if(!canShowCobolResults())return;
   clearTimeout(cobolTimer);cobolTimer=null;
   const score=cobolDemoScore();
   if(!community.cobolDemoAward){
@@ -156,7 +158,7 @@ function cobolEditorSnapshot(){
     const typed=phase==='typing'?cobolPlayback.typed:0;
     text=edit.from.slice(0,edit.start)+edit.insert.slice(0,typed)+edit.tail;caret=edit.start+typed;
   }
-  if(phase==='answer'||phase==='corrected'){text=edit.to;caret=edit.start+edit.insert.length;}
+  if(['ready','answer','corrected'].includes(phase)){text=edit.to;caret=edit.start+edit.insert.length;}
   return {text,caret,selection};
 }
 function cobolSyntax(text){
@@ -194,8 +196,9 @@ function cobolCodeLines(){
 }
 function cobolEditorStatus(){
   if(cobolPlayback.paused)return 'Paused';
+  if(cobolPlayback.phase==='ready')return 'Press Enter to check your answer';
   if(cobolPlayback.correcting&&cobolPlayback.phase!=='corrected')return 'Linda is correcting the rounding';
-  return {question:'Reading the question',point:'Finding the code to change',select:'Selecting code',deleting:'Removing the old code',typing:'Typing the fix',answer:'Answer submitted',corrected:'Correction complete'}[cobolPlayback.phase]||'';
+  return {question:'Reading the question',point:'Finding the code to change',select:'Selecting code',deleting:'Removing the old code',typing:'Typing the answer',answer:'Answer submitted',corrected:'Correction complete'}[cobolPlayback.phase]||'';
 }
 function cobolRoundPoints(){
   const done=cobolPlayback.phase==='answer'||cobolPlayback.phase==='corrected';
@@ -204,7 +207,7 @@ function cobolRoundPoints(){
 function cobolEditorFeedback(){
   const q=cobolChallenges[cobolPlayback.index],phase=cobolPlayback.phase;
   if(phase!=='answer'&&phase!=='corrected')return '';
-  return `<span class="cd-check-result">${q.correct?'✓ Correct fix · +25 points':phase==='corrected'?'✓ Rounding corrected · +0 points':'Needs rounding · +0 points'}</span><p>${escapeHtml(q.explanation)}</p>`;
+  return `<span class="cd-check-result">${q.correct?'✓ Correct · +25 points':phase==='corrected'?'✓ Corrected · +0 points':'✕ Not correct · +0 points'}</span><p>${escapeHtml(q.explanation)}</p>`;
 }
 function positionCobolMouse(){
   const mouse=document.querySelector('[data-demo-mouse]'),stage=document.querySelector('[data-editor-stage]'),anchor=document.querySelector('[data-edit-anchor]');
@@ -230,26 +233,28 @@ function updateCobolScene(){
   if(status)status.textContent=cobolEditorStatus();
   if(feedback)feedback.innerHTML=cobolEditorFeedback();
   if(points)points.textContent=`${cobolRoundPoints()} / 150 pts`;
-  if(chip){chip.className='cd-demo-chip '+(cobolPlayback.paused?'is-paused':'is-playing');chip.innerHTML=`<i></i>${cobolPlayback.paused?'Paused':'Demo playing'}`;}
+  if(chip){chip.className='cd-demo-chip '+(cobolPlayback.paused?'is-paused':'is-playing');chip.innerHTML=`<i></i>${cobolPlayback.paused?'Paused':cobolPlayback.phase==='ready'?'Ready to submit':'Demo playing'}`;}
   if(scene){scene.dataset.phase=cobolPlayback.phase;scene.dataset.paused=String(cobolPlayback.paused);}
   const pause=document.querySelector('[data-cobol-demo="pause"]');
   if(pause)pause.textContent=cobolPlayback.paused?'Resume demo':'Pause demo';
   const enter=document.querySelector('[data-cobol-demo="enter"]');
   if(enter)enter.disabled=!canEnterCobolAnswer();
+  const results=document.querySelector('[data-cobol-demo="results"]');
+  if(results)results.disabled=!canShowCobolResults();
   positionCobolMouse();
 }
 function cobolDemoView(){
   if(cobolPlayback.phase==='complete')return cobolResultsView();
   const n=cobolPlayback.index,q=cobolChallenges[n];
   return `<section class="cd-editor-screen" data-cobol-scene data-phase="${cobolPlayback.phase}" data-paused="${cobolPlayback.paused}" aria-label="COBOL code walkthrough">
-    <header class="cd-editor-top"><a href="workspace/index.html#/expert/home" class="cd-editor-back" aria-label="Back to Expert Home">${icon('back')}</a><h1>COBOL Now!</h1><span class="cd-demo-chip ${cobolPlayback.paused?'is-paused':'is-playing'}" data-demo-chip><i></i>${cobolPlayback.paused?'Paused':'Demo playing'}</span></header>
+    <header class="cd-editor-top"><a href="workspace/index.html#/expert/home" class="cd-editor-back" aria-label="Back to Expert Home">${icon('back')}</a><h1>COBOL Now!</h1><span class="cd-demo-chip ${cobolPlayback.paused?'is-paused':'is-playing'}" data-demo-chip><i></i>${cobolPlayback.paused?'Paused':cobolPlayback.phase==='ready'?'Ready to submit':'Demo playing'}</span></header>
     <div class="cd-editor-tabs"><span class="cd-file-tab">${icon('code')} ${q.file}</span><span>Question ${n+1} of 6 · ${q.topic}</span><div class="cd-editor-person"><span class="cd-editor-avatar" aria-hidden="true">LC</span>Linda C. <span>· Expert demo</span></div></div>
     <div class="cd-editor-stage" data-editor-stage><div class="cd-editor-scroll" data-editor-scroll>
       <div class="cd-code-prompt"><span>*> ${escapeHtml(q.title)}</span><p>*> ${escapeHtml(q.question)}</p></div>
       <div class="cd-live-code" data-code-lines aria-label="Code being edited">${cobolCodeLines()}</div>
       <div class="cd-editor-feedback" data-editor-feedback aria-live="polite">${cobolEditorFeedback()}</div>
     </div><div class="cd-demo-mouse" data-demo-mouse aria-hidden="true"><svg width="24" height="30" viewBox="0 0 24 30"><path d="M3 2L21 17L12 18L8 27Z" fill="#d7e5d8" stroke="#17221c" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Linda C.</span><i></i></div><button type="button" class="cd-enter-button" data-cobol-demo="enter" ${canEnterCobolAnswer()?'':'disabled'}>Enter <span aria-hidden="true">↵</span></button></div>
-    <footer class="cd-editor-footer"><span class="cd-editor-status" data-editor-status role="status">${cobolEditorStatus()}</span><span class="cd-editor-points" data-round-points>${cobolRoundPoints()} / 150 pts</span><div class="cd-editor-actions"><button type="button" data-cobol-demo="pause">${cobolPlayback.paused?'Resume demo':'Pause demo'}</button><button type="button" data-cobol-demo="results">See final score ${icon('arrow')}</button></div></footer>
+    <footer class="cd-editor-footer"><span class="cd-editor-status" data-editor-status role="status">${cobolEditorStatus()}</span><span class="cd-editor-points" data-round-points>${cobolRoundPoints()} / 150 pts</span><div class="cd-editor-actions"><button type="button" data-cobol-demo="pause">${cobolPlayback.paused?'Resume demo':'Pause demo'}</button><button type="button" data-cobol-demo="results" ${canShowCobolResults()?'':'disabled'}>See final score ${icon('arrow')}</button></div></footer>
   </section>`;
 }
 
@@ -274,6 +279,11 @@ function renderCobolDemo(){
   if(cobolPlayback.phase!=='complete')positionCobolMouse();
   if(focusedAction)document.querySelector(`[data-cobol-demo="${focusedAction}"]`)?.focus({preventScroll:true});
 }
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Enter'||event.repeat||event.ctrlKey||event.metaKey||event.altKey||location.hash!=='#/cobol-now'||!canEnterCobolAnswer())return;
+  if(event.target?.closest?.('input, textarea, select, button, a, [contenteditable="true"]'))return;
+  event.preventDefault();enterCobolAnswer();
+});
 document.addEventListener('visibilitychange',()=>{
   if(!cobolPlayback.active||cobolPlayback.phase==='complete')return;
   if(document.hidden&&!cobolPlayback.paused){cobolPlayback.paused=true;cobolAutoPaused=true;updateCobolScene();scheduleCobolDemo();}
